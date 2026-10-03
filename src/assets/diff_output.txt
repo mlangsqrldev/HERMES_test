@@ -1,0 +1,80 @@
+# Schema Comparison Results
+
+## Comparison: mapped_*.csv vs schema_dictionary.json
+activity.assessments: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.consistsOf.endDate: mapped=True, json=True, schema_csv=False Different to CARARE
+activity.consistsOf.hadSpecificPurpose: mapped=True, json=True, schema_csv=False Different to CARARE
+activity.consistsOf.startDate: mapped=True, json=True, schema_csv=False Different to CARARE
+activity.dcRelation: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.description: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.happenedAt: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.hasPart: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.isPartOf: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.occurredAt: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.recordInformation.creation.contacts.name: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.recordInformation.creation.contacts.organization: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.recordInformation.creation.contacts.role: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.recordInformation.metadataRights: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.recordInformation.update.contacts.name: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.spatial.locationSet.historicalName: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.spatial.locationSet.namedLocation: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.temporal.periodName: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.temporal.timeSpan.endDate: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.temporal.timeSpan.startDate: mapped=False, json=False, schema_csv=True Different to CARARE
+activity.wasPresentAt: mapped=False, json=False, schema_csv=True Different to CARARE
+collectionInformation.contacts.email: mapped=False, json=False, schema_csv=True Different to CARARE
+collectionInformation.contacts.name: mapped=False, json=False, schema_csv=True Different to CARARE
+collectionInformation.contacts.organization: mapped=False, json=False, schema_csv=True Different to CARARE
+collectionInformation.contacts.role: mapped=False, json=False, schema_csv=True Different to CARARE
+collectionInformation.coverage.spatial.locationSet: mapped=True, json=True, schema_csv=False Different to CARARE
+collectionInformation.coverage.temporal.timeSpan.endDate: mapped=False, json=False, schema_csv=True Different to CARARE
+collectionInformation.coverage.temporal.timeSpan.startDate: mapped=False, json=False, schema_csv=True Different to CARARE
+collectionInformation.creation.createdOn: mapped=False, json=False, schema_csv=True Different to CARARE
+collectionInformation.source: mapped=True, json=False, schema_csv=False Different to Miro
+collectionInformation.statement: mapped=False, json=False, schema_csv=True Different to CARARE
+collectionInformation.title: mapped=True, json=False, schema_csv=True Different to Miro
+digitalResource.actors.contacts.email: mapped=False, json=False, schema_csv=True Different to CARARE
+digitalResource.actors.id: mapped=True, json=True, schema_csv=False Different to CARARE
+digitalResource.createdDerivative: mapped=False, json=False, schema_csv=True Different to CARARE
+digitalResource.dcRelation: mapped=False, json=False, schema_csv=True Different to CARARE
+digitalResource.description: mapped=False, json=False, schema_csv=True Different to CARARE
+digitalResource.extent: mapped=False, json=False, schema_csv=True Different to CARARE
+digitalResource.formatDetails: mapped=False, json=False, schema_csv=True Different to CARARE
+digitalResource.hasDerivative: mapped=False, json=False, schema_csv=True Different to CARARE
+digitalResource.isDerivativeOf: mapped=False, json=False, schema_csv=True Different to CARARE
+digitalResource.isPartOf: mapped=False, json=False, schema_csv=True Different to CARARE
+digitalResource.isPreviousInSequence: mapped=False, json=False, schema_csv=True Different to CARARE
+digitalResource.link: mapped=True, json=True, schema_csv=False Different to CARARE
+digitalResource.nextInSequence: mapped=False, json=False, schema_csv=True Different to CARARE
+digitalResource.object: mapped=True, json=True, schema_csv=False Different to CARARE
+digitalResource.publicationStatement.date: mapped=False, json=False, schema_csv=True Different to CARARE
+digitalResource.recordInformation.creation.contacts.role: mapped=False, json=False, schema_csv=True Different to CARARE
+digitalResource.recordInformation.metadataRights: mapped=False, json=False, schema_csv=True Different to CARARE
+digitalResource.recordInformation.update.contacts.name: mapped=False, json=False, schema_csv=True Different to CARARE
+digitalResource.type: mapped=True, json=True, schema_csv=False Different to CARARE
+heritageAssetIdentification.characters.dimensions.measurementType: mapped=True, json=True, schema_csv=False Different to CARARE
+heritageAssetIdentification.characters.inscriptionsType: mapped=False, json=False, schema_csv=Not present
+heritageAssetIdentification.characters.temporal.displayDate: mapped=False, json=False, schema_csv=True Different to CARARE
+heritageAssetIdentification.characters.temporal.periodName: mapped=False, json=False, schema_csv=True Different to CARARE
+heritageAssetIdentification.characters.temporal.timeSpan.endDate: mapped=False, json=False, schema_csv=True Different to CARARE
+heritageAssetIdentification.characters.temporal.timeSpan.startDate: mapped=False, json=False, schema_csv=True Different to CARARE
+heritageAssetIdentification.description: mapped=True, json=False, schema_csv=True Different to Miro
+heritageAssetIdentification.publicationStatement.date: mapped=False, json=False, schema_csv=True Different to CARARE
+heritageAssetIdentification.recordInformation.country: mapped=False, json=False, schema_csv=Not present
+heritageAssetIdentification.recordInformation.creation.contacts.name: mapped=False, json=False, schema_csv=Not present
+heritageAssetIdentification.recordInformation.creation.contacts.organization: mapped=False, json=False, schema_csv=Not present
+heritageAssetIdentification.recordInformation.creation.contacts.role: mapped=False, json=False, schema_csv=Not present
+heritageAssetIdentification.recordInformation.creation.date: mapped=False, json=False, schema_csv=Not present
+heritageAssetIdentification.recordInformation.id: mapped=False, json=False, schema_csv=Not present
+heritageAssetIdentification.recordInformation.language: mapped=True, json=True, schema_csv=Not present
+heritageAssetIdentification.recordInformation.metadataRights: mapped=False, json=False, schema_csv=Not present
+heritageAssetIdentification.recordInformation.source: mapped=False, json=False, schema_csv=Not present
+heritageAssetIdentification.recordInformation.update.contacts.name: mapped=False, json=False, schema_csv=Not present
+heritageAssetIdentification.recordInformation.update.date: mapped=False, json=False, schema_csv=Not present
+heritageAssetIdentification.references.actors.id: mapped=True, json=True, schema_csv=False Different to CARARE
+heritageAssetIdentification.references.appellation.id: mapped=True, json=True, schema_csv=False Different to CARARE
+heritageAssetIdentification.references.link: mapped=True, json=True, schema_csv=False Different to CARARE
+heritageAssetIdentification.references.rights: mapped=True, json=True, schema_csv=False Different to CARARE
+heritageAssetIdentification.references.type: mapped=True, json=True, schema_csv=False Different to CARARE
+heritageAssetIdentification.repositoryLocation: mapped=False, json=False, schema_csv=True Different to CARARE
+heritageAssetIdentification.spatial.locationSet.namedLocation: mapped=False, json=False, schema_csv=True Different to CARARE

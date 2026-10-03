@@ -1,0 +1,22 @@
+# Schema Comparison Results
+
+## Comparison: mapped_*.csv vs schema_dictionary.json
+
+
+
+
+## ui should be array
+
+activity.consistsOf.methods
+activity.consistsOf.techniques
+activity.consistsOf.materials
+activity.consistsOf.equipment
+activity.actors.roles
+
+## should not be array
+
+digitalResource.note
+
+## should be dropdown multiselect
+
+heritageAssetIdentification.characters.heritageAssetType

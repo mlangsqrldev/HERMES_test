@@ -1,0 +1,678 @@
+{
+  "collectionInformation": [
+    {
+      "name": "Tairkap Funerary Ensemble (README_SMB-AEMP)",
+      "data": {
+        "id": "DE-MUS-015418_Tairkap_Ensemble",
+        "title": [
+          {
+            "_value": "Funerary ensemble of the Lady Tairkap",
+            "title#lang": "en",
+            "title#preferred": true
+          },
+          {
+            "_value": "Grabensemble der Dame Tairkap",
+            "title#lang": "de",
+            "title#preferred": false
+          }
+        ],
+        "source": "Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz",
+        "source#lang": "de",
+        "contacts": [
+          {
+            "name": "Valentina Salcedo Paparoni",
+            "role": "Documentation",
+            "organization": "Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz",
+            "email": "",
+            "address.buildingName": "",
+            "address.numberInRoad": "",
+            "address.roadName": "Stauffenbergstr.",
+            "address.townOrCity": "Berlin",
+            "address.postcodeOrZipcode": "",
+            "address.country": "DE"
+          },
+          {
+            "name": "Matthias Lang",
+            "role": "Project Lead",
+            "organization": "Bonn Center for Digital Humanities, Bonn University",
+            "email": "",
+            "address.buildingName": "",
+            "address.numberInRoad": "",
+            "address.roadName": "",
+            "address.townOrCity": "Bonn",
+            "address.postcodeOrZipcode": "",
+            "address.country": "DE"
+          }
+        ],
+        "rights.copyrightCreditLine": "Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz / BCDH Bonn University",
+        "rights.copyrightCreditLine#lang": "de",
+        "rights.accessRights": "Open Access",
+        "rights.accessRights#lang": "en",
+        "rights.reproductionRights": "CC BY-SA 4.0",
+        "rights.reproductionRights#lang": "en",
+        "rights.licence": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "rights.licence#lang": "en",
+        "language": [
+          "en",
+          "de"
+        ],
+        "language#lang": "en",
+        "statement": "Central components of the burial of the Lady Tairkap (TꜢ-ỉr-kꜢp), consisting of her mummy, a flat canopic chest, and two coffins, both of anthropoid shape. While the small canopic chest is of an unusual type, the two coffins are typical examples of their place and time, i.e. Thebes in the 7th century BCE. At a closer look, however, their textual decoration shows some features that have no direct parallel to this day. They thereby testify to the high degree of diversity in choice, arrangement, and modification of traditional elements of decoration which makes each set of funerary equipment individual. The funerary ensemble was brought to Berlin in 1822 as parts of the collection of Johann von Minutoli <http://d-nb.info/gnd/100791549>, together with the comparable one of Pestjenfi (ÄM 50–54), probably a close relative of Tairkap.",
+        "statement#lang": "en",
+        "statement#preferred": true,
+        "creation.createdOn": "2025-04-17",
+        "creation.query": "",
+        "keywords": [
+          "Funerary Equipment",
+          "Mummy",
+          "Anthropoid Coffin",
+          "Canopic Chest",
+          "Thebes",
+          "Late Period"
+        ],
+        "keywords#lang": "en",
+        "keywords#namespace": "",
+        "coverage.temporal.timeSpan.startDate": "-0746",
+        "coverage.temporal.timeSpan.endDate": "-0525",
+        "coverage.temporal.timeSpan.dateRangeQualifier": "",
+        "coverage.temporal.timeSpan.dateRangeQualifier#namespace": "",
+        "coverage.temporal.timeSpan.dateRangeQualifier#lang": "",
+        "coverage.temporal.periodName": "Late Period (746 - 525 B.C.)",
+        "coverage.temporal.periodName#lang": "en",
+        "coverage.temporal.periodName#preferred": true,
+        "coverage.temporal.scientificDate": "",
+        "coverage.temporal.scientificDate#lang": "",
+        "coverage.temporal.scientificDateMethod": "",
+        "coverage.temporal.scientificDateMethod#lang": "",
+        "coverage.spatial.locationSet.namedLocation": [
+          "Thebes, Egypt"
+        ],
+        "coverage.spatial.locationSet.namedLocation#lang": "en",
+        "coverage.spatial.locationSet.namedLocation#preferred": true,
+        "coverage.spatial.locationSet.namedLocation#namespace": "TGN",
+        "coverage.spatial.locationSet.namedLocation#term": "Thebes",
+        "coverage.spatial.locationSet.namedLocation#termUID": "7001297",
+        "coverage.spatial.locationSet.address.buildingName": "Ägyptisches Museum und Papyrussammlung",
+        "coverage.spatial.locationSet.address.buildingName#lang": "de",
+        "coverage.spatial.locationSet.address.buildingName#authority": "",
+        "coverage.spatial.locationSet.address.numberInRoad": "1-3",
+        "coverage.spatial.locationSet.address.numberInRoad#lang": "de",
+        "coverage.spatial.locationSet.address.numberInRoad#authority": "",
+        "coverage.spatial.locationSet.address.roadName": "Bodestraße",
+        "coverage.spatial.locationSet.address.townOrCity": "Berlin",
+        "coverage.spatial.locationSet.address.townOrCity#lang": "de",
+        "coverage.spatial.locationSet.address.townOrCity#authority": "",
+        "coverage.spatial.locationSet.address.postcodeOrZipcode": "10178",
+        "coverage.spatial.locationSet.address.postcodeOrZipcode#authority": "",
+        "coverage.spatial.locationSet.address.country": "DE",
+        "coverage.spatial.locationSet.address.country#lang": "de",
+        "coverage.spatial.locationSet.address.country#authority": "iso31661a2",
+        "coverage.spatial.locationSet.geopoliticalArea": "Egypt",
+        "coverage.spatial.locationSet.geopoliticalArea#lang": "en",
+        "coverage.spatial.locationSet.geopoliticalAreaType": "Country",
+        "coverage.spatial.locationSet.geopoliticalAreaType#lang": "en",
+        "coverage.spatial.locationSet.geopoliticalAreaType#namespace": "",
+        "coverage.spatial.locationSet.cadastralReference": "",
+        "coverage.spatial.locationSet.cadastralReference#ref": "",
+        "coverage.spatial.locationSet.historicalName": [
+          "Thebes"
+        ],
+        "coverage.spatial.locationSet.historicalName#lang": "en",
+        "coverage.spatial.locationSet.historicalName#namespace": "",
+        "coverage.spatial.locationSet.historicalName#term": "Thebes",
+        "coverage.spatial.locationSet.historicalName#termUID": "",
+        "coverage.spatial.locationSet.historicalName#preferred": true,
+        "dcRelation": [
+          "http://vocab.getty.edu/page/aat/300054638",
+          "https://d-nb.info/gnd/36150-1",
+          "https://lobid.org/organisations/DE-MUS-710014"
+        ],
+        "dcRelation#lang": "",
+        "dcRelation#preferred": false
+      }
+    }
+  ],
+  "heritageAssetIdentification": [
+    {
+      "name": "Tairkap Outer Coffin Lid (ÄM 3/01)",
+      "data": {
+        "recordInformation.id": "DE-MUS-015418_ÄM_3_01",
+        "recordInformation.source": "Ägyptisches Museum und Papyrussammlung, Berlin. Staatliche Museen zu Berlin",
+        "recordInformation.source#lang": "de",
+        "recordInformation.country": "DE",
+        "recordInformation.country#lang": "de",
+        "recordInformation.country#authority": "iso31661a2",
+        "recordInformation.creation.date": "2025-04-17",
+        "recordInformation.creation.contacts": [],
+        "recordInformation.language": [
+          "de",
+          "en"
+        ],
+        "recordInformation.language#lang": "de",
+        "recordInformation.metadataRights": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "recordInformation.metadataRights#lang": "en",
+        "appellation.id": "ÄM 3/01",
+        "appellation.name": [
+          {
+            "_value": "Äußerer, anthropomorpher Sarg der Tairkap (Deckel)",
+            "appellation.name#lang": "de",
+            "appellation.name#preferred": false
+          },
+          {
+            "_value": "Anthropoid Outer Coffin of a Woman Named Ta-ir-kap (Lid)",
+            "appellation.name#lang": "en",
+            "appellation.name#preferred": true
+          }
+        ],
+        "description": "As for the inner coffin, the shape of the outer anthropoid coffin is typical for its time, that is without a socle and without a rounded passage from the flat bottom to the sides of the case. Shape of an anthropoid outer coffin lid with feather joints.",
+        "generalType": "physical object",
+        "actors": [
+          {
+            "actor": "Tairkap (Ta-ir-kap)",
+            "actorUID": "",
+            "role": "deceased"
+          },
+          {
+            "actor": "Johann von Minutoli",
+            "actorUID": "http://d-nb.info/gnd/100791549",
+            "role": "collector"
+          }
+        ],
+        "conditions.condition": "preserved",
+        "conditions.condition#lang": "en",
+        "conditions.conditionAssessment": "",
+        "conditions.conditionAssessment#lang": "",
+        "conditions.conditionDate": "",
+        "conditions.conditionDate#lang": "",
+        "conditions.wasPresentAt": "",
+        "provenance": "https://doi.org/10.11588/diglit.68959#0004 (Acquisition year: 1823)",
+        "provenance#lang": "de",
+        "characters.heritageAssetType": [
+          {
+            "_value": "coffins",
+            "#term": "coffins",
+            "#lang": "en",
+            "#namespace": "AAT",
+            "#termUID": "http://vocab.getty.edu/page/aat/300197585"
+          }
+        ],
+        "characters.temporal": [
+          {
+            "timeSpan.startDate": "-0746",
+            "timeSpan.endDate": "-0525",
+            "displayDate": "746 - 525 B.C."
+          }
+        ],
+        "characters.materials": [
+          {
+            "_value": "wood",
+            "#lang": "en"
+          }
+        ],
+        "characters.inscriptions": [],
+        "characters.dimensions": [
+          {
+            "extent": "",
+            "measurementType": "Height",
+            "units": "Zentimeter",
+            "scale": "",
+            "value": 54
+          },
+          {
+            "extent": "",
+            "measurementType": "Length",
+            "units": "Zentimeter",
+            "scale": "",
+            "value": 213
+          },
+          {
+            "extent": "",
+            "measurementType": "Width",
+            "units": "Zentimeter",
+            "scale": "",
+            "value": 78
+          },
+          {
+            "extent": "",
+            "measurementType": "Weight",
+            "units": "Kilogramm",
+            "scale": "",
+            "value": 80
+          }
+        ],
+        "spatial": [],
+        "repositoryLocation": "Ägyptisches Museum und Papyrussammlung, Berlin. Staatliche Museen zu Berlin (ISIL: DE-MUS-015418)",
+        "repositoryLocation#lang": "de",
+        "rights.copyrightCreditLine": "Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz",
+        "rights.copyrightCreditLine#lang": "de",
+        "rights.accessRights": "Freely accessible",
+        "rights.accessRights#lang": "en",
+        "rights.reproductionRights": "CC BY-SA 4.0",
+        "rights.reproductionRights#lang": "en",
+        "rights.licence": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "rights.licence#lang": "en",
+        "references": [
+          {
+            "appellation.id": "https://id.smb.museum/object/779317",
+            "appellation.name": "Permalink SMB Objekt 779317",
+            "actors.id": "DE-MUS-015418",
+            "actors.name": "Ägyptisches Museum und Papyrussammlung",
+            "rights": "Staatliche Museen zu Berlin",
+            "link": "https://id.smb.museum/object/779317"
+          },
+          {
+            "appellation.id": "https://doi.org/10.11588/diglit.68959#0004",
+            "appellation.name": "Minutoli Provenance Diglit",
+            "actors.id": "",
+            "actors.name": "",
+            "rights": "",
+            "link": "https://doi.org/10.11588/diglit.68959#0004"
+          }
+        ],
+        "hasRepresentation": [],
+        "isSuccessorOf": [],
+        "wasPresentAt": [],
+        "hasPart": [],
+        "isPartOf": [
+          "DE-MUS-015418_ÄM_3"
+        ],
+        "isReplicaOf": [],
+        "wasDigitizedBy": [
+          "ACT_BCDH_2021_TAIRKAP"
+        ],
+        "dcRelation": [
+          "http://vocab.getty.edu/page/aat/300068640"
+        ]
+      }
+    },
+    {
+      "name": "Tairkap Outer Coffin Base (ÄM 3/02)",
+      "data": {
+        "recordInformation.id": "DE-MUS-015418_ÄM_3_02",
+        "recordInformation.source": "Ägyptisches Museum und Papyrussammlung, Berlin. Staatliche Museen zu Berlin",
+        "recordInformation.source#lang": "de",
+        "recordInformation.country": "DE",
+        "recordInformation.country#lang": "de",
+        "recordInformation.country#authority": "iso31661a2",
+        "recordInformation.creation.date": "2025-04-17",
+        "recordInformation.creation.contacts": [],
+        "recordInformation.language": [
+          "de",
+          "en"
+        ],
+        "recordInformation.language#lang": "de",
+        "recordInformation.metadataRights": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "recordInformation.metadataRights#lang": "en",
+        "appellation.id": "ÄM 3/02",
+        "appellation.name": [
+          {
+            "_value": "Äußerer, anthropomorpher Sarg der Tairkap (Wanne)",
+            "appellation.name#lang": "de",
+            "appellation.name#preferred": false
+          },
+          {
+            "_value": "Anthropoid Outer Coffin of a Woman Named Ta-ir-kap (Base)",
+            "appellation.name#lang": "en",
+            "appellation.name#preferred": true
+          }
+        ],
+        "description": "Outer anthropoid coffin base / case without socle.",
+        "generalType": "physical object",
+        "actors": [],
+        "conditions.condition": "preserved",
+        "conditions.condition#lang": "en",
+        "provenance": "https://doi.org/10.11588/diglit.68959#0004 (Acquisition year: 1823)",
+        "provenance#lang": "de",
+        "characters.heritageAssetType": [
+          {
+            "_value": "coffins",
+            "#term": "coffins",
+            "#lang": "en",
+            "#namespace": "AAT",
+            "#termUID": "http://vocab.getty.edu/page/aat/300197585"
+          }
+        ],
+        "characters.temporal": [
+          {
+            "timeSpan.startDate": "-0746",
+            "timeSpan.endDate": "-0525",
+            "displayDate": "746 - 525 B.C."
+          }
+        ],
+        "characters.materials": [
+          {
+            "_value": "wood",
+            "#lang": "en"
+          }
+        ],
+        "characters.inscriptions": [],
+        "characters.dimensions": [
+          {
+            "extent": "",
+            "measurementType": "Height",
+            "units": "Zentimeter",
+            "scale": "",
+            "value": 52
+          },
+          {
+            "extent": "",
+            "measurementType": "Length",
+            "units": "Zentimeter",
+            "scale": "",
+            "value": 208
+          },
+          {
+            "extent": "",
+            "measurementType": "Width",
+            "units": "Zentimeter",
+            "scale": "",
+            "value": 78
+          },
+          {
+            "extent": "",
+            "measurementType": "Weight",
+            "units": "Kilogramm",
+            "scale": "",
+            "value": 87
+          }
+        ],
+        "spatial": [],
+        "repositoryLocation": "Ägyptisches Museum und Papyrussammlung, Berlin. Staatliche Museen zu Berlin (ISIL: DE-MUS-015418)",
+        "repositoryLocation#lang": "de",
+        "rights.copyrightCreditLine": "Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz",
+        "rights.copyrightCreditLine#lang": "de",
+        "rights.licence": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "rights.licence#lang": "en",
+        "references": [],
+        "hasRepresentation": [],
+        "isSuccessorOf": [],
+        "wasPresentAt": [],
+        "hasPart": [],
+        "isPartOf": [
+          "DE-MUS-015418_ÄM_3"
+        ],
+        "isReplicaOf": [],
+        "wasDigitizedBy": [
+          "ACT_BCDH_2021_TAIRKAP"
+        ],
+        "dcRelation": []
+      }
+    },
+    {
+      "name": "Tairkap Mummy (ÄM 5/02)",
+      "data": {
+        "recordInformation.id": "DE-MUS-015418_ÄM_5_02",
+        "recordInformation.source": "Ägyptisches Museum und Papyrussammlung, Berlin. Staatliche Museen zu Berlin",
+        "recordInformation.source#lang": "de",
+        "recordInformation.country": "DE",
+        "recordInformation.country#lang": "de",
+        "recordInformation.country#authority": "iso31661a2",
+        "recordInformation.creation.date": "2025-04-17",
+        "recordInformation.creation.contacts": [],
+        "recordInformation.language": [
+          "de",
+          "en"
+        ],
+        "recordInformation.language#lang": "de",
+        "recordInformation.metadataRights": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "recordInformation.metadataRights#lang": "en",
+        "appellation.id": "ÄM 5/02",
+        "appellation.name": [
+          {
+            "_value": "Mumie der Tairkap (Mensch)",
+            "appellation.name#lang": "de",
+            "appellation.name#preferred": false
+          },
+          {
+            "_value": "Mummy of the lady Tairkap (Body)",
+            "appellation.name#lang": "en",
+            "appellation.name#preferred": true
+          }
+        ],
+        "description": "The mummy has not been unwrapped. Besides the thickness of the bandaging, the outer stripes which hold the wrapping together, can be seen. Below the head, the front side of the mummy is covered by a blue bead-net, characteristic element of Egyptian funerary equipment of the 1st millennium BCE.",
+        "generalType": "physical object",
+        "actors": [],
+        "conditions.condition": "preserved",
+        "conditions.condition#lang": "en",
+        "provenance": "https://doi.org/10.11588/diglit.68959#0004 (Acquisition year: 1823)",
+        "provenance#lang": "de",
+        "characters.heritageAssetType": [
+          {
+            "_value": "mummies",
+            "#term": "mummies",
+            "#lang": "en",
+            "#namespace": "AAT",
+            "#termUID": "http://vocab.getty.edu/page/aat/300262951"
+          }
+        ],
+        "characters.temporal": [
+          {
+            "timeSpan.startDate": "-0670",
+            "timeSpan.endDate": "-0610",
+            "displayDate": "670 - 610 B.C."
+          }
+        ],
+        "characters.materials": [],
+        "characters.inscriptions": [],
+        "characters.dimensions": [
+          {
+            "extent": "",
+            "measurementType": "Height",
+            "units": "Zentimeter",
+            "scale": "",
+            "value": 25
+          },
+          {
+            "extent": "",
+            "measurementType": "Length",
+            "units": "Zentimeter",
+            "scale": "",
+            "value": 160
+          },
+          {
+            "extent": "",
+            "measurementType": "Width",
+            "units": "Zentimeter",
+            "scale": "",
+            "value": 40
+          },
+          {
+            "extent": "",
+            "measurementType": "Weight",
+            "units": "Kilogramm",
+            "scale": "",
+            "value": 100
+          }
+        ],
+        "spatial": [],
+        "repositoryLocation": "Ägyptisches Museum und Papyrussammlung, Berlin. Staatliche Museen zu Berlin (ISIL: DE-MUS-015418)",
+        "repositoryLocation#lang": "de",
+        "rights.copyrightCreditLine": "Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz",
+        "rights.copyrightCreditLine#lang": "de",
+        "rights.licence": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "rights.licence#lang": "en",
+        "references": [],
+        "hasRepresentation": [],
+        "isSuccessorOf": [],
+        "wasPresentAt": [],
+        "hasPart": [],
+        "isPartOf": [
+          "DE-MUS-015418_ÄM_5"
+        ],
+        "isReplicaOf": [],
+        "wasDigitizedBy": [
+          "ACT_BCDH_2021_TAIRKAP"
+        ],
+        "dcRelation": []
+      }
+    }
+  ],
+  "digitalResource": [
+    {
+      "name": "Tairkap 3D Photogrammetry Mesh (Nikon D750 / BCDH)",
+      "data": {
+        "recordInformation.id": "SMB-SPK_DO_AM_3_01",
+        "recordInformation.source": "Bonn Center for Digital Humanities, Bonn University",
+        "recordInformation.source#lang": "en",
+        "recordInformation.country": "DE",
+        "recordInformation.country#lang": "de",
+        "recordInformation.country#authority": "iso31661a2",
+        "recordInformation.creation.date": "2021",
+        "recordInformation.creation.contacts": [],
+        "recordInformation.language": [
+          "en",
+          "de"
+        ],
+        "recordInformation.language#lang": "en",
+        "recordInformation.metadataRights": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "recordInformation.metadataRights#lang": "en",
+        "appellation.name": [
+          {
+            "_value": "Digital Object Outer Coffin Lid (Photogrammetric 3D-Mesh)",
+            "appellation.name#lang": "en",
+            "appellation.name#preferred": true
+          }
+        ],
+        "appellation.id": "DO_AM_3_01",
+        "description": "Photogrammetric 3D-Mesh generated using Nikon D750 digital camera (pixels: 300266190). High-poly and low-poly 3D models with texture maps.",
+        "note": [
+          "Software used: Agisoft Metashape, Substance Designer, Blender",
+          "Mesh complexity: millions of faces and vertices"
+        ],
+        "note#lang": "en",
+        "actors": [],
+        "type": "3D model",
+        "format": [
+          "model/gltf-binary",
+          "model/obj"
+        ],
+        "format#lang": "en",
+        "formatDetails": "photogrammetric 3D-Mesh",
+        "formatDetails#lang": "en",
+        "extent": "",
+        "extent#term": "",
+        "extent#lang": "",
+        "extent#namespace": "",
+        "extent#termUID": "",
+        "publicationStatement": [],
+        "created": "2021",
+        "language": [
+          "en"
+        ],
+        "language#lang": "en",
+        "link": "",
+        "object": "",
+        "isShownAt": "",
+        "rights.copyrightCreditLine": "Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz / BCDH Bonn University",
+        "rights.copyrightCreditLine#lang": "en",
+        "rights.accessRights": "Open Access",
+        "rights.accessRights#lang": "en",
+        "rights.reproductionRights": "CC BY-SA 4.0",
+        "rights.reproductionRights#lang": "en",
+        "rights.licence": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "rights.licence#lang": "en",
+        "isRepresentationOf": [
+          "DE-MUS-015418_ÄM_3_01"
+        ],
+        "hasPart": [],
+        "isPartOf": [],
+        "nextInSequence": [],
+        "isPreviousInSequence": [],
+        "isDerivativeOf": [],
+        "hasDerivative": [],
+        "createdDerivative": [],
+        "dcRelation": [
+          "http://vocab.getty.edu/page/aat/300053580",
+          "http://vocab.getty.edu/page/aat/300266792"
+        ]
+      }
+    }
+  ],
+  "activity": [
+    {
+      "name": "Tairkap 3D Digitization & Reconstruction (BCDH 2021)",
+      "data": {
+        "recordInformation.id": "ACT_BCDH_2021_TAIRKAP",
+        "recordInformation.source": "Bonn Center for Digital Humanities, Bonn University",
+        "recordInformation.source#lang": "en",
+        "recordInformation.country": "DE",
+        "recordInformation.country#lang": "de",
+        "recordInformation.country#authority": "iso31661a2",
+        "recordInformation.creation.date": "2021",
+        "recordInformation.creation.contacts": [],
+        "recordInformation.language": [
+          "en",
+          "de"
+        ],
+        "recordInformation.language#lang": "en",
+        "recordInformation.metadataRights": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "recordInformation.metadataRights#lang": "en",
+        "appellation.name": [
+          {
+            "_value": "3D Digitization of the Tairkap Funerary Ensemble",
+            "appellation.name#lang": "en",
+            "appellation.name#preferred": true
+          }
+        ],
+        "appellation.id": "ACT_TAIRKAP_3D_2021",
+        "description": "Photogrammetric capture and 3D modeling of the funerary equipment of Lady Tairkap (ÄM 3 - ÄM 6) carried out in 2021 at Ägyptisches Museum und Papyrussammlung, Berlin. Equipment: Nikon D750; Software: Agisoft Metashape, Substance Designer, Blender.",
+        "hasGeneralPurpose": "3D Documentation & Digital Reconstruction",
+        "hasGeneralPurpose#lang": "en",
+        "eventType": "photogrammetry",
+        "eventType#term": "photogrammetry",
+        "eventType#namespace": "AAT",
+        "eventType#lang": "en",
+        "eventType#termUID": "http://vocab.getty.edu/page/aat/300053580",
+        "actors": [
+          {
+            "actor": "Bonn Center for Digital Humanities, Bonn University",
+            "actorUID": "https://d-nb.info/gnd/36150-1",
+            "role": "digitizer"
+          },
+          {
+            "actor": "Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz",
+            "actorUID": "https://lobid.org/organisations/DE-MUS-710014",
+            "role": "documented_by"
+          }
+        ],
+        "temporal": [
+          {
+            "timeSpan.startDate": "2021-01-01",
+            "timeSpan.endDate": "2021-12-31",
+            "displayDate": "2021"
+          }
+        ],
+        "spatial.locationSet.namedLocation": "Berlin, Germany",
+        "spatial.locationSet.namedLocation#lang": "en",
+        "spatial.locationSet.namedLocation#preferred": true,
+        "spatial.locationSet.namedLocation#namespace": "",
+        "spatial.locationSet.namedLocation#term": "Berlin",
+        "spatial.locationSet.namedLocation#termUID": "",
+        "spatial.locationSet.geopoliticalArea": "Germany",
+        "spatial.locationSet.geopoliticalArea#lang": "en",
+        "spatial.locationSet.geopoliticalAreaType": "Federal State",
+        "spatial.locationSet.geopoliticalAreaType#lang": "en",
+        "spatial.locationSet.geopoliticalAreaType#namespace": "",
+        "spatial.locationSet.historicalName": [],
+        "consistsOf": [],
+        "assessments": "",
+        "assessments#term": "",
+        "assessments#namespace": "",
+        "assessments#lang": "",
+        "assessments#termUID": "",
+        "occurredAt": [],
+        "happenedAt": [],
+        "wasPresentAt": [],
+        "hasPart": [],
+        "isPartOf": [],
+        "hasCreated": [
+          "SMB-SPK_DO_AM_3_01"
+        ],
+        "dcRelation": [
+          "http://vocab.getty.edu/page/aat/300266792",
+          "https://creativecommons.org/licenses/by-sa/4.0/"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+    themes: business, corporate;
+};
+@plugin "daisyui/theme" {
+  name: "corporate";
+  default: false;
+  --color-accent: oklch(67.271% 0.167 35.791);
+}
