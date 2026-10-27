@@ -16,14 +16,44 @@
              <table class="table table-xs w-full table-zebra">
                 <thead class="bg-base-200">
                   <tr>
-                    <th>{{ getLabel('recordInformation.id', 'id') }}</th><th>{{ getLabel('appellation.name', 'name') }}</th><th>{{ getLabel('appellation.name#lang', 'name#lang') }}</th><th>{{ getLabel('appellation.name#preferred', 'name#preferred') }}</th>
-                    <th class="w-24">{{ t('actions') }}</th>
+                    <th class="w-12 text-center">{{ currentLocale === 'de' ? 'Status' : 'Status' }}</th>
+                    <th>{{ getLabel('recordInformation.id', 'id') }}</th>
+                    <th>{{ getLabel('appellation.name', 'name') }}</th>
+                    <th>{{ currentLocale === 'de' ? 'Aktivitätstyp' : 'Activity Type' }}</th>
+                    <th class="w-24 text-right">{{ t('actions') }}</th>
                   </tr>
                 </thead>
                 <tbody>
                    <tr v-for="(item, idx) in items" :key="idx">
-                      <td>{{ Array.isArray(item['recordInformation.id']) ? item['recordInformation.id'].length + ' ' + t('items') : item['recordInformation.id'] }}</td><td>{{ Array.isArray(item['appellation.name']) ? item['appellation.name'].length + ' ' + t('items') : item['appellation.name'] }}</td><td>{{ Array.isArray(item['appellation.name#lang']) ? item['appellation.name#lang'].length + ' ' + t('items') : item['appellation.name#lang'] }}</td><td>{{ Array.isArray(item['appellation.name#preferred']) ? item['appellation.name#preferred'].length + ' ' + t('items') : item['appellation.name#preferred'] }}</td>
+                      <!-- Status Indicator Badge -->
+                      <td class="text-center">
+                        <div
+                          class="tooltip tooltip-right"
+                          :data-tip="getActivityValidationStatus(item).details.length > 0
+                            ? (currentLocale === 'de' ? 'Fehlt: ' : 'Missing: ') + getActivityValidationStatus(item).details.join(', ')
+                            : getActivityValidationStatus(item).label"
+                        >
+                          <span
+                            class="inline-flex items-center justify-center size-5 rounded-full text-xs font-bold shadow-2xs"
+                            :class="{
+                              'bg-success/20 text-success': getActivityValidationStatus(item).status === 'valid',
+                              'bg-warning/20 text-warning': getActivityValidationStatus(item).status === 'warning',
+                              'bg-error/20 text-error': getActivityValidationStatus(item).status === 'error'
+                            }"
+                          >
+                            {{ getActivityValidationStatus(item).icon }}
+                          </span>
+                        </div>
+                      </td>
+                      <td class="font-mono font-bold">{{ Array.isArray(item['recordInformation.id']) ? item['recordInformation.id'].join(', ') : (item['recordInformation.id'] || '-') }}</td>
+                      <td class="font-medium">{{ Array.isArray(item['appellation.name']) ? (item['appellation.name'][0]?._value || item['appellation.name'][0] || '-') : (item['appellation.name']?._value || item['appellation.name'] || '-') }}</td>
                       <td>
+                        <span v-if="item['activityType']" class="badge badge-xs badge-neutral">
+                          {{ item['activityType'] }}
+                        </span>
+                        <span v-else class="opacity-40">-</span>
+                      </td>
+                      <td class="text-right">
                          <div class="flex gap-1">
                            <button type="button" class="btn btn-xs btn-ghost text-info" @click.prevent="edit(idx)">{{ t('edit') }}</button>
                            <button type="button" class="btn btn-xs btn-ghost text-error" @click.prevent="remove(idx)">{{ t('del') }}</button>
@@ -40,7 +70,7 @@
 
         <div class="bg-base-200 p-6 rounded-box shadow-sm mb-10">
           <h3 class="text-xl font-bold mb-4 capitalize">{{ isEditing ? t('edit') : t('add') }} {{ getLabel('activity', 'activity') }}</h3>
-          <form @submit.prevent="save">
+          <form @submit.prevent="save" @invalid.capture="handleInvalid">
             <div class="grid grid-cols-1 gap-x-6">
               
         <div class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2">
@@ -49,7 +79,7 @@
             <span class="label-text font-bold text-lg capitalize">{{ getLabel('recordInformation', 'recordInformation') }}</span>
           </label>
           <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('recordInformation', 'The ID, language, creation information and other metadata describing the record. The ID element of this information block holds the ID assigned by the content provider. Content providers are strongly recommended to complete this element.', 'doc')" v-if="getLabel('recordInformation', 'The ID, language, creation information and other metadata describing the record. The ID element of this information block holds the ID assigned by the content provider. Content providers are strongly recommended to complete this element.', 'doc')">
-              <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
+              <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help" :title="getLabel('recordInformation', 'The ID, language, creation information and other metadata describing the record.', 'doc')">
             <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
                         fill="currentColor"
                         stroke-width="2.5"
@@ -80,552 +110,50 @@
           
           </div>
         <div class="form-control w-full mb-4">
-        <div class="flex flex-row items-center">
-          <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('recordInformation.source', 'source') }}</span><span class="text-accent font-black">*</span></label>
-          
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('recordInformation.source', 'Name of the organisation that maintains this record about the activity.', 'doc')" v-if="getLabel('recordInformation.source', 'Name of the organisation that maintains this record about the activity.', 'doc')">
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-              </button>
+          <div class="flex flex-wrap justify-between items-center mb-1 gap-2">
+            <div class="flex flex-row items-center">
+              <label class="label pb-0"><span class="label-text font-bold capitalize">{{ getLabel('recordInformation.source', 'source') }}</span><span class="text-accent font-black">*</span></label>
+              
+              <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('recordInformation.source', 'Name of the organisation that maintains this record about the activity.', 'doc')" v-if="getLabel('recordInformation.source', 'Name of the organisation that maintains this record about the activity.', 'doc')">
+                    <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
+                              fill="currentColor"
+                              stroke-width="2.5"
+                              stroke="currentColor"
+                              class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
+                  </button>
               </div>
-              </div>
-                        <input type="text"     required v-model="form['recordInformation.source']" class="input input-bordered w-full validator " :placeholder="getLabel('recordInformation.source', 'e.g. Stiftung Preußischer Kulturbesitz, Staatliche Museen zu Berlin, Collection of Classical Antiquities', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
-          
+            </div>
+            <button
+              type="button"
+              class="btn btn-xs btn-outline btn-secondary gap-1 font-semibold text-[11px]"
+              @click.prevent="openOrgPicker('source')"
+              :title="currentLocale === 'de' ? 'Organisation aus dem Pool auswählen' : 'Pick organization from pool'"
+            >
+              🏛️ {{ currentLocale === 'de' ? 'Aus Organisations-Pool wählen' : 'From Organization Pool' }}
+            </button>
           </div>
-        <div class="form-control w-full mb-4">
-        <div class="flex flex-row items-center">  
-        <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('recordInformation.country', 'country') }}</span><span class="text-accent font-black">*</span></label>
-
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('recordInformation.country', 'Country in which the head office of the organisation that maintains this record is based.', 'doc')" v-if="getLabel('recordInformation.country', 'Country in which the head office of the organisation that maintains this record is based.', 'doc')">
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-                </button>
-              </div>
-              </div>
-          <select v-model="form['recordInformation.country']" class="select select-bordered w-full">
-            <option disabled value="">{{ currentLocale === 'de' ? getLabel('recordInformation.country', 'country') + ' ' + t('select') : t('select') + ' ' + getLabel('recordInformation.country', 'country') }}</option>
-            <template v-if="currentLocale === 'de'">
-              <option value="AF">Afghanistan</option>
-<option value="EG">Ägypten</option>
-<option value="AX">Åland</option>
-<option value="AL">Albanien</option>
-<option value="DZ">Algerien</option>
-<option value="AS">Amerikanisch-Samoa</option>
-<option value="VI">Amerikanische Jungferninseln</option>
-<option value="AD">Andorra</option>
-<option value="AO">Angola</option>
-<option value="AI">Anguilla</option>
-<option value="AQ">Antarktis (Sonderstatus durch Antarktis-Vertrag)</option>
-<option value="AG">Antigua und Barbuda</option>
-<option value="GQ">Äquatorialguinea</option>
-<option value="AR">Argentinien</option>
-<option value="AM">Armenien</option>
-<option value="AW">Aruba</option>
-<option value="AZ">Aserbaidschan</option>
-<option value="ET">Äthiopien</option>
-<option value="AU">Australien</option>
-<option value="BS">Bahamas</option>
-<option value="BH">Bahrain</option>
-<option value="BD">Bangladesch</option>
-<option value="BB">Barbados</option>
-<option value="BY">Belarus (Weißrussland)</option>
-<option value="BE">Belgien</option>
-<option value="BZ">Belize</option>
-<option value="BJ">Benin</option>
-<option value="BM">Bermuda</option>
-<option value="BT">Bhutan</option>
-<option value="BO">Bolivien</option>
-<option value="BQ">Bonaire, Sint Eustatius und Saba</option>
-<option value="BA">Bosnien und Herzegowina</option>
-<option value="BW">Botswana</option>
-<option value="BV">Bouvetinsel</option>
-<option value="BR">Brasilien</option>
-<option value="VG">Britische Jungferninseln</option>
-<option value="IO">Britisches Territorium im Indischen Ozean</option>
-<option value="BN">Brunei Darussalam</option>
-<option value="BG">Bulgarien</option>
-<option value="BF">Burkina Faso</option>
-<option value="BI">Burundi</option>
-<option value="CL">Chile</option>
-<option value="CN">China, Volksrepublik</option>
-<option value="CK">Cookinseln</option>
-<option value="CR">Costa Rica</option>
-<option value="CI">Cote d'Ivoire (Elfenbeinküste)</option>
-<option value="CW">Curaçao</option>
-<option value="DK">Dänemark</option>
-<option value="DE">Deutschland</option>
-<option value="DM">Dominica</option>
-<option value="DO">Dominikanische Republik</option>
-<option value="DJ">Dschibuti</option>
-<option value="EC">Ecuador</option>
-<option value="SV">El Salvador</option>
-<option value="ER">Eritrea</option>
-<option value="EE">Estland</option>
-<option value="EU">Europäische Union</option>
-<option value="FK">Falklandinseln</option>
-<option value="FO">Färöer</option>
-<option value="FJ">Fidschi</option>
-<option value="FI">Finnland</option>
-<option value="FR">Frankreich</option>
-<option value="GF">Französisch-Guayana</option>
-<option value="PF">Französisch-Polynesien</option>
-<option value="TF">Französische Süd- und Antarktisgebiete</option>
-<option value="GA">Gabun</option>
-<option value="GM">Gambia</option>
-<option value="GE">Georgien</option>
-<option value="GH">Ghana</option>
-<option value="GI">Gibraltar</option>
-<option value="GD">Grenada</option>
-<option value="GR">Griechenland</option>
-<option value="GL">Grönland</option>
-<option value="GP">Guadeloupe</option>
-<option value="GU">Guam</option>
-<option value="GT">Guatemala</option>
-<option value="GG">Guernsey (Kanalinsel)</option>
-<option value="GN">Guinea</option>
-<option value="GW">Guinea-Bissau</option>
-<option value="GY">Guyana</option>
-<option value="HT">Haiti</option>
-<option value="HM">Heard und McDonaldinseln</option>
-<option value="HN">Honduras</option>
-<option value="HK">Hongkong</option>
-<option value="IN">Indien</option>
-<option value="ID">Indonesien</option>
-<option value="IM">Insel Man</option>
-<option value="IQ">Irak</option>
-<option value="IR">Iran, Islamische Republik</option>
-<option value="IE">Irland</option>
-<option value="IS">Island</option>
-<option value="IL">Israel</option>
-<option value="IT">Italien</option>
-<option value="JM">Jamaika</option>
-<option value="JP">Japan</option>
-<option value="YE">Jemen</option>
-<option value="JE">Jersey (Kanalinsel)</option>
-<option value="JO">Jordanien</option>
-<option value="KY">Kaimaninseln</option>
-<option value="KH">Kambodscha</option>
-<option value="CM">Kamerun</option>
-<option value="CA">Kanada</option>
-<option value="CV">Kap Verde</option>
-<option value="KZ">Kasachstan</option>
-<option value="QA">Katar</option>
-<option value="KE">Kenia</option>
-<option value="KG">Kirgisistan</option>
-<option value="KI">Kiribati</option>
-<option value="CC">Kokosinseln</option>
-<option value="CO">Kolumbien</option>
-<option value="KM">Komoren</option>
-<option value="CD">Kongo, Demokratische Republik (ehem. Zaire)</option>
-<option value="KP">Korea, Demokratische Volksrepublik (Nordkorea)</option>
-<option value="KR">Korea, Republik (Südkorea)</option>
-<option value="XK">Kosovo</option>
-<option value="HR">Kroatien</option>
-<option value="CU">Kuba</option>
-<option value="KW">Kuwait</option>
-<option value="LA">Laos, Demokratische Volksrepublik</option>
-<option value="LS">Lesotho</option>
-<option value="LV">Lettland</option>
-<option value="LB">Libanon</option>
-<option value="LR">Liberia</option>
-<option value="LY">Libysch-Arabische Dschamahirija (Libyen)</option>
-<option value="LI">Liechtenstein</option>
-<option value="LT">Litauen</option>
-<option value="LU">Luxemburg</option>
-<option value="MO">Macao</option>
-<option value="MG">Madagaskar</option>
-<option value="MW">Malawi</option>
-<option value="MY">Malaysia</option>
-<option value="MV">Malediven</option>
-<option value="ML">Mali</option>
-<option value="MT">Malta</option>
-<option value="MA">Marokko</option>
-<option value="MH">Marshallinseln</option>
-<option value="MQ">Martinique</option>
-<option value="MR">Mauretanien</option>
-<option value="MU">Mauritius</option>
-<option value="YT">Mayotte</option>
-<option value="MK">Mazedonien, ehem. Jugoslawische Republik [2b]</option>
-<option value="MX">Mexiko</option>
-<option value="FM">Mikronesien</option>
-<option value="MD">Moldawien (Republik Moldau)</option>
-<option value="MC">Monaco</option>
-<option value="MN">Mongolei</option>
-<option value="ME">Montenegro</option>
-<option value="MS">Montserrat</option>
-<option value="MZ">Mosambik</option>
-<option value="MM">Myanmar (Burma)</option>
-<option value="NA">Namibia</option>
-<option value="NR">Nauru</option>
-<option value="NP">Nepal</option>
-<option value="NC">Neukaledonien</option>
-<option value="NZ">Neuseeland</option>
-<option value="NI">Nicaragua</option>
-<option value="NL">Niederlande</option>
-<option value="AN">Niederländische Antillen</option>
-<option value="NE">Niger</option>
-<option value="NG">Nigeria</option>
-<option value="NU">Niue</option>
-<option value="MP">Nördliche Marianen</option>
-<option value="NF">Norfolkinsel</option>
-<option value="NO">Norwegen</option>
-<option value="OM">Oman</option>
-<option value="AT">Österreich</option>
-<option value="TL">Osttimor (Timor-Leste)</option>
-<option value="PK">Pakistan</option>
-<option value="PS">Palästinensische Autonomiegebiete</option>
-<option value="PW">Palau</option>
-<option value="PA">Panama</option>
-<option value="PG">Papua-Neuguinea</option>
-<option value="PY">Paraguay</option>
-<option value="PE">Peru</option>
-<option value="PH">Philippinen</option>
-<option value="PN">Pitcairninseln</option>
-<option value="PL">Polen</option>
-<option value="PT">Portugal</option>
-<option value="PR">Puerto Rico</option>
-<option value="TW">Republik China (Taiwan)</option>
-<option value="CG">Republik Kongo</option>
-<option value="RE">Réunion</option>
-<option value="RW">Ruanda</option>
-<option value="RO">Rumänien</option>
-<option value="RU">Russische Föderation</option>
-<option value="BL">Saint-Barthélemy</option>
-<option value="MF">Saint-Martin (franz. Teil)</option>
-<option value="SB">Salomonen</option>
-<option value="ZM">Sambia</option>
-<option value="WS">Samoa</option>
-<option value="SM">San Marino</option>
-<option value="ST">São Tomé und Príncipe</option>
-<option value="SA">Saudi-Arabien</option>
-<option value="SE">Schweden</option>
-<option value="CH">Schweiz (Confoederatio Helvetica)</option>
-<option value="SN">Senegal</option>
-<option value="RS">Serbien</option>
-<option value="SC">Seychellen</option>
-<option value="SL">Sierra Leone</option>
-<option value="ZW">Simbabwe</option>
-<option value="SG">Singapur</option>
-<option value="SX">Sint Maarten (niederl. Teil)</option>
-<option value="SK">Slowakei</option>
-<option value="SI">Slowenien</option>
-<option value="SO">Somalia</option>
-<option value="ES">Spanien</option>
-<option value="LK">Sri Lanka</option>
-<option value="SH">St. Helena</option>
-<option value="KN">St. Kitts und Nevis</option>
-<option value="LC">St. Lucia</option>
-<option value="PM">St. Pierre und Miquelon</option>
-<option value="VC">St. Vincent und die Grenadinen</option>
-<option value="ZA">Südafrika</option>
-<option value="SD">Sudan</option>
-<option value="GS">Südgeorgien und die Südlichen Sandwichinseln</option>
-<option value="SS">Südsudan</option>
-<option value="SR">Suriname</option>
-<option value="SJ">Svalbard und Jan Mayen</option>
-<option value="SZ">Swasiland</option>
-<option value="SY">Syrien, Arabische Republik</option>
-<option value="TJ">Tadschikistan</option>
-<option value="TZ">Tansania, Vereinigte Republik</option>
-<option value="TH">Thailand</option>
-<option value="TG">Togo</option>
-<option value="TK">Tokelau</option>
-<option value="TO">Tonga</option>
-<option value="TT">Trinidad und Tobago</option>
-<option value="TD">Tschad</option>
-<option value="CZ">Tschechische Republik</option>
-<option value="TN">Tunesien</option>
-<option value="TR">Türkei</option>
-<option value="TM">Turkmenistan</option>
-<option value="TC">Turks- und Caicosinseln</option>
-<option value="TV">Tuvalu</option>
-<option value="UG">Uganda</option>
-<option value="UA">Ukraine</option>
-<option value="HU">Ungarn</option>
-<option value="UM">United States Minor Outlying Islands</option>
-<option value="UY">Uruguay</option>
-<option value="UZ">Usbekistan</option>
-<option value="VU">Vanuatu</option>
-<option value="VA">Vatikanstadt</option>
-<option value="VE">Venezuela</option>
-<option value="AE">Vereinigte Arabische Emirate</option>
-<option value="US">Vereinigte Staaten von Amerika</option>
-<option value="GB">Vereinigtes Königreich Großbritannien und Nordirland</option>
-<option value="VN">Vietnam</option>
-<option value="WF">Wallis und Futuna</option>
-<option value="CX">Weihnachtsinsel</option>
-<option value="XW">Weltweit</option>
-<option value="EH">Westsahara</option>
-<option value="CF">Zentralafrikanische Republik</option>
-<option value="CY">Zypern</option>
-            </template>
-            <template v-else>
-              <option value="AF">Afghanistan</option>
-<option value="AX">Åland Islands</option>
-<option value="AL">Albania</option>
-<option value="DZ">Algeria</option>
-<option value="AS">American Samoa</option>
-<option value="AD">Andorra</option>
-<option value="AO">Angola</option>
-<option value="AI">Anguilla</option>
-<option value="AQ">Antarctica</option>
-<option value="AG">Antigua and Barbuda</option>
-<option value="AR">Argentina</option>
-<option value="AM">Armenia</option>
-<option value="AW">Aruba</option>
-<option value="AU">Australia</option>
-<option value="AT">Austria</option>
-<option value="AZ">Azerbaijan</option>
-<option value="BS">Bahamas</option>
-<option value="BH">Bahrain</option>
-<option value="BD">Bangladesh</option>
-<option value="BB">Barbados</option>
-<option value="BY">Belarus</option>
-<option value="BE">Belgium</option>
-<option value="BZ">Belize</option>
-<option value="BJ">Benin</option>
-<option value="BM">Bermuda</option>
-<option value="BT">Bhutan</option>
-<option value="BO">Bolivia, Plurinational State of</option>
-<option value="BQ">Bonaire, Sint Eustatius and Saba</option>
-<option value="BA">Bosnia and Herzegovina</option>
-<option value="BW">Botswana</option>
-<option value="BV">Bouvet Island</option>
-<option value="BR">Brazil</option>
-<option value="IO">British Indian Ocean Territory</option>
-<option value="BN">Brunei Darussalam</option>
-<option value="BG">Bulgaria</option>
-<option value="BF">Burkina Faso</option>
-<option value="BI">Burundi</option>
-<option value="KH">Cambodia</option>
-<option value="CM">Cameroon</option>
-<option value="CA">Canada</option>
-<option value="CV">Cape Verde</option>
-<option value="KY">Cayman Islands</option>
-<option value="CF">Central African Republic</option>
-<option value="TD">Chad</option>
-<option value="CL">Chile</option>
-<option value="CN">China</option>
-<option value="CX">Christmas Island</option>
-<option value="CC">Cocos (Keeling) Islands</option>
-<option value="CO">Colombia</option>
-<option value="KM">Comoros</option>
-<option value="CG">Congo</option>
-<option value="CD">Congo, the Democratic Republic of the</option>
-<option value="CK">Cook Islands</option>
-<option value="CR">Costa Rica</option>
-<option value="CI">Côte d'Ivoire</option>
-<option value="HR">Croatia</option>
-<option value="CU">Cuba</option>
-<option value="CW">Curacao</option>
-<option value="CY">Cyprus</option>
-<option value="CZ">Czech Republic</option>
-<option value="DK">Denmark</option>
-<option value="DJ">Djibouti</option>
-<option value="DM">Dominica</option>
-<option value="DO">Dominican Republic</option>
-<option value="EC">Ecuador</option>
-<option value="EG">Egypt</option>
-<option value="SV">El Salvador</option>
-<option value="GQ">Equatorial Guinea</option>
-<option value="ER">Eritrea</option>
-<option value="EE">Estonia</option>
-<option value="ET">Ethiopia</option>
-<option value="EU">European Union</option>
-<option value="FK">Falkland Islands (Malvinas)</option>
-<option value="FO">Faroe Islands</option>
-<option value="FJ">Fiji</option>
-<option value="FI">Finland</option>
-<option value="FR">France</option>
-<option value="GF">French Guiana</option>
-<option value="PF">French Polynesia</option>
-<option value="TF">French Southern Territories</option>
-<option value="GA">Gabon</option>
-<option value="GM">Gambia</option>
-<option value="GE">Georgia</option>
-<option value="DE">Germany</option>
-<option value="GH">Ghana</option>
-<option value="GI">Gibraltar</option>
-<option value="GR">Greece</option>
-<option value="GL">Greenland</option>
-<option value="GD">Grenada</option>
-<option value="GP">Guadeloupe</option>
-<option value="GU">Guam</option>
-<option value="GT">Guatemala</option>
-<option value="GG">Guernsey</option>
-<option value="GN">Guinea</option>
-<option value="GW">Guinea-Bissau</option>
-<option value="GY">Guyana</option>
-<option value="HT">Haiti</option>
-<option value="HM">Heard Island and McDonald Islands</option>
-<option value="VA">Holy See (Vatican City State)</option>
-<option value="HN">Honduras</option>
-<option value="HK">Hong Kong</option>
-<option value="HU">Hungary</option>
-<option value="IS">Iceland</option>
-<option value="IN">India</option>
-<option value="ID">Indonesia</option>
-<option value="IR">Iran, Islamic Republic of</option>
-<option value="IQ">Iraq</option>
-<option value="IE">Ireland</option>
-<option value="IM">Isle of Man</option>
-<option value="IL">Israel</option>
-<option value="IT">Italy</option>
-<option value="JM">Jamaica</option>
-<option value="JP">Japan</option>
-<option value="JE">Jersey</option>
-<option value="JO">Jordan</option>
-<option value="KZ">Kazakhstan</option>
-<option value="KE">Kenya</option>
-<option value="KI">Kiribati</option>
-<option value="KP">Korea, Democratic People's Republic of</option>
-<option value="KR">Korea, Republic of</option>
-<option value="XK">Kosovo</option>
-<option value="KW">Kuwait</option>
-<option value="KG">Kyrgyzstan</option>
-<option value="LA">Lao People's Democratic Republic</option>
-<option value="LV">Latvia</option>
-<option value="LB">Lebanon</option>
-<option value="LS">Lesotho</option>
-<option value="LR">Liberia</option>
-<option value="LY">Libyan Arab Jamahiriya</option>
-<option value="LI">Liechtenstein</option>
-<option value="LT">Lithuania</option>
-<option value="LU">Luxembourg</option>
-<option value="MO">Macao</option>
-<option value="MK">Macedonia, the Former Yugoslav Republic of</option>
-<option value="MG">Madagascar</option>
-<option value="MW">Malawi</option>
-<option value="MY">Malaysia</option>
-<option value="MV">Maldives</option>
-<option value="ML">Mali</option>
-<option value="MT">Malta</option>
-<option value="MH">Marshall Islands</option>
-<option value="MQ">Martinique</option>
-<option value="MR">Mauritania</option>
-<option value="MU">Mauritius</option>
-<option value="YT">Mayotte</option>
-<option value="MX">Mexico</option>
-<option value="FM">Micronesia, Federated States of</option>
-<option value="MD">Moldova, Republic of</option>
-<option value="MC">Monaco</option>
-<option value="MN">Mongolia</option>
-<option value="ME">Montenegro</option>
-<option value="MS">Montserrat</option>
-<option value="MA">Morocco</option>
-<option value="MZ">Mozambique</option>
-<option value="MM">Myanmar</option>
-<option value="NA">Namibia</option>
-<option value="NR">Nauru</option>
-<option value="NP">Nepal</option>
-<option value="NL">Netherlands</option>
-<option value="AN">Netherlands Antilles</option>
-<option value="NC">New Caledonia</option>
-<option value="NZ">New Zealand</option>
-<option value="NI">Nicaragua</option>
-<option value="NE">Niger</option>
-<option value="NG">Nigeria</option>
-<option value="NU">Niue</option>
-<option value="NF">Norfolk Island</option>
-<option value="MP">Northern Mariana Islands</option>
-<option value="NO">Norway</option>
-<option value="OM">Oman</option>
-<option value="PK">Pakistan</option>
-<option value="PW">Palau</option>
-<option value="PS">Palestinian Territory, Occupied</option>
-<option value="PA">Panama</option>
-<option value="PG">Papua New Guinea</option>
-<option value="PY">Paraguay</option>
-<option value="PE">Peru</option>
-<option value="PH">Philippines</option>
-<option value="PN">Pitcairn</option>
-<option value="PL">Poland</option>
-<option value="PT">Portugal</option>
-<option value="PR">Puerto Rico</option>
-<option value="QA">Qatar</option>
-<option value="RE">Reunion</option>
-<option value="RO">Romania</option>
-<option value="RU">Russian Federation</option>
-<option value="RW">Rwanda</option>
-<option value="BL">Saint Barthélemy</option>
-<option value="SH">Saint Helena</option>
-<option value="KN">Saint Kitts and Nevis</option>
-<option value="LC">Saint Lucia</option>
-<option value="MF">Saint Martin</option>
-<option value="PM">Saint Pierre and Miquelon</option>
-<option value="VC">Saint Vincent and the Grenadines</option>
-<option value="WS">Samoa</option>
-<option value="SM">San Marino</option>
-<option value="ST">Sao Tome and Principe</option>
-<option value="SA">Saudi Arabia</option>
-<option value="SN">Senegal</option>
-<option value="RS">Serbia</option>
-<option value="SC">Seychelles</option>
-<option value="SL">Sierra Leone</option>
-<option value="SG">Singapore</option>
-<option value="SX">Sint Maarten (Dutch Part)</option>
-<option value="SK">Slovakia</option>
-<option value="SI">Slovenia</option>
-<option value="SB">Solomon Islands</option>
-<option value="SO">Somalia</option>
-<option value="ZA">South Africa</option>
-<option value="GS">South Georgia and the South Sandwich Islands</option>
-<option value="SS">South Sudan</option>
-<option value="ES">Spain</option>
-<option value="LK">Sri Lanka</option>
-<option value="SD">Sudan</option>
-<option value="SR">Suriname</option>
-<option value="SJ">Svalbard and Jan Mayen</option>
-<option value="SZ">Swaziland</option>
-<option value="SE">Sweden</option>
-<option value="CH">Switzerland</option>
-<option value="SY">Syrian Arab Republic</option>
-<option value="TW">Taiwan, Province of China</option>
-<option value="TJ">Tajikistan</option>
-<option value="TZ">Tanzania, United Republic of</option>
-<option value="TH">Thailand</option>
-<option value="TL">Timor-Leste</option>
-<option value="TG">Togo</option>
-<option value="TK">Tokelau</option>
-<option value="TO">Tonga</option>
-<option value="TT">Trinidad and Tobago</option>
-<option value="TN">Tunisia</option>
-<option value="TR">Turkey</option>
-<option value="TM">Turkmenistan</option>
-<option value="TC">Turks and Caicos Islands</option>
-<option value="TV">Tuvalu</option>
-<option value="UG">Uganda</option>
-<option value="UA">Ukraine</option>
-<option value="AE">United Arab Emirates</option>
-<option value="GB">United Kingdom</option>
-<option value="US">United States</option>
-<option value="UM">United States Minor Outlying Islands</option>
-<option value="UY">Uruguay</option>
-<option value="UZ">Uzbekistan</option>
-<option value="VU">Vanuatu</option>
-<option value="VE">Venezuela, Bolivarian Republic of</option>
-<option value="VN">Viet Nam</option>
-<option value="VG">Virgin Islands, British</option>
-<option value="VI">Virgin Islands, U.S.</option>
-<option value="WF">Wallis and Futuna</option>
-<option value="EH">Western Sahara</option>
-<option value="XW">Worldwide</option>
-<option value="YE">Yemen</option>
-<option value="ZM">Zambia</option>
-<option value="ZW">Zimbabwe</option>
-            </template>
-          </select>
-          
+          <input type="text" required v-model="form['recordInformation.source']" class="input input-bordered w-full validator " :placeholder="getLabel('recordInformation.source', 'e.g. Stiftung Preußischer Kulturbesitz, Staatliche Museen zu Berlin, Collection of Classical Antiquities', 'plac')" />
+          <div class="validator-hint">{{t('validationHint')}}</div>        
         </div>
+          <!-- Recently Used Organizations Bar -->
+          <div v-if="recentOrganizations && recentOrganizations.length > 0" class="mt-2 p-2 bg-base-200/50 rounded-lg border border-base-300 flex items-center gap-1.5 flex-wrap">
+            <span class="text-[11px] font-bold text-base-content/60 flex items-center gap-1 mr-1">
+              🕒 {{ currentLocale === 'de' ? 'Zuletzt verwendet:' : 'Recently used:' }}
+            </span>
+            <button
+              v-for="rOrg in recentOrganizations.slice(0, 5)"
+              :key="'act-source-rec-' + rOrg.name"
+              type="button"
+              class="btn btn-xs gap-1"
+              :class="form['recordInformation.source'] === rOrg.name ? 'btn-primary font-bold shadow-xs' : 'btn-outline border-base-300'"
+              @click.prevent="form['recordInformation.source'] = rOrg.name"
+            >
+              <span>🏛️</span>
+              <span class="truncate max-w-[180px]">{{ rOrg.name }}</span>
+              <span v-if="rOrg.country" class="badge badge-xs badge-ghost font-mono uppercase text-[9px]">{{ rOrg.country }}</span>
+            </button>
+          </div>
         <div class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2">
         <div class=" items-center flex flex-row">
           <label class="label mb-2 pb-0">
@@ -662,159 +190,7 @@
               <div class="validator-hint">{{t('validationHint')}}</div>        
           
           </div>
-        <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
-          <div class="flex justify-between items-center mb-4 pb-2 border-b border-base-200">
-             <div class="flex flex-row items-center">
-               <h4 class="font-bold text-lg capitalize text-base-content/60">{{ getLabel('recordInformation.creation.contacts', 'contacts') }}</h4>
-               <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('recordInformation.creation.contacts', '', 'doc')" v-if="getLabel('recordInformation.creation.contacts', '', 'doc')">
-                    <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                              fill="currentColor"
-                              stroke-width="2.5"
-                              stroke="currentColor"
-                              class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-                  </button>
-                  </div>
-             </div>
-             <button type="button" class="btn btn-sm btn-primary" @click.prevent="openDrawer('recordInformation.creation.contacts')">{{ currentLocale === 'de' ? getLabel('recordInformation.creation.contacts', 'recordInformation.creation.contacts') + ' ' + t('add') : t('add') + ' ' + getLabel('recordInformation.creation.contacts', 'recordInformation.creation.contacts') }}</button>
           </div>
-
-          <!-- Reusable Contacts Quick-Bar -->
-          <div class="mb-3 p-2.5 bg-base-200/50 rounded-lg border border-base-300 flex flex-wrap items-center gap-1.5" v-if="savedContacts && savedContacts.length > 0">
-            <span class="text-[11px] font-bold uppercase tracking-wider opacity-60 flex items-center gap-1 mr-1">
-              <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              {{ currentLocale === 'de' ? 'Wiederverwenden (1-Klick):' : 'Reuse (1-Click):' }}
-            </span>
-            <button
-              v-for="(sc, scIdx) in savedContacts"
-              :key="scIdx"
-              type="button"
-              class="btn btn-xs normal-case border-base-300 hover:border-primary hover:bg-primary/10 gap-1 font-normal"
-              @click.prevent="quickAddContact(sc)"
-              :title="sc.organization ? `${sc.name} (${sc.organization})` : sc.name"
-            >
-              <span class="text-primary font-bold">+</span>
-              <span class="font-medium">{{ sc.name }}</span>
-              <span v-if="sc.role" class="badge badge-ghost badge-xs text-[10px]">{{ sc.role }}</span>
-            </button>
-          </div>
-          
-          <div class="overflow-x-auto">
-             <table class="table table-xs w-full table-zebra">
-                <thead class="bg-base-200"><tr><th>{{ getLabel('recordInformation.creation.contacts.name', 'name') }}</th><th class="w-24">{{ t('actions') }}</th></tr></thead>
-                <tbody>
-                   <tr v-for="(subItem, subIdx) in form['recordInformation.creation.contacts']" :key="subIdx">
-                      <td>{{ subItem['name'] }}</td>
-                      <td>
-                          <div class="flex gap-1">
-                            <button type="button" class="btn btn-xs btn-ghost text-info" @click.prevent="openDrawer('recordInformation.creation.contacts', subIdx)">{{ t('edit') }}</button>
-                            <button type="button" class="btn btn-xs btn-ghost text-error" @click.prevent="removeDrawerItem('recordInformation.creation.contacts', subIdx)">{{ t('del') }}</button>
-                          </div>
-                      </td>
-                   </tr>
-                   <tr v-if="!form['recordInformation.creation.contacts'] || form['recordInformation.creation.contacts'].length === 0">
-                      <td colspan="10" class="text-center text-base-content/40 py-4 italic">{{ t('noItems') }}</td>
-                   </tr>
-                </tbody>
-             </table>
-          </div>
-        </div>
-          </div>
-          
-        </div>
-    <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
-       <div class="flex flex-row items-center">
-               <h4 class="font-bold text-lg capitalize text-base-content/60">{{ getLabel('recordInformation.language', 'language') }}<span class="text-warning font-black">~</span></h4>
-               <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('recordInformation.language', 'Default language of the metadata in this record. ISO 639-1 two-letter code.', 'doc')" v-if="getLabel('recordInformation.language', 'Default language of the metadata in this record. ISO 639-1 two-letter code.', 'doc')">
-  <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-<svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-            fill="currentColor"
-            stroke-width="2.5"
-            stroke="currentColor"
-            class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-</button>
-</div>
-             </div>
-      
-      <div class="flex flex-wrap gap-2 p-2">
-        <div v-for="lang in [
-          {code: 'de', svg: '<svg class=&quot;h-4 w-6 rounded-xs border border-base-300&quot; viewBox=&quot;0 0 5 3&quot;><rect width=&quot;5&quot; height=&quot;3&quot; y=&quot;0&quot; fill=&quot;#000&quot;/><rect width=&quot;5&quot; height=&quot;2&quot; y=&quot;1&quot; fill=&quot;#D00&quot;/><rect width=&quot;5&quot; height=&quot;1&quot; y=&quot;2&quot; fill=&quot;#FFC800&quot;/></svg>'},
-          {code: 'en', svg: '<svg class=&quot;h-4 w-6 rounded-xs border border-base-300&quot; viewBox=&quot;0 0 50 30&quot; ><rect width=&quot;50&quot; height=&quot;30&quot; fill=&quot;#012169&quot;/><path d=&quot;M0 0 L50 30 M50 0 L0 30&quot; stroke=&quot;#fff&quot; stroke-width=&quot;6&quot;/><path d=&quot;M0 0 L50 30&quot; stroke=&quot;#C8102E&quot; stroke-width=&quot;2&quot;/><path d=&quot;M50 0 L0 30&quot; stroke=&quot;#C8102E&quot; stroke-width=&quot;2&quot;/><path d=&quot;M25 0 V30 M0 15 H50&quot; stroke=&quot;#fff&quot; stroke-width=&quot;10&quot;/><path d=&quot;M25 0 V30 M0 15 H50&quot; stroke=&quot;#C8102E&quot; stroke-width=&quot;6&quot;/></svg>'},
-          {code: 'fr', svg: '<svg class=&quot;h-4 w-6 rounded-xs border border-base-300&quot; viewBox=&quot;0 0 3 2&quot;><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;0&quot; fill=&quot;#002395&quot;/><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;1&quot; fill=&quot;#FFF&quot;/><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;2&quot; fill=&quot;#ED2939&quot;/></svg>'},
-          {code: 'it', svg: '<svg class=&quot;h-4 w-6 rounded-xs border border-base-300&quot; viewBox=&quot;0 0 3 2&quot;><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;0&quot; fill=&quot;#009246&quot;/><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;1&quot; fill=&quot;#FFF&quot;/><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;2&quot; fill=&quot;#CE2B37&quot;/></svg>'},
-          {code: 'es', svg: '<svg class=&quot;h-4 w-6 rounded-xs border border-base-300&quot; viewBox=&quot;0 0 3 2&quot;><rect width=&quot;3&quot; height=&quot;2&quot; y=&quot;0&quot; fill=&quot;#C1272D&quot;/><rect width=&quot;3&quot; height=&quot;1&quot; y=&quot;0.5&quot; fill=&quot;#FCE300&quot;/></svg>'}
-        ]" 
-             :key="lang.code" 
-             @click="toggleLang('recordInformation.language', lang.code, false)" 
-             class="group relative flex h-9 px-3 cursor-pointer items-center justify-center gap-1.5 rounded-lg border-2 bg-base-200 shadow-xs transition-all hover:bg-base-300/60"
-             :class="[
-                 (form['recordInformation.language'] || []).includes(lang.code)
-                     ? 'border-accent bg-accent/10 font-bold'
-                     : 'border-transparent hover:border-base-300'
-             ]">
-          <span class="select-none flex items-center" v-html="lang.svg"></span>
-          <span class="text-xs uppercase tracking-wider text-base-content/80">{{ lang.code }}</span>
-
-          <button type="button" @click.stop="setPreferredLang('recordInformation.language', lang.code, false)"
-              class="btn btn-circle btn-ghost btn-xs ml-1" 
-              :class="[
-                  preferredLanguages['recordInformation.language'] === lang.code
-                      ? 'text-warning opacity-100'
-                      : 'opacity-0 group-hover:opacity-60 hover:text-warning'
-              ]" 
-              :title="preferredLanguages['recordInformation.language'] === lang.code ? 'Preferred Language' : 'Set as preferred'">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5"
-                  :fill="preferredLanguages['recordInformation.language'] === lang.code ? 'currentColor' : 'none'" viewBox="0 0 24 24"
-                  stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-              </svg>
-          </button>
-        </div>
-      </div>
-      
-      <div class="mt-2 text-xs text-base-content/60">
-        <p>{{ t('languageTip') }}</p>
-      </div>
-      
-    </div>
-        <div class="form-control w-full mb-4">
-        <div class="flex flex-row items-center">  
-        <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('recordInformation.metadataRights', 'metadataRights') }}</span><span class="text-accent font-black">*</span></label>
-
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('recordInformation.metadataRights', 'Licence for the use of these metadata about the activity.', 'doc')" v-if="getLabel('recordInformation.metadataRights', 'Licence for the use of these metadata about the activity.', 'doc')">
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-                </button>
-              </div>
-              </div>
-          <select v-model="form['recordInformation.metadataRights']" class="select select-bordered w-full">
-            <option disabled value="">{{ currentLocale === 'de' ? getLabel('recordInformation.metadataRights', 'metadataRights') + ' ' + t('select') : t('select') + ' ' + getLabel('recordInformation.metadataRights', 'metadataRights') }}</option>
-            <template v-if="currentLocale === 'de'">
-              <option value="https://creativecommons.org/licenses/by/4.0/deed.de">Creative Commons - Attribution (BY)</option>
-<option value="https://creativecommons.org/licenses/by-nd/4.0/deed.de">Creative Commons - Attribution, No Derivatives (BY-ND)</option>
-<option value="https://creativecommons.org/licenses/by-nc/4.0/deed.de">Creative Commons - Attribution, Non-Commercial (BY-NC)</option>
-<option value="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.de">Creative Commons - Attribution, Non-Commercial, No Derivatives (BY-NC-ND)</option>
-<option value="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de">Creative Commons - Attribution, Non-Commercial, ShareAlike (BY-NC-SA)</option>
-<option value="https://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons - Attribution, ShareAlike (BY-SA)</option>
-<option value="https://creativecommons.org/publicdomain/zero/1.0/deed.de">The Creative Commons CC0 1.0 Universal Public Domain Dedication (CC0)</option>
-            </template>
-            <template v-else>
-              <option value="https://creativecommons.org/licenses/by/4.0/deed.en">Creative Commons - Attribution (BY)</option>
-<option value="https://creativecommons.org/licenses/by-nd/4.0/deed.en">Creative Commons - Attribution, No Derivatives (BY-ND)</option>
-<option value="https://creativecommons.org/licenses/by-nc/4.0/deed.en">Creative Commons - Attribution, Non-Commercial (BY-NC)</option>
-<option value="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.en">Creative Commons - Attribution, Non-Commercial, No Derivatives (BY-NC-ND)</option>
-<option value="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Creative Commons - Attribution, Non-Commercial, ShareAlike (BY-NC-SA)</option>
-<option value="https://creativecommons.org/licenses/by-sa/4.0/deed.en">Creative Commons - Attribution, ShareAlike (BY-SA)</option>
-<option value="https://creativecommons.org/publicdomain/zero/1.0/deed.en">The Creative Commons CC0 1.0 Universal Public Domain Dedication (CC0)</option>
-            </template>
-          </select>
           
         </div>
           </div>
@@ -826,7 +202,7 @@
             <span class="label-text font-bold text-lg capitalize">{{ getLabel('appellation', 'appellation') }}</span>
           </label>
           <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('appellation', 'This is the name of the event.. Content providers are strongly recommended to complete this element.', 'doc')" v-if="getLabel('appellation', 'This is the name of the event.. Content providers are strongly recommended to complete this element.', 'doc')">
-              <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
+              <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help" :title="getLabel('appellation', 'Name and ID of this activity / event.', 'doc')">
             <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
                         fill="currentColor"
                         stroke-width="2.5"
@@ -948,6 +324,14 @@
               </div>
               </div>
           <textarea v-model="form['description']" class="textarea textarea-bordered w-full h-24" :placeholder="getLabel('description', 'e.g. This pilot project focuses on the 3D acquisition and asset documentation of 18 Attic funerary monuments from the Antikensammlung, Berlin. Conducted in 2025 as a collaboration between the Staatliche Museen zu Berlin and the Bonn Center for Digital Humanities ...', 'plac')"></textarea>
+
+        <!-- 3D Paradata Assistant for Activity (Hole filling, limitations, shaders, London Charter) -->
+        <div class="col-span-full mt-3">
+          <ActivityParadata
+            v-model:description="form['description']"
+            :current-locale="currentLocale"
+          />
+        </div>
           
         </div>
         <div class="form-control w-full mb-4">
@@ -986,7 +370,7 @@
           
           </div>
         <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
-          <div class="flex justify-between items-center mb-4 pb-2 border-b border-base-200">
+          <div class="flex flex-wrap justify-between items-center mb-4 pb-2 border-b border-base-200 gap-2">
              <div class="flex flex-row items-center">
                <h4 class="font-bold text-lg capitalize text-base-content/60">{{ getLabel('actors', 'actors') }}</h4>
                <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('actors', 'The people or organisations involved in this event, may be repeated.', 'doc')" v-if="getLabel('actors', 'The people or organisations involved in this event, may be repeated.', 'doc')">
@@ -999,14 +383,23 @@
                   </button>
                   </div>
              </div>
-             <div class="flex items-center gap-2">
-               <button type="button" class="btn btn-sm btn-secondary gap-1" @click.prevent="openPersonPicker('actors')">
+             <div class="flex flex-wrap items-center justify-end gap-2">
+               <button
+                 v-if="form['actors'] && form['actors'].length > 0"
+                 type="button"
+                 class="btn btn-sm btn-ghost text-error hover:bg-error/10 gap-1 border border-error/30"
+                 @click.prevent="clearFormActors"
+                 :title="currentLocale === 'de' ? 'Entfernt alle Akteure aus diesem Datensatz' : 'Clears all actors from this record'"
+               >
+                 🗑️ {{ currentLocale === 'de' ? 'Alle leeren' : 'Clear All' }}
+               </button>
+               <button type="button" class="btn btn-sm btn-outline btn-accent gap-1" @click.prevent="openOrgPicker('actors')" :title="currentLocale === 'de' ? 'Organisation aus dem Pool wählen' : 'Select organization from pool'">🏛️ {{ currentLocale === 'de' ? 'Aus Organisations-Pool' : 'From Organizations' }}</button>
+                <button type="button" class="btn btn-sm btn-secondary gap-1" @click.prevent="openPersonPicker('actors')">
                  <svg xmlns="http://www.w3.org/2000/svg" class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                  </svg>
                  {{ currentLocale === 'de' ? '📋 Aus Personen-Liste wählen (Multiauswahl)' : '📋 Select from Persons (Multi)' }}
                </button>
-               <button type="button" class="btn btn-sm btn-primary" @click.prevent="openDrawer('actors')">{{ currentLocale === 'de' ? getLabel('actors', 'actors') + ' ' + t('add') : t('add') + ' ' + getLabel('actors', 'actors') }}</button>
              </div>
           </div>
 
@@ -1089,525 +482,126 @@
              </table>
           </div>
         </div>
-        <div class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2">
-        <div class=" items-center flex flex-row">
-          <label class="label mb-2 pb-0">
-            <span class="label-text font-bold text-lg capitalize">{{ getLabel('spatial', 'spatial') }}</span>
-          </label>
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('spatial', 'The location or area covered by the event.', 'doc')" v-if="getLabel('spatial', 'The location or area covered by the event.', 'doc')">
-              <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-            <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                        fill="currentColor"
-                        stroke-width="2.5"
-                        stroke="currentColor"
-                        class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-            </button>
-            </div>
-            </div>
-              <!--       <div class="text-sm text-base-content/60 mb-4 px-1">{{ getLabel('spatial', 'The location or area covered by the event.', 'doc') }}</div> -->
-          <div class="grid grid-cols-1 gap-x-6">
-            
-        <div class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2">
-        <div class=" items-center flex flex-row">
-          <label class="label mb-2 pb-0">
-            <span class="label-text font-bold text-lg capitalize">{{ getLabel('spatial.locationSet', 'locationSet') }}</span>
-          </label>
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('spatial.locationSet', '', 'doc')" v-if="getLabel('spatial.locationSet', '', 'doc')">
-              <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-            <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                        fill="currentColor"
-                        stroke-width="2.5"
-                        stroke="currentColor"
-                        class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-            </button>
-            </div>
-            </div>
-              <!--        -->
-          <div class="grid grid-cols-1 gap-x-6">
-            
-        <div class="form-control w-full mb-4">
-        <div class="flex flex-row items-center">
-          <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('spatial.locationSet.namedLocation', 'namedLocation') }}</span><span class="text-accent font-black">*</span></label>
-          
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('spatial.locationSet.namedLocation', 'Name of the place or location where this activity took place.', 'doc')" v-if="getLabel('spatial.locationSet.namedLocation', 'Name of the place or location where this activity took place.', 'doc')">
+        <!-- Spatial / Ort der Aktivität (Organisations-Pool) -->
+        <div class="col-span-full border-2 border-base-200 bg-base-100 p-5 rounded-box mb-6 shadow-sm">
+          <div class="flex justify-between items-center mb-3 pb-2 border-b border-base-200">
+            <div class="flex flex-row items-center gap-2">
+              <h4 class="font-bold text-lg capitalize text-base-content">{{ getLabel('spatial', 'spatial') }}</h4>
+              <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('spatial', 'The location or organization / institution where the activity took place.', 'doc')">
                 <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-              </button>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" fill="currentColor" stroke-width="2.5" stroke="currentColor" class="size-[1.2em] primary-content"><path d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
+                </button>
               </div>
-              </div>
-                        <input type="text"     required v-model="form['spatial.locationSet.namedLocation']" class="input input-bordered w-full validator " :placeholder="getLabel('spatial.locationSet.namedLocation', 'e.g. Pergamon Museum, Berlin', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
-              <!-- Moderne Ortsangabe via GeoNames -->
-              <div class="mt-2">
-                <PlaceAutocomplete
-                  input-id="activity-spatial-geonames"
-                  allowed-modes="modern"
-                  default-mode="modern"
-                  :placeholder="currentLocale === 'de' ? 'Ort der Aktivität via GeoNames suchen...' : 'Search activity place via GeoNames...'"
-                  @select="(item) => {
-                    form['spatial.locationSet.namedLocation'] = item.name;
-                    if (item.country) form['spatial.locationSet.geopoliticalArea'] = item.country;
-                  }"
-                />
-              </div>
-          </div>
-        <div class="form-control w-full mb-4">
-        <div class="flex flex-row items-center">
-          <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('spatial.locationSet.geopoliticalArea', 'geopoliticalArea') }}</span></label>
-          
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('spatial.locationSet.geopoliticalArea', 'Higher-level geopolitical unit (country, region, city) in which this activity took place.', 'doc')" v-if="getLabel('spatial.locationSet.geopoliticalArea', 'Higher-level geopolitical unit (country, region, city) in which this activity took place.', 'doc')">
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-              </button>
-              </div>
-              </div>
-                        <input type="text"      v-model="form['spatial.locationSet.geopoliticalArea']" class="input input-bordered w-full validator " :placeholder="getLabel('spatial.locationSet.geopoliticalArea', 'e.g. Berlin', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
-          
-          </div>
-        <div class="form-control w-full mb-4">
-        <div class="flex flex-row items-center">
-          <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('spatial.locationSet.geopoliticalAreaType', 'geopoliticalAreaType') }}</span></label>
-          
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('spatial.locationSet.geopoliticalAreaType', 'Classification of the geopolitical area.', 'doc')" v-if="getLabel('spatial.locationSet.geopoliticalAreaType', 'Classification of the geopolitical area.', 'doc')">
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-              </button>
-              </div>
-              </div>
-                        <input type="text"      v-model="form['spatial.locationSet.geopoliticalAreaType']" class="input input-bordered w-full validator " :placeholder="getLabel('spatial.locationSet.geopoliticalAreaType', 'e.g. city', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
-          
-          </div>
-        <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
-          <div class="flex justify-between items-center mb-4 pb-2 border-b border-base-200">
-             <div class="flex flex-row items-center">
-               <h4 class="font-bold text-lg capitalize text-base-content/60">{{ getLabel('spatial.locationSet.historicalName', 'historicalName') }}</h4>
-               <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('spatial.locationSet.historicalName', 'Historical name of the place, if it differs from the current name.', 'doc')" v-if="getLabel('spatial.locationSet.historicalName', 'Historical name of the place, if it differs from the current name.', 'doc')">
-                    <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                              fill="currentColor"
-                              stroke-width="2.5"
-                              stroke="currentColor"
-                              class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-                  </button>
-                  </div>
-             </div>
-             <button type="button" class="btn btn-sm btn-primary" @click.prevent="if(!form['spatial.locationSet.historicalName']) form['spatial.locationSet.historicalName'] = []; form['spatial.locationSet.historicalName'].push(''); inlineEditing['spatial.locationSet.historicalName_' + (form['spatial.locationSet.historicalName'].length - 1)] = true;">{{ currentLocale === 'de' ? getLabel('spatial.locationSet.historicalName', 'spatial.locationSet.historicalName') + ' ' + t('add') : t('add') + ' ' + getLabel('spatial.locationSet.historicalName', 'spatial.locationSet.historicalName') }}</button>
-          </div>
-          
-          <ul class="list bg-base-100 rounded-box shadow-md w-full">
-             
-             <li v-for="(subItem, subIdx) in form['spatial.locationSet.historicalName']" :key="subIdx" class="list-row flex items-center justify-between h-auto py-2">
-                <div v-if="!inlineEditing['spatial.locationSet.historicalName_' + subIdx]">{{ subItem }}</div>
-                 <div v-else class="flex-1 mr-4">
-                   <input type="text"        v-model="form['spatial.locationSet.historicalName'][subIdx]" class="input input-sm input-bordered w-full validator " :placeholder="getLabel('spatial.locationSet.historicalName', 'e.g. not applicable if place name is unchanged', 'plac')" />
-                   <div class="validator-hint text-xs mt-1">Enter valid value</div>
-                 </div>
-                <div class="flex gap-1 shrink-0">
-                   <button type="button" @click.prevent="inlineEditing['spatial.locationSet.historicalName_' + subIdx] = !inlineEditing['spatial.locationSet.historicalName_' + subIdx]" class="btn btn-square btn-ghost" :class="inlineEditing['spatial.locationSet.historicalName_' + subIdx] ? 'text-success' : 'text-info'">
-                   <svg v-if="!inlineEditing['spatial.locationSet.historicalName_' + subIdx]" class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                   <svg v-else class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                 </button>
-                   <button type="button" @click.prevent="removeDrawerItem('spatial.locationSet.historicalName', subIdx)" class="btn btn-square btn-ghost text-error">
-                     <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                   </button>
-                </div>
-             </li>
-             
-             <li v-if="!form['spatial.locationSet.historicalName'] || form['spatial.locationSet.historicalName'].length === 0" class="p-4 text-center text-sm text-base-content/40 italic">
-                {{ t('noItems') }}
-             </li>
-          </ul>
-        </div>
-          </div>
-          
-        </div>
-          </div>
-          
-        </div>
-        <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
-          <div class="flex justify-between items-center mb-4 pb-2 border-b border-base-200">
-             <div class="flex flex-row items-center">
-               <h4 class="font-bold text-lg capitalize text-base-content/60">{{ getLabel('consistsOf', 'consistsOf') }}</h4>
-               <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('consistsOf', 'this is a repeating group of elements which allows the specific activity (or activities) that took place during the overall Event to be described.', 'doc')" v-if="getLabel('consistsOf', 'this is a repeating group of elements which allows the specific activity (or activities) that took place during the overall Event to be described.', 'doc')">
-                    <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                              fill="currentColor"
-                              stroke-width="2.5"
-                              stroke="currentColor"
-                              class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-                  </button>
-                  </div>
-             </div>
-             <button type="button" class="btn btn-sm btn-primary" @click.prevent="openDrawer('consistsOf')">{{ currentLocale === 'de' ? getLabel('consistsOf', 'consistsOf') + ' ' + t('add') : t('add') + ' ' + getLabel('consistsOf', 'consistsOf') }}</button>
-          </div>
-          
-          <div class="overflow-x-auto">
-             <table class="table table-xs w-full table-zebra">
-                <thead class="bg-base-200"><tr><th class="w-24">{{ t('actions') }}</th></tr></thead>
-                <tbody>
-                   <tr v-for="(subItem, subIdx) in form['consistsOf']" :key="subIdx">
-                      
-                      <td>
-                          <div class="flex gap-1">
-                            <button type="button" class="btn btn-xs btn-ghost text-info" @click.prevent="openDrawer('consistsOf', subIdx)">{{ t('edit') }}</button>
-                            <button type="button" class="btn btn-xs btn-ghost text-error" @click.prevent="removeDrawerItem('consistsOf', subIdx)">{{ t('del') }}</button>
-                          </div>
-                      </td>
-                   </tr>
-                   <tr v-if="!form['consistsOf'] || form['consistsOf'].length === 0">
-                      <td colspan="10" class="text-center text-base-content/40 py-4 italic">{{ t('noItems') }}</td>
-                   </tr>
-                </tbody>
-             </table>
-          </div>
-        </div>
-        <div class="form-control w-full mb-4">
-        <div class="flex flex-row items-center">
-          <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('assessments', 'assessments') }}</span></label>
-          
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('assessments', 'Assessments made of the monument during the event, e.g. of the condition of the monument.', 'doc')" v-if="getLabel('assessments', 'Assessments made of the monument during the event, e.g. of the condition of the monument.', 'doc')">
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-              </button>
-              </div>
-              </div>
-          <textarea v-model="form['assessments']" class="textarea textarea-bordered w-full h-24" :placeholder="getLabel('assessments', 'e.g. condition assessment of the monument during the event', 'plac')"></textarea>
-          
-        </div>
-        <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
-          <div class="flex justify-between items-center mb-4 pb-2 border-b border-base-200">
-             <div class="flex flex-row items-center">
-               <h4 class="font-bold text-lg capitalize text-base-content/60">{{ getLabel('occurredAt', 'occurredAt') }}<span class="text-warning font-black">~</span></h4>
-               <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('occurredAt', 'Can be used to associate this activity to the time span that overlaps with the occurrence of that activity.', 'doc')" v-if="getLabel('occurredAt', 'Can be used to associate this activity to the time span that overlaps with the occurrence of that activity.', 'doc')">
-                    <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                              fill="currentColor"
-                              stroke-width="2.5"
-                              stroke="currentColor"
-                              class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-                  </button>
-                  </div>
-             </div>
-             <button type="button" class="btn btn-sm btn-primary" @click.prevent="if(!form['occurredAt']) form['occurredAt'] = []; form['occurredAt'].push(''); inlineEditing['occurredAt_' + (form['occurredAt'].length - 1)] = true;">{{ currentLocale === 'de' ? getLabel('occurredAt', 'occurredAt') + ' ' + t('add') : t('add') + ' ' + getLabel('occurredAt', 'occurredAt') }}</button>
-          </div>
-          
-          <ul class="list bg-base-100 rounded-box shadow-md w-full">
-             
-             <li v-for="(subItem, subIdx) in form['occurredAt']" :key="subIdx" class="list-row flex items-center justify-between h-auto py-2">
-                <div v-if="!inlineEditing['occurredAt_' + subIdx]">{{ subItem }}</div>
-                 <div v-else class="flex-1 mr-4">
-                   <input type="text"        v-model="form['occurredAt'][subIdx]" class="input input-sm input-bordered w-full validator " :placeholder="getLabel('occurredAt', 'e.g. ID or URI of the overlapping time span', 'plac')" />
-                   <div class="validator-hint text-xs mt-1">Enter valid value</div>
-                 </div>
-                <div class="flex gap-1 shrink-0">
-                   <button type="button" @click.prevent="inlineEditing['occurredAt_' + subIdx] = !inlineEditing['occurredAt_' + subIdx]" class="btn btn-square btn-ghost" :class="inlineEditing['occurredAt_' + subIdx] ? 'text-success' : 'text-info'">
-                   <svg v-if="!inlineEditing['occurredAt_' + subIdx]" class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                   <svg v-else class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                 </button>
-                   <button type="button" @click.prevent="removeDrawerItem('occurredAt', subIdx)" class="btn btn-square btn-ghost text-error">
-                     <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                   </button>
-                </div>
-             </li>
-             
-             <li v-if="!form['occurredAt'] || form['occurredAt'].length === 0" class="p-4 text-center text-sm text-base-content/40 italic">
-                {{ t('noItems') }}
-             </li>
-          </ul>
-        </div>
-        <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
-          <div class="flex justify-between items-center mb-4 pb-2 border-b border-base-200">
-             <div class="flex flex-row items-center">
-               <h4 class="font-bold text-lg capitalize text-base-content/60">{{ getLabel('happenedAt', 'happenedAt') }}<span class="text-warning font-black">~</span></h4>
-               <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('happenedAt', 'Can be used to relate this event to the place where it happened (as an institutional identifier, e.g. GND).', 'doc')" v-if="getLabel('happenedAt', 'Can be used to relate this event to the place where it happened (as an institutional identifier, e.g. GND).', 'doc')">
-                    <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                              fill="currentColor"
-                              stroke-width="2.5"
-                              stroke="currentColor"
-                              class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-                  </button>
-                  </div>
-             </div>
-             <button type="button" class="btn btn-sm btn-primary" @click.prevent="if(!form['happenedAt']) form['happenedAt'] = []; form['happenedAt'].push(''); inlineEditing['happenedAt_' + (form['happenedAt'].length - 1)] = true;">{{ currentLocale === 'de' ? getLabel('happenedAt', 'happenedAt') + ' ' + t('add') : t('add') + ' ' + getLabel('happenedAt', 'happenedAt') }}</button>
-          </div>
-          
-          <!-- Quick action: Adopt from Collection if available -->
-          <div v-if="collectionInstitution.fullLabel" class="mb-2">
+            </div>
+
             <button
-              v-if="!form['happenedAt'] || form['happenedAt'].length === 0 || !form['happenedAt'].includes(collectionInstitution.fullLabel)"
+              type="button"
+              class="btn btn-xs btn-outline btn-primary gap-1 font-semibold"
+              @click.prevent="openOrgPicker('spatial')"
+              :title="currentLocale === 'de' ? 'Organisation aus dem Pool auswählen' : 'Pick organization from pool'"
+            >
+              🏛️ {{ currentLocale === 'de' ? 'Aus Organisations-Pool wählen' : 'Pick from Organization Pool' }}
+            </button>
+          </div>
+
+          <!-- Selected Spatial Organization Display Badge -->
+          <div v-if="form['spatial.locationSet.namedLocation']" class="p-3 bg-base-200 rounded-xl border border-primary/30 flex items-center justify-between gap-3 shadow-xs my-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="text-xl">🏛️</span>
+              <div class="min-w-0">
+                <div class="font-bold text-sm text-base-content truncate">{{ form['spatial.locationSet.namedLocation'] }}</div>
+                <div class="text-[11px] text-base-content/60 flex items-center gap-2">
+                  <span>{{ currentLocale === 'de' ? 'Ort der Aktivität / Institution' : 'Activity location / Institution' }}</span>
+                  <span v-if="form['spatial.locationSet.geopoliticalArea']" class="badge badge-xs badge-ghost">
+                    {{ form['spatial.locationSet.geopoliticalArea'] }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn btn-xs btn-circle btn-ghost text-error hover:bg-error/10"
+              @click.prevent="clearSpatialOrg"
+              :title="currentLocale === 'de' ? 'Auswahl entfernen' : 'Clear selection'"
+            >
+              ✕
+            </button>
+          </div>
+
+          <!-- Empty State Notice if not selected -->
+          <div v-else class="p-3 bg-base-200/50 rounded-xl border border-dashed border-base-300 flex items-center justify-between gap-2 my-2 text-base-content/70 text-xs">
+            <span class="flex items-center gap-1.5">
+              <span>🏛️</span>
+              <span>{{ currentLocale === 'de' ? 'Kein Ort / keine Institution ausgewählt. Bitte über den Organisations-Pool oder die Schnellchips unten wählen.' : 'No location / institution selected. Please choose from the Organization Pool or quick chips below.' }}</span>
+            </span>
+            <button
+              type="button"
+              class="btn btn-xs btn-primary gap-1 shrink-0"
+              @click.prevent="openOrgPicker('spatial')"
+            >
+              🏛️ {{ currentLocale === 'de' ? 'Pool öffnen' : 'Open Pool' }}
+            </button>
+          </div>
+
+          <!-- Hidden input for HTML form validation if required -->
+          <input type="hidden" required v-model="form['spatial.locationSet.namedLocation']" />
+
+          <!-- Quick Select: Adopt from Collection if available -->
+          <div v-if="collectionInstitution.fullLabel" class="mt-2 flex items-center gap-2 flex-wrap">
+            <button
+              v-if="form['spatial.locationSet.namedLocation'] !== collectionInstitution.fullLabel"
               type="button"
               class="btn btn-xs btn-outline btn-primary gap-1"
-              @click="if(!form['happenedAt']) form['happenedAt'] = []; form['happenedAt'].push(collectionInstitution.fullLabel)"
-              :title="currentLocale === 'de' ? 'Übernimmt die Einrichtung aus der Sammlung als Ereignisort' : 'Adopt institution from Collection as event location'"
+              @click="setSpatialFromCollection"
+              :title="currentLocale === 'de' ? 'Übernimmt die Einrichtung aus der Sammlung' : 'Adopt institution from Collection'"
             >
               <span>🏛️</span>
               <span>{{ currentLocale === 'de' ? 'Aus Sammlung übernehmen:' : 'Adopt from collection:' }}</span>
               <span class="font-bold underline truncate max-w-[260px]">{{ collectionInstitution.fullLabel }}</span>
             </button>
+            <span v-else class="text-[11px] text-success font-medium flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              {{ currentLocale === 'de' ? 'Identisch mit Sammlung (Collection)' : 'Identical to Collection' }}
+            </span>
           </div>
 
-          <!-- Institution / GND -->
-          <div class="mb-3">
-            <InstitutionAutocomplete
-              input-id="activity-happenedat-gnd"
-              emit-mode="gnd"
-              :placeholder="currentLocale === 'de' ? 'Einrichtung / GND suchen...' : 'Search institution / GND...'"
-              @select="(item) => {
-                if (!form['happenedAt']) form['happenedAt'] = [];
-                const val = item.uri || item.gnd || item.label;
-                form['happenedAt'].push(val);
-              }"
-            />
+          <!-- Quick Select Chips: Last 5 Used Organizations -->
+          <div v-if="recentOrganizations && recentOrganizations.length > 0" class="mt-3 p-3 bg-base-200/50 rounded-xl border border-base-300">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-bold text-base-content/80 flex items-center gap-1.5">
+                <span>🕒</span>
+                <span>{{ currentLocale === 'de' ? 'Zuletzt verwendet (max. 5):' : 'Recently used (max. 5):' }}</span>
+              </span>
+              <span class="text-[11px] text-base-content/40">{{ currentLocale === 'de' ? '1 Klick übernimmt Organisation' : '1 click applies organization' }}</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              <button
+                v-for="org in recentOrganizations.slice(0, 5)"
+                :key="'rec-spatial-' + org.name"
+                type="button"
+                class="btn btn-xs gap-1.5 transition-all"
+                :class="form['spatial.locationSet.namedLocation'] && form['spatial.locationSet.namedLocation'].includes(org.name) ? 'btn-primary font-bold shadow-xs' : 'btn-outline border-base-300 hover:border-primary'"
+                @click.prevent="selectSpatialOrg(org)"
+              >
+                <span>🏛️</span>
+                <span>{{ org.name }}</span>
+                <span v-if="org.townOrCity || org.city" class="opacity-60 text-[10px]">({{ org.townOrCity || org.city }})</span>
+                <span v-if="form['spatial.locationSet.namedLocation'] && form['spatial.locationSet.namedLocation'].includes(org.name)" class="font-bold">✓</span>
+              </button>
+            </div>
           </div>
-          
-          <ul class="list bg-base-100 rounded-box shadow-md w-full">
-             
-             <li v-for="(subItem, subIdx) in form['happenedAt']" :key="subIdx" class="list-row flex items-center justify-between h-auto py-2">
-                <div v-if="!inlineEditing['happenedAt_' + subIdx]">{{ subItem }}</div>
-                 <div v-else class="flex-1 mr-4">
-                   <input type="text"        v-model="form['happenedAt'][subIdx]" class="input input-sm input-bordered w-full validator " :placeholder="getLabel('happenedAt', 'e.g. https://d-nb.info/gnd/5035657-4', 'plac')" />
-                   <div class="validator-hint text-xs mt-1">Enter valid value</div>
-                 </div>
-                <div class="flex gap-1 shrink-0">
-                   <button type="button" @click.prevent="inlineEditing['happenedAt_' + subIdx] = !inlineEditing['happenedAt_' + subIdx]" class="btn btn-square btn-ghost" :class="inlineEditing['happenedAt_' + subIdx] ? 'text-success' : 'text-info'">
-                   <svg v-if="!inlineEditing['happenedAt_' + subIdx]" class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                   <svg v-else class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                 </button>
-                   <button type="button" @click.prevent="removeDrawerItem('happenedAt', subIdx)" class="btn btn-square btn-ghost text-error">
-                     <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                   </button>
-                </div>
-             </li>
-             
-             <li v-if="!form['happenedAt'] || form['happenedAt'].length === 0" class="p-4 text-center text-sm text-base-content/40 italic">
-                {{ t('noItems') }}
-             </li>
-          </ul>
         </div>
-        <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
-          <div class="flex justify-between items-center mb-4 pb-2 border-b border-base-200">
-             <div class="flex flex-row items-center">
-               <h4 class="font-bold text-lg capitalize text-base-content/60">{{ getLabel('wasPresentAt', 'wasPresentAt') }}<span class="text-warning font-black">~</span></h4>
-               <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('wasPresentAt', 'Can be used to relate this activity to the actors who were present.', 'doc')" v-if="getLabel('wasPresentAt', 'Can be used to relate this activity to the actors who were present.', 'doc')">
-                    <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                              fill="currentColor"
-                              stroke-width="2.5"
-                              stroke="currentColor"
-                              class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-                  </button>
-                  </div>
-             </div>
-             <button type="button" class="btn btn-sm btn-primary" @click.prevent="if(!form['wasPresentAt']) form['wasPresentAt'] = []; form['wasPresentAt'].push(''); inlineEditing['wasPresentAt_' + (form['wasPresentAt'].length - 1)] = true;">{{ currentLocale === 'de' ? getLabel('wasPresentAt', 'wasPresentAt') + ' ' + t('add') : t('add') + ' ' + getLabel('wasPresentAt', 'wasPresentAt') }}</button>
-          </div>
-          
-          <ul class="list bg-base-100 rounded-box shadow-md w-full">
-             
-             <li v-for="(subItem, subIdx) in form['wasPresentAt']" :key="subIdx" class="list-row flex items-center justify-between h-auto py-2">
-                <div v-if="!inlineEditing['wasPresentAt_' + subIdx]">{{ subItem }}</div>
-                 <div v-else class="flex-1 mr-4">
-                   <input type="text"        v-model="form['wasPresentAt'][subIdx]" class="input input-sm input-bordered w-full validator " :placeholder="getLabel('wasPresentAt', 'e.g. ID/URI of the actors present', 'plac')" />
-                   <div class="validator-hint text-xs mt-1">Enter valid value</div>
-                 </div>
-                <div class="flex gap-1 shrink-0">
-                   <button type="button" @click.prevent="inlineEditing['wasPresentAt_' + subIdx] = !inlineEditing['wasPresentAt_' + subIdx]" class="btn btn-square btn-ghost" :class="inlineEditing['wasPresentAt_' + subIdx] ? 'text-success' : 'text-info'">
-                   <svg v-if="!inlineEditing['wasPresentAt_' + subIdx]" class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                   <svg v-else class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                 </button>
-                   <button type="button" @click.prevent="removeDrawerItem('wasPresentAt', subIdx)" class="btn btn-square btn-ghost text-error">
-                     <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                   </button>
-                </div>
-             </li>
-             
-             <li v-if="!form['wasPresentAt'] || form['wasPresentAt'].length === 0" class="p-4 text-center text-sm text-base-content/40 italic">
-                {{ t('noItems') }}
-             </li>
-          </ul>
-        </div>
-        <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
-          <div class="flex justify-between items-center mb-4 pb-2 border-b border-base-200">
-             <div class="flex flex-row items-center">
-               <h4 class="font-bold text-lg capitalize text-base-content/60">{{ getLabel('hasPart', 'hasPart') }}<span class="text-warning font-black">~</span></h4>
-               <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('hasPart', 'This activity is an overarching event composed of several smaller, standalone sub-activity records.', 'doc')" v-if="getLabel('hasPart', 'This activity is an overarching event composed of several smaller, standalone sub-activity records.', 'doc')">
-                    <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                              fill="currentColor"
-                              stroke-width="2.5"
-                              stroke="currentColor"
-                              class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-                  </button>
-                  </div>
-             </div>
-             <button type="button" class="btn btn-sm btn-primary" @click.prevent="if(!form['hasPart']) form['hasPart'] = []; form['hasPart'].push(''); inlineEditing['hasPart_' + (form['hasPart'].length - 1)] = true;">{{ currentLocale === 'de' ? getLabel('hasPart', 'hasPart') + ' ' + t('add') : t('add') + ' ' + getLabel('hasPart', 'hasPart') }}</button>
-          </div>
-          
-          <ul class="list bg-base-100 rounded-box shadow-md w-full">
-             
-             <li v-for="(subItem, subIdx) in form['hasPart']" :key="subIdx" class="list-row flex items-center justify-between h-auto py-2">
-                <div v-if="!inlineEditing['hasPart_' + subIdx]">{{ subItem }}</div>
-                 <div v-else class="flex-1 mr-4">
-                   <input type="text"        v-model="form['hasPart'][subIdx]" class="input input-sm input-bordered w-full validator " :placeholder="getLabel('hasPart', 'e.g. ID/URI of the activity record of a second sub-campaign', 'plac')" />
-                   <div class="validator-hint text-xs mt-1">Enter valid value</div>
-                 </div>
-                <div class="flex gap-1 shrink-0">
-                   <button type="button" @click.prevent="inlineEditing['hasPart_' + subIdx] = !inlineEditing['hasPart_' + subIdx]" class="btn btn-square btn-ghost" :class="inlineEditing['hasPart_' + subIdx] ? 'text-success' : 'text-info'">
-                   <svg v-if="!inlineEditing['hasPart_' + subIdx]" class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                   <svg v-else class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                 </button>
-                   <button type="button" @click.prevent="removeDrawerItem('hasPart', subIdx)" class="btn btn-square btn-ghost text-error">
-                     <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                   </button>
-                </div>
-             </li>
-             
-             <li v-if="!form['hasPart'] || form['hasPart'].length === 0" class="p-4 text-center text-sm text-base-content/40 italic">
-                {{ t('noItems') }}
-             </li>
-          </ul>
-        </div>
-        <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
-          <div class="flex justify-between items-center mb-4 pb-2 border-b border-base-200">
-             <div class="flex flex-row items-center">
-               <h4 class="font-bold text-lg capitalize text-base-content/60">{{ getLabel('isPartOf', 'isPartOf') }}<span class="text-warning font-black">~</span></h4>
-               <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('isPartOf', 'This is the relation between an activity and the general activity of which it forms a part.', 'doc')" v-if="getLabel('isPartOf', 'This is the relation between an activity and the general activity of which it forms a part.', 'doc')">
-                    <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                              fill="currentColor"
-                              stroke-width="2.5"
-                              stroke="currentColor"
-                              class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-                  </button>
-                  </div>
-             </div>
-             <button type="button" class="btn btn-sm btn-primary" @click.prevent="if(!form['isPartOf']) form['isPartOf'] = []; form['isPartOf'].push(''); inlineEditing['isPartOf_' + (form['isPartOf'].length - 1)] = true;">{{ currentLocale === 'de' ? getLabel('isPartOf', 'isPartOf') + ' ' + t('add') : t('add') + ' ' + getLabel('isPartOf', 'isPartOf') }}</button>
-          </div>
-          
-          <ul class="list bg-base-100 rounded-box shadow-md w-full">
-             
-             <li v-for="(subItem, subIdx) in form['isPartOf']" :key="subIdx" class="list-row flex items-center justify-between h-auto py-2">
-                <div v-if="!inlineEditing['isPartOf_' + subIdx]">{{ subItem }}</div>
-                 <div v-else class="flex-1 mr-4">
-                   <input type="text"        v-model="form['isPartOf'][subIdx]" class="input input-sm input-bordered w-full validator " :placeholder="getLabel('isPartOf', 'e.g. ID/URI of the parent funding programme', 'plac')" />
-                   <div class="validator-hint text-xs mt-1">Enter valid value</div>
-                 </div>
-                <div class="flex gap-1 shrink-0">
-                   <button type="button" @click.prevent="inlineEditing['isPartOf_' + subIdx] = !inlineEditing['isPartOf_' + subIdx]" class="btn btn-square btn-ghost" :class="inlineEditing['isPartOf_' + subIdx] ? 'text-success' : 'text-info'">
-                   <svg v-if="!inlineEditing['isPartOf_' + subIdx]" class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                   <svg v-else class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                 </button>
-                   <button type="button" @click.prevent="removeDrawerItem('isPartOf', subIdx)" class="btn btn-square btn-ghost text-error">
-                     <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                   </button>
-                </div>
-             </li>
-             
-             <li v-if="!form['isPartOf'] || form['isPartOf'].length === 0" class="p-4 text-center text-sm text-base-content/40 italic">
-                {{ t('noItems') }}
-             </li>
-          </ul>
-        </div>
-        <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
-          <div class="flex justify-between items-center mb-4 pb-2 border-b border-base-200">
-             <div class="flex flex-row items-center">
-               <h4 class="font-bold text-lg capitalize text-base-content/60">{{ getLabel('hasCreated', 'hasCreated') }}<span class="text-accent font-black">*</span></h4>
-               <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('hasCreated', 'This is the relation between an activity and a digital resource or digital file that it created.', 'doc')" v-if="getLabel('hasCreated', 'This is the relation between an activity and a digital resource or digital file that it created.', 'doc')">
-                    <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                              fill="currentColor"
-                              stroke-width="2.5"
-                              stroke="currentColor"
-                              class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-                  </button>
-                  </div>
-             </div>
-             <button type="button" class="btn btn-sm btn-primary" @click.prevent="if(!form['hasCreated']) form['hasCreated'] = []; form['hasCreated'].push(''); inlineEditing['hasCreated_' + (form['hasCreated'].length - 1)] = true;">{{ currentLocale === 'de' ? getLabel('hasCreated', 'hasCreated') + ' ' + t('add') : t('add') + ' ' + getLabel('hasCreated', 'hasCreated') }}</button>
-          </div>
-          
-          <ul class="list bg-base-100 rounded-box shadow-md w-full">
-             
-             <li v-for="(subItem, subIdx) in form['hasCreated']" :key="subIdx" class="list-row flex items-center justify-between h-auto py-2">
-                <div v-if="!inlineEditing['hasCreated_' + subIdx]">{{ subItem }}</div>
-                 <div v-else class="flex-1 mr-4">
-                   <input type="text"   required     v-model="form['hasCreated'][subIdx]" class="input input-sm input-bordered w-full validator " :placeholder="getLabel('hasCreated', 'e.g. reference to all 3D models created during this activity (DOIs of the respective digital resources) https://bonndata.uni-bonn.de/dataverse/altes_museum_berlin', 'plac')" />
-                   <div class="validator-hint text-xs mt-1">Enter valid value</div>
-                 </div>
-                <div class="flex gap-1 shrink-0">
-                   <button type="button" @click.prevent="inlineEditing['hasCreated_' + subIdx] = !inlineEditing['hasCreated_' + subIdx]" class="btn btn-square btn-ghost" :class="inlineEditing['hasCreated_' + subIdx] ? 'text-success' : 'text-info'">
-                   <svg v-if="!inlineEditing['hasCreated_' + subIdx]" class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                   <svg v-else class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                 </button>
-                   <button type="button" @click.prevent="removeDrawerItem('hasCreated', subIdx)" class="btn btn-square btn-ghost text-error">
-                     <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                   </button>
-                </div>
-             </li>
-             
-             <li v-if="!form['hasCreated'] || form['hasCreated'].length === 0" class="p-4 text-center text-sm text-base-content/40 italic">
-                {{ t('noItems') }}
-             </li>
-          </ul>
-        </div>
-        <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
-          <div class="flex justify-between items-center mb-4 pb-2 border-b border-base-200">
-             <div class="flex flex-row items-center">
-               <h4 class="font-bold text-lg capitalize text-base-content/60">{{ getLabel('dcRelation', 'dcRelation') }}</h4>
-               <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('dcRelation', 'This is for general relations from this activity, e.g. to publications.', 'doc')" v-if="getLabel('dcRelation', 'This is for general relations from this activity, e.g. to publications.', 'doc')">
-                    <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                              fill="currentColor"
-                              stroke-width="2.5"
-                              stroke="currentColor"
-                              class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-                  </button>
-                  </div>
-             </div>
-             <button type="button" class="btn btn-sm btn-primary" @click.prevent="if(!form['dcRelation']) form['dcRelation'] = []; form['dcRelation'].push(''); inlineEditing['dcRelation_' + (form['dcRelation'].length - 1)] = true;">{{ currentLocale === 'de' ? getLabel('dcRelation', 'dcRelation') + ' ' + t('add') : t('add') + ' ' + getLabel('dcRelation', 'dcRelation') }}</button>
-          </div>
-          
-          <ul class="list bg-base-100 rounded-box shadow-md w-full">
-             
-             <li v-for="(subItem, subIdx) in form['dcRelation']" :key="subIdx" class="list-row flex items-center justify-between h-auto py-2">
-                <div v-if="!inlineEditing['dcRelation_' + subIdx]">{{ subItem }}</div>
-                 <div v-else class="flex-1 mr-4">
-                   <input type="url"     pattern="[Hh][Tt][Tt][Pp][Ss]?://(?:(?:[a-zA-Z¡-￿0-9]+-?)*[a-zA-Z¡-￿0-9]+)(?:.(?:[a-zA-Z¡-￿0-9]+-?)*[a-zA-Z¡-￿0-9]+)*(?:.(?:[a-zA-Z¡-￿]{2,}))(?::d{2,5})?(?:/[^s]*)?"   v-model="form['dcRelation'][subIdx]" class="input input-sm input-bordered w-full validator " :placeholder="getLabel('dcRelation', 'e.g. link to a related publication', 'plac')" />
-                   <div class="validator-hint text-xs mt-1">Enter valid value</div>
-                 </div>
-                <div class="flex gap-1 shrink-0">
-                   <button type="button" @click.prevent="inlineEditing['dcRelation_' + subIdx] = !inlineEditing['dcRelation_' + subIdx]" class="btn btn-square btn-ghost" :class="inlineEditing['dcRelation_' + subIdx] ? 'text-success' : 'text-info'">
-                   <svg v-if="!inlineEditing['dcRelation_' + subIdx]" class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                   <svg v-else class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                 </button>
-                   <button type="button" @click.prevent="removeDrawerItem('dcRelation', subIdx)" class="btn btn-square btn-ghost text-error">
-                     <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                   </button>
-                </div>
-             </li>
-             
-             <li v-if="!form['dcRelation'] || form['dcRelation'].length === 0" class="p-4 text-center text-sm text-base-content/40 italic">
-                {{ t('noItems') }}
-             </li>
-          </ul>
-        </div>
+        <!-- Unified Dublin Core & CARARE Relations Manager for Activity -->
+        <ActivityDcRelations
+          :form="form"
+          :current-locale="currentLocale"
+          :project-heritage-assets="projectHeritageAssets"
+          :project-digital-resources="projectDigitalResources"
+          :other-activities="items"
+          :active-activity-id="form['recordInformation.id'] || form['appellation.id']"
+        />
             </div>
             
             <div class="mt-8 pt-4 border-t border-base-300 flex items-center justify-end gap-2">
@@ -1651,7 +645,7 @@
             </div>
             <label for="drawer-activity" class="btn btn-circle btn-ghost btn-sm drawer-overlay">✕</label>
           </div>
-          <form @submit.prevent="saveDrawer" class="space-y-4">
+          <form @submit.prevent="saveDrawer" @invalid.capture="handleInvalid" class="space-y-4">
             
       <div v-if="activeDrawerField === 'recordInformation.creation.contacts'">
         <div class="grid grid-cols-1 gap-x-6">
@@ -1756,606 +750,27 @@
               <!--       <div class="text-sm text-base-content/60 mb-4 px-1">{{ getLabel('recordInformation.creation.contacts.address', 'The postal address of the person or organization', 'doc') }}</div> -->
           <div class="grid grid-cols-1 gap-x-6">
             
-        <div class="form-control w-full mb-4">
-        <div class="flex flex-row items-center">
-          <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('recordInformation.creation.contacts.address.numberInRoad', 'numberInRoad') }}</span></label>
-          
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('recordInformation.creation.contacts.address.numberInRoad', 'The number in a road or street used to identify a property', 'doc')" v-if="getLabel('recordInformation.creation.contacts.address.numberInRoad', 'The number in a road or street used to identify a property', 'doc')">
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-              </button>
+                <!-- Automatische Adressübernahme aus dem Organisations-Pool -->
+        <div class="col-span-full p-3.5 rounded-xl bg-base-200/70 border border-base-300 mb-4 text-xs">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <div class="flex items-center gap-2.5">
+              <span class="text-lg">📍</span>
+              <div>
+                <span class="font-bold text-base-content block">
+                  {{ currentLocale === 'de' ? 'Adresse (automatisch aus Organisations-Pool):' : 'Address (auto-filled from Organization Pool):' }}
+                </span>
+                <span v-if="drawerForm['address.townOrCity'] || drawerForm['address.roadName']" class="text-base-content/80 font-mono text-[11px]">
+                  {{ [drawerForm['address.buildingName'], drawerForm['address.roadName'] ? (drawerForm['address.roadName'] + (drawerForm['address.numberInRoad'] ? ' ' + drawerForm['address.numberInRoad'] : '')) : '', drawerForm['address.postcodeOrZipcode'], drawerForm['address.townOrCity'], drawerForm['address.country']].filter(Boolean).join(', ') }}
+                </span>
+                <span v-else class="text-base-content/40 italic text-[11px]">
+                  {{ currentLocale === 'de' ? 'Wählen Sie oben eine Organisation – die Postadresse wird automatisch für den CARARE-Export hinterlegt.' : 'Select an organization above – address will be automatically populated for CARARE export.' }}
+                </span>
               </div>
-              </div>
-                        <input type="text"      v-model="drawerForm['address.numberInRoad']" class="input input-bordered w-full validator " :placeholder="getLabel('recordInformation.creation.contacts.address.numberInRoad', '', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
-          
+            </div>
+            <button type="button" class="btn btn-xs btn-outline btn-primary gap-1" @click="openOrgPicker('contacts')">
+              🏛️ {{ currentLocale === 'de' ? 'Orga-Pool' : 'Org Pool' }}
+            </button>
           </div>
-        <div class="form-control w-full mb-4">
-        <div class="flex flex-row items-center">
-          <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('recordInformation.creation.contacts.address.roadName', 'roadName') }}</span></label>
-          
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('recordInformation.creation.contacts.address.roadName', '', 'doc')" v-if="getLabel('recordInformation.creation.contacts.address.roadName', '', 'doc')">
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-              </button>
-              </div>
-              </div>
-                        <input type="text"      v-model="drawerForm['address.roadName']" class="input input-bordered w-full validator " :placeholder="getLabel('recordInformation.creation.contacts.address.roadName', '', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
-          
-          </div>
-        <div class="form-control w-full mb-4">
-        <div class="flex flex-row items-center">
-          <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('recordInformation.creation.contacts.address.townOrCity', 'townOrCity') }}</span></label>
-          
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('recordInformation.creation.contacts.address.townOrCity', '', 'doc')" v-if="getLabel('recordInformation.creation.contacts.address.townOrCity', '', 'doc')">
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-              </button>
-              </div>
-              </div>
-                        <input type="text"      v-model="drawerForm['address.townOrCity']" class="input input-bordered w-full validator " :placeholder="getLabel('recordInformation.creation.contacts.address.townOrCity', '', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
-          
-          </div>
-        <div class="form-control w-full mb-4">
-        <div class="flex flex-row items-center">
-          <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('recordInformation.creation.contacts.address.postcodeOrZipcode', 'postcodeOrZipcode') }}</span></label>
-          
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('recordInformation.creation.contacts.address.postcodeOrZipcode', '', 'doc')" v-if="getLabel('recordInformation.creation.contacts.address.postcodeOrZipcode', '', 'doc')">
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-              </button>
-              </div>
-              </div>
-                        <input type="text"      v-model="drawerForm['address.postcodeOrZipcode']" class="input input-bordered w-full validator " :placeholder="getLabel('recordInformation.creation.contacts.address.postcodeOrZipcode', '', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
-          
-          </div>
-        <div class="form-control w-full mb-4">
-        <div class="flex flex-row items-center">  
-        <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('recordInformation.creation.contacts.address.country', 'country') }}</span></label>
-
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('recordInformation.creation.contacts.address.country', '', 'doc')" v-if="getLabel('recordInformation.creation.contacts.address.country', '', 'doc')">
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-                </button>
-              </div>
-              </div>
-          <select v-model="drawerForm['address.country']" class="select select-bordered w-full">
-            <option disabled value="">{{ currentLocale === 'de' ? getLabel('recordInformation.creation.contacts.address.country', 'country') + ' ' + t('select') : t('select') + ' ' + getLabel('recordInformation.creation.contacts.address.country', 'country') }}</option>
-            <template v-if="currentLocale === 'de'">
-              <option value="AF">Afghanistan</option>
-<option value="EG">Ägypten</option>
-<option value="AX">Åland</option>
-<option value="AL">Albanien</option>
-<option value="DZ">Algerien</option>
-<option value="AS">Amerikanisch-Samoa</option>
-<option value="VI">Amerikanische Jungferninseln</option>
-<option value="AD">Andorra</option>
-<option value="AO">Angola</option>
-<option value="AI">Anguilla</option>
-<option value="AQ">Antarktis (Sonderstatus durch Antarktis-Vertrag)</option>
-<option value="AG">Antigua und Barbuda</option>
-<option value="GQ">Äquatorialguinea</option>
-<option value="AR">Argentinien</option>
-<option value="AM">Armenien</option>
-<option value="AW">Aruba</option>
-<option value="AZ">Aserbaidschan</option>
-<option value="ET">Äthiopien</option>
-<option value="AU">Australien</option>
-<option value="BS">Bahamas</option>
-<option value="BH">Bahrain</option>
-<option value="BD">Bangladesch</option>
-<option value="BB">Barbados</option>
-<option value="BY">Belarus (Weißrussland)</option>
-<option value="BE">Belgien</option>
-<option value="BZ">Belize</option>
-<option value="BJ">Benin</option>
-<option value="BM">Bermuda</option>
-<option value="BT">Bhutan</option>
-<option value="BO">Bolivien</option>
-<option value="BQ">Bonaire, Sint Eustatius und Saba</option>
-<option value="BA">Bosnien und Herzegowina</option>
-<option value="BW">Botswana</option>
-<option value="BV">Bouvetinsel</option>
-<option value="BR">Brasilien</option>
-<option value="VG">Britische Jungferninseln</option>
-<option value="IO">Britisches Territorium im Indischen Ozean</option>
-<option value="BN">Brunei Darussalam</option>
-<option value="BG">Bulgarien</option>
-<option value="BF">Burkina Faso</option>
-<option value="BI">Burundi</option>
-<option value="CL">Chile</option>
-<option value="CN">China, Volksrepublik</option>
-<option value="CK">Cookinseln</option>
-<option value="CR">Costa Rica</option>
-<option value="CI">Cote d'Ivoire (Elfenbeinküste)</option>
-<option value="CW">Curaçao</option>
-<option value="DK">Dänemark</option>
-<option value="DE">Deutschland</option>
-<option value="DM">Dominica</option>
-<option value="DO">Dominikanische Republik</option>
-<option value="DJ">Dschibuti</option>
-<option value="EC">Ecuador</option>
-<option value="SV">El Salvador</option>
-<option value="ER">Eritrea</option>
-<option value="EE">Estland</option>
-<option value="EU">Europäische Union</option>
-<option value="FK">Falklandinseln</option>
-<option value="FO">Färöer</option>
-<option value="FJ">Fidschi</option>
-<option value="FI">Finnland</option>
-<option value="FR">Frankreich</option>
-<option value="GF">Französisch-Guayana</option>
-<option value="PF">Französisch-Polynesien</option>
-<option value="TF">Französische Süd- und Antarktisgebiete</option>
-<option value="GA">Gabun</option>
-<option value="GM">Gambia</option>
-<option value="GE">Georgien</option>
-<option value="GH">Ghana</option>
-<option value="GI">Gibraltar</option>
-<option value="GD">Grenada</option>
-<option value="GR">Griechenland</option>
-<option value="GL">Grönland</option>
-<option value="GP">Guadeloupe</option>
-<option value="GU">Guam</option>
-<option value="GT">Guatemala</option>
-<option value="GG">Guernsey (Kanalinsel)</option>
-<option value="GN">Guinea</option>
-<option value="GW">Guinea-Bissau</option>
-<option value="GY">Guyana</option>
-<option value="HT">Haiti</option>
-<option value="HM">Heard und McDonaldinseln</option>
-<option value="HN">Honduras</option>
-<option value="HK">Hongkong</option>
-<option value="IN">Indien</option>
-<option value="ID">Indonesien</option>
-<option value="IM">Insel Man</option>
-<option value="IQ">Irak</option>
-<option value="IR">Iran, Islamische Republik</option>
-<option value="IE">Irland</option>
-<option value="IS">Island</option>
-<option value="IL">Israel</option>
-<option value="IT">Italien</option>
-<option value="JM">Jamaika</option>
-<option value="JP">Japan</option>
-<option value="YE">Jemen</option>
-<option value="JE">Jersey (Kanalinsel)</option>
-<option value="JO">Jordanien</option>
-<option value="KY">Kaimaninseln</option>
-<option value="KH">Kambodscha</option>
-<option value="CM">Kamerun</option>
-<option value="CA">Kanada</option>
-<option value="CV">Kap Verde</option>
-<option value="KZ">Kasachstan</option>
-<option value="QA">Katar</option>
-<option value="KE">Kenia</option>
-<option value="KG">Kirgisistan</option>
-<option value="KI">Kiribati</option>
-<option value="CC">Kokosinseln</option>
-<option value="CO">Kolumbien</option>
-<option value="KM">Komoren</option>
-<option value="CD">Kongo, Demokratische Republik (ehem. Zaire)</option>
-<option value="KP">Korea, Demokratische Volksrepublik (Nordkorea)</option>
-<option value="KR">Korea, Republik (Südkorea)</option>
-<option value="XK">Kosovo</option>
-<option value="HR">Kroatien</option>
-<option value="CU">Kuba</option>
-<option value="KW">Kuwait</option>
-<option value="LA">Laos, Demokratische Volksrepublik</option>
-<option value="LS">Lesotho</option>
-<option value="LV">Lettland</option>
-<option value="LB">Libanon</option>
-<option value="LR">Liberia</option>
-<option value="LY">Libysch-Arabische Dschamahirija (Libyen)</option>
-<option value="LI">Liechtenstein</option>
-<option value="LT">Litauen</option>
-<option value="LU">Luxemburg</option>
-<option value="MO">Macao</option>
-<option value="MG">Madagaskar</option>
-<option value="MW">Malawi</option>
-<option value="MY">Malaysia</option>
-<option value="MV">Malediven</option>
-<option value="ML">Mali</option>
-<option value="MT">Malta</option>
-<option value="MA">Marokko</option>
-<option value="MH">Marshallinseln</option>
-<option value="MQ">Martinique</option>
-<option value="MR">Mauretanien</option>
-<option value="MU">Mauritius</option>
-<option value="YT">Mayotte</option>
-<option value="MK">Mazedonien, ehem. Jugoslawische Republik [2b]</option>
-<option value="MX">Mexiko</option>
-<option value="FM">Mikronesien</option>
-<option value="MD">Moldawien (Republik Moldau)</option>
-<option value="MC">Monaco</option>
-<option value="MN">Mongolei</option>
-<option value="ME">Montenegro</option>
-<option value="MS">Montserrat</option>
-<option value="MZ">Mosambik</option>
-<option value="MM">Myanmar (Burma)</option>
-<option value="NA">Namibia</option>
-<option value="NR">Nauru</option>
-<option value="NP">Nepal</option>
-<option value="NC">Neukaledonien</option>
-<option value="NZ">Neuseeland</option>
-<option value="NI">Nicaragua</option>
-<option value="NL">Niederlande</option>
-<option value="AN">Niederländische Antillen</option>
-<option value="NE">Niger</option>
-<option value="NG">Nigeria</option>
-<option value="NU">Niue</option>
-<option value="MP">Nördliche Marianen</option>
-<option value="NF">Norfolkinsel</option>
-<option value="NO">Norwegen</option>
-<option value="OM">Oman</option>
-<option value="AT">Österreich</option>
-<option value="TL">Osttimor (Timor-Leste)</option>
-<option value="PK">Pakistan</option>
-<option value="PS">Palästinensische Autonomiegebiete</option>
-<option value="PW">Palau</option>
-<option value="PA">Panama</option>
-<option value="PG">Papua-Neuguinea</option>
-<option value="PY">Paraguay</option>
-<option value="PE">Peru</option>
-<option value="PH">Philippinen</option>
-<option value="PN">Pitcairninseln</option>
-<option value="PL">Polen</option>
-<option value="PT">Portugal</option>
-<option value="PR">Puerto Rico</option>
-<option value="TW">Republik China (Taiwan)</option>
-<option value="CG">Republik Kongo</option>
-<option value="RE">Réunion</option>
-<option value="RW">Ruanda</option>
-<option value="RO">Rumänien</option>
-<option value="RU">Russische Föderation</option>
-<option value="BL">Saint-Barthélemy</option>
-<option value="MF">Saint-Martin (franz. Teil)</option>
-<option value="SB">Salomonen</option>
-<option value="ZM">Sambia</option>
-<option value="WS">Samoa</option>
-<option value="SM">San Marino</option>
-<option value="ST">São Tomé und Príncipe</option>
-<option value="SA">Saudi-Arabien</option>
-<option value="SE">Schweden</option>
-<option value="CH">Schweiz (Confoederatio Helvetica)</option>
-<option value="SN">Senegal</option>
-<option value="RS">Serbien</option>
-<option value="SC">Seychellen</option>
-<option value="SL">Sierra Leone</option>
-<option value="ZW">Simbabwe</option>
-<option value="SG">Singapur</option>
-<option value="SX">Sint Maarten (niederl. Teil)</option>
-<option value="SK">Slowakei</option>
-<option value="SI">Slowenien</option>
-<option value="SO">Somalia</option>
-<option value="ES">Spanien</option>
-<option value="LK">Sri Lanka</option>
-<option value="SH">St. Helena</option>
-<option value="KN">St. Kitts und Nevis</option>
-<option value="LC">St. Lucia</option>
-<option value="PM">St. Pierre und Miquelon</option>
-<option value="VC">St. Vincent und die Grenadinen</option>
-<option value="ZA">Südafrika</option>
-<option value="SD">Sudan</option>
-<option value="GS">Südgeorgien und die Südlichen Sandwichinseln</option>
-<option value="SS">Südsudan</option>
-<option value="SR">Suriname</option>
-<option value="SJ">Svalbard und Jan Mayen</option>
-<option value="SZ">Swasiland</option>
-<option value="SY">Syrien, Arabische Republik</option>
-<option value="TJ">Tadschikistan</option>
-<option value="TZ">Tansania, Vereinigte Republik</option>
-<option value="TH">Thailand</option>
-<option value="TG">Togo</option>
-<option value="TK">Tokelau</option>
-<option value="TO">Tonga</option>
-<option value="TT">Trinidad und Tobago</option>
-<option value="TD">Tschad</option>
-<option value="CZ">Tschechische Republik</option>
-<option value="TN">Tunesien</option>
-<option value="TR">Türkei</option>
-<option value="TM">Turkmenistan</option>
-<option value="TC">Turks- und Caicosinseln</option>
-<option value="TV">Tuvalu</option>
-<option value="UG">Uganda</option>
-<option value="UA">Ukraine</option>
-<option value="HU">Ungarn</option>
-<option value="UM">United States Minor Outlying Islands</option>
-<option value="UY">Uruguay</option>
-<option value="UZ">Usbekistan</option>
-<option value="VU">Vanuatu</option>
-<option value="VA">Vatikanstadt</option>
-<option value="VE">Venezuela</option>
-<option value="AE">Vereinigte Arabische Emirate</option>
-<option value="US">Vereinigte Staaten von Amerika</option>
-<option value="GB">Vereinigtes Königreich Großbritannien und Nordirland</option>
-<option value="VN">Vietnam</option>
-<option value="WF">Wallis und Futuna</option>
-<option value="CX">Weihnachtsinsel</option>
-<option value="XW">Weltweit</option>
-<option value="EH">Westsahara</option>
-<option value="CF">Zentralafrikanische Republik</option>
-<option value="CY">Zypern</option>
-            </template>
-            <template v-else>
-              <option value="AF">Afghanistan</option>
-<option value="AX">Åland Islands</option>
-<option value="AL">Albania</option>
-<option value="DZ">Algeria</option>
-<option value="AS">American Samoa</option>
-<option value="AD">Andorra</option>
-<option value="AO">Angola</option>
-<option value="AI">Anguilla</option>
-<option value="AQ">Antarctica</option>
-<option value="AG">Antigua and Barbuda</option>
-<option value="AR">Argentina</option>
-<option value="AM">Armenia</option>
-<option value="AW">Aruba</option>
-<option value="AU">Australia</option>
-<option value="AT">Austria</option>
-<option value="AZ">Azerbaijan</option>
-<option value="BS">Bahamas</option>
-<option value="BH">Bahrain</option>
-<option value="BD">Bangladesh</option>
-<option value="BB">Barbados</option>
-<option value="BY">Belarus</option>
-<option value="BE">Belgium</option>
-<option value="BZ">Belize</option>
-<option value="BJ">Benin</option>
-<option value="BM">Bermuda</option>
-<option value="BT">Bhutan</option>
-<option value="BO">Bolivia, Plurinational State of</option>
-<option value="BQ">Bonaire, Sint Eustatius and Saba</option>
-<option value="BA">Bosnia and Herzegovina</option>
-<option value="BW">Botswana</option>
-<option value="BV">Bouvet Island</option>
-<option value="BR">Brazil</option>
-<option value="IO">British Indian Ocean Territory</option>
-<option value="BN">Brunei Darussalam</option>
-<option value="BG">Bulgaria</option>
-<option value="BF">Burkina Faso</option>
-<option value="BI">Burundi</option>
-<option value="KH">Cambodia</option>
-<option value="CM">Cameroon</option>
-<option value="CA">Canada</option>
-<option value="CV">Cape Verde</option>
-<option value="KY">Cayman Islands</option>
-<option value="CF">Central African Republic</option>
-<option value="TD">Chad</option>
-<option value="CL">Chile</option>
-<option value="CN">China</option>
-<option value="CX">Christmas Island</option>
-<option value="CC">Cocos (Keeling) Islands</option>
-<option value="CO">Colombia</option>
-<option value="KM">Comoros</option>
-<option value="CG">Congo</option>
-<option value="CD">Congo, the Democratic Republic of the</option>
-<option value="CK">Cook Islands</option>
-<option value="CR">Costa Rica</option>
-<option value="CI">Côte d'Ivoire</option>
-<option value="HR">Croatia</option>
-<option value="CU">Cuba</option>
-<option value="CW">Curacao</option>
-<option value="CY">Cyprus</option>
-<option value="CZ">Czech Republic</option>
-<option value="DK">Denmark</option>
-<option value="DJ">Djibouti</option>
-<option value="DM">Dominica</option>
-<option value="DO">Dominican Republic</option>
-<option value="EC">Ecuador</option>
-<option value="EG">Egypt</option>
-<option value="SV">El Salvador</option>
-<option value="GQ">Equatorial Guinea</option>
-<option value="ER">Eritrea</option>
-<option value="EE">Estonia</option>
-<option value="ET">Ethiopia</option>
-<option value="EU">European Union</option>
-<option value="FK">Falkland Islands (Malvinas)</option>
-<option value="FO">Faroe Islands</option>
-<option value="FJ">Fiji</option>
-<option value="FI">Finland</option>
-<option value="FR">France</option>
-<option value="GF">French Guiana</option>
-<option value="PF">French Polynesia</option>
-<option value="TF">French Southern Territories</option>
-<option value="GA">Gabon</option>
-<option value="GM">Gambia</option>
-<option value="GE">Georgia</option>
-<option value="DE">Germany</option>
-<option value="GH">Ghana</option>
-<option value="GI">Gibraltar</option>
-<option value="GR">Greece</option>
-<option value="GL">Greenland</option>
-<option value="GD">Grenada</option>
-<option value="GP">Guadeloupe</option>
-<option value="GU">Guam</option>
-<option value="GT">Guatemala</option>
-<option value="GG">Guernsey</option>
-<option value="GN">Guinea</option>
-<option value="GW">Guinea-Bissau</option>
-<option value="GY">Guyana</option>
-<option value="HT">Haiti</option>
-<option value="HM">Heard Island and McDonald Islands</option>
-<option value="VA">Holy See (Vatican City State)</option>
-<option value="HN">Honduras</option>
-<option value="HK">Hong Kong</option>
-<option value="HU">Hungary</option>
-<option value="IS">Iceland</option>
-<option value="IN">India</option>
-<option value="ID">Indonesia</option>
-<option value="IR">Iran, Islamic Republic of</option>
-<option value="IQ">Iraq</option>
-<option value="IE">Ireland</option>
-<option value="IM">Isle of Man</option>
-<option value="IL">Israel</option>
-<option value="IT">Italy</option>
-<option value="JM">Jamaica</option>
-<option value="JP">Japan</option>
-<option value="JE">Jersey</option>
-<option value="JO">Jordan</option>
-<option value="KZ">Kazakhstan</option>
-<option value="KE">Kenya</option>
-<option value="KI">Kiribati</option>
-<option value="KP">Korea, Democratic People's Republic of</option>
-<option value="KR">Korea, Republic of</option>
-<option value="XK">Kosovo</option>
-<option value="KW">Kuwait</option>
-<option value="KG">Kyrgyzstan</option>
-<option value="LA">Lao People's Democratic Republic</option>
-<option value="LV">Latvia</option>
-<option value="LB">Lebanon</option>
-<option value="LS">Lesotho</option>
-<option value="LR">Liberia</option>
-<option value="LY">Libyan Arab Jamahiriya</option>
-<option value="LI">Liechtenstein</option>
-<option value="LT">Lithuania</option>
-<option value="LU">Luxembourg</option>
-<option value="MO">Macao</option>
-<option value="MK">Macedonia, the Former Yugoslav Republic of</option>
-<option value="MG">Madagascar</option>
-<option value="MW">Malawi</option>
-<option value="MY">Malaysia</option>
-<option value="MV">Maldives</option>
-<option value="ML">Mali</option>
-<option value="MT">Malta</option>
-<option value="MH">Marshall Islands</option>
-<option value="MQ">Martinique</option>
-<option value="MR">Mauritania</option>
-<option value="MU">Mauritius</option>
-<option value="YT">Mayotte</option>
-<option value="MX">Mexico</option>
-<option value="FM">Micronesia, Federated States of</option>
-<option value="MD">Moldova, Republic of</option>
-<option value="MC">Monaco</option>
-<option value="MN">Mongolia</option>
-<option value="ME">Montenegro</option>
-<option value="MS">Montserrat</option>
-<option value="MA">Morocco</option>
-<option value="MZ">Mozambique</option>
-<option value="MM">Myanmar</option>
-<option value="NA">Namibia</option>
-<option value="NR">Nauru</option>
-<option value="NP">Nepal</option>
-<option value="NL">Netherlands</option>
-<option value="AN">Netherlands Antilles</option>
-<option value="NC">New Caledonia</option>
-<option value="NZ">New Zealand</option>
-<option value="NI">Nicaragua</option>
-<option value="NE">Niger</option>
-<option value="NG">Nigeria</option>
-<option value="NU">Niue</option>
-<option value="NF">Norfolk Island</option>
-<option value="MP">Northern Mariana Islands</option>
-<option value="NO">Norway</option>
-<option value="OM">Oman</option>
-<option value="PK">Pakistan</option>
-<option value="PW">Palau</option>
-<option value="PS">Palestinian Territory, Occupied</option>
-<option value="PA">Panama</option>
-<option value="PG">Papua New Guinea</option>
-<option value="PY">Paraguay</option>
-<option value="PE">Peru</option>
-<option value="PH">Philippines</option>
-<option value="PN">Pitcairn</option>
-<option value="PL">Poland</option>
-<option value="PT">Portugal</option>
-<option value="PR">Puerto Rico</option>
-<option value="QA">Qatar</option>
-<option value="RE">Reunion</option>
-<option value="RO">Romania</option>
-<option value="RU">Russian Federation</option>
-<option value="RW">Rwanda</option>
-<option value="BL">Saint Barthélemy</option>
-<option value="SH">Saint Helena</option>
-<option value="KN">Saint Kitts and Nevis</option>
-<option value="LC">Saint Lucia</option>
-<option value="MF">Saint Martin</option>
-<option value="PM">Saint Pierre and Miquelon</option>
-<option value="VC">Saint Vincent and the Grenadines</option>
-<option value="WS">Samoa</option>
-<option value="SM">San Marino</option>
-<option value="ST">Sao Tome and Principe</option>
-<option value="SA">Saudi Arabia</option>
-<option value="SN">Senegal</option>
-<option value="RS">Serbia</option>
-<option value="SC">Seychelles</option>
-<option value="SL">Sierra Leone</option>
-<option value="SG">Singapore</option>
-<option value="SX">Sint Maarten (Dutch Part)</option>
-<option value="SK">Slovakia</option>
-<option value="SI">Slovenia</option>
-<option value="SB">Solomon Islands</option>
-<option value="SO">Somalia</option>
-<option value="ZA">South Africa</option>
-<option value="GS">South Georgia and the South Sandwich Islands</option>
-<option value="SS">South Sudan</option>
-<option value="ES">Spain</option>
-<option value="LK">Sri Lanka</option>
-<option value="SD">Sudan</option>
-<option value="SR">Suriname</option>
-<option value="SJ">Svalbard and Jan Mayen</option>
-<option value="SZ">Swaziland</option>
-<option value="SE">Sweden</option>
-<option value="CH">Switzerland</option>
-<option value="SY">Syrian Arab Republic</option>
-<option value="TW">Taiwan, Province of China</option>
-<option value="TJ">Tajikistan</option>
-<option value="TZ">Tanzania, United Republic of</option>
-<option value="TH">Thailand</option>
-<option value="TL">Timor-Leste</option>
-<option value="TG">Togo</option>
-<option value="TK">Tokelau</option>
-<option value="TO">Tonga</option>
-<option value="TT">Trinidad and Tobago</option>
-<option value="TN">Tunisia</option>
-<option value="TR">Turkey</option>
-<option value="TM">Turkmenistan</option>
-<option value="TC">Turks and Caicos Islands</option>
-<option value="TV">Tuvalu</option>
-<option value="UG">Uganda</option>
-<option value="UA">Ukraine</option>
-<option value="AE">United Arab Emirates</option>
-<option value="GB">United Kingdom</option>
-<option value="US">United States</option>
-<option value="UM">United States Minor Outlying Islands</option>
-<option value="UY">Uruguay</option>
-<option value="UZ">Uzbekistan</option>
-<option value="VU">Vanuatu</option>
-<option value="VE">Venezuela, Bolivarian Republic of</option>
-<option value="VN">Viet Nam</option>
-<option value="VG">Virgin Islands, British</option>
-<option value="VI">Virgin Islands, U.S.</option>
-<option value="WF">Wallis and Futuna</option>
-<option value="EH">Western Sahara</option>
-<option value="XW">Worldwide</option>
-<option value="YE">Yemen</option>
-<option value="ZM">Zambia</option>
-<option value="ZW">Zimbabwe</option>
-            </template>
-          </select>
-          
         </div>
           </div>
           
@@ -2478,6 +893,24 @@
             </div>
             </div>
               <!--        -->
+        <div class="form-control w-full mb-4">
+        <div class="flex flex-row items-center">
+          <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('temporal.periodName', 'periodName') }}</span><span class="text-warning font-black">~</span></label>
+          
+          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('temporal.periodName', 'The name of the project period to which this activity is assigned.', 'doc')" v-if="getLabel('temporal.periodName', 'The name of the project period to which this activity is assigned.', 'doc')">
+                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
+              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
+                          fill="currentColor"
+                          stroke-width="2.5"
+                          stroke="currentColor"
+                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
+              </button>
+              </div>
+              </div>
+          <input type="text"      v-model="drawerForm['periodName']" class="input input-bordered w-full validator " :placeholder="getLabel('temporal.periodName', 'e.g. Pilot phase digitisation programme 2025', 'plac')" />
+              <div class="validator-hint">{{t('validationHint')}}</div>        
+          
+          </div>
           <div class="grid grid-cols-1 gap-x-6">
             
         <div class="form-control w-full mb-4">
@@ -2519,24 +952,7 @@
           </div>
           
         </div>
-        <div class="form-control w-full mb-4">
-        <div class="flex flex-row items-center">
-          <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('temporal.periodName', 'periodName') }}</span><span class="text-warning font-black">~</span></label>
-          
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('temporal.periodName', 'The name of the project period to which this activity is assigned.', 'doc')" v-if="getLabel('temporal.periodName', 'The name of the project period to which this activity is assigned.', 'doc')">
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-              </button>
-              </div>
-              </div>
-                        <input type="text"      v-model="drawerForm['periodName']" class="input input-bordered w-full validator " :placeholder="getLabel('temporal.periodName', 'e.g. Pilot phase digitisation programme 2025', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
-          
-          </div></div>
+        </div>
       </div>
       <div v-if="activeDrawerField === 'spatial.locationSet.historicalName'">
         
@@ -2558,10 +974,45 @@
                <input type="checkbox" v-model="drawerForm['#preferred']" class="checkbox checkbox-sm checkbox-primary" /></div>
       </div>
       <div v-if="activeDrawerField === 'consistsOf'">
+        <!-- Quick 3D Workflow Presets -->
+        <div class="mb-4 p-3 bg-base-200/50 rounded-xl border border-base-300">
+          <div class="text-xs font-bold uppercase tracking-wider text-base-content/70 mb-2 flex items-center gap-1.5">
+            <span>⚡</span>
+            {{ currentLocale === 'de' ? 'Schnellauswahl für 3D-Digitalisierungsworkflows:' : 'Quick Presets for 3D Digitization Workflows:' }}
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <button
+              type="button"
+              class="btn btn-xs btn-neutral gap-1"
+              @click="applyConsistsOfPreset('structured_light')"
+            >
+              <span>📸</span>
+              {{ currentLocale === 'de' ? 'Streifenlicht-Scanning (Artec Leo)' : 'Structured-Light Scanning (Artec Leo)' }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-xs btn-neutral gap-1"
+              @click="applyConsistsOfPreset('photogrammetry')"
+            >
+              <span>📷</span>
+              {{ currentLocale === 'de' ? 'Nahbereichs-Photogrammetrie (Nikon Z8 / SfM)' : 'Photogrammetry (Nikon Z8 / SfM)' }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-xs btn-neutral gap-1"
+              @click="applyConsistsOfPreset('mesh_processing')"
+            >
+              <span>💻</span>
+              {{ currentLocale === 'de' ? 'Mesh-Verarbeitung & PBR (Blender)' : 'Mesh Processing & PBR (Blender)' }}
+            </button>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 gap-x-6">
         <div class="form-control w-full mb-4">
         <div class="flex flex-row items-center">
           <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('consistsOf.hadSpecificPurpose', 'hadSpecificPurpose') }}</span><span class="text-accent font-black">*</span></label>
+
           
           <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('consistsOf.hadSpecificPurpose', 'A free text note describing the specific goal or purpose of this activity – e.g. carrying out 3D data acquisition, restoration, completing a survey, constructing a building.', 'doc')" v-if="getLabel('consistsOf.hadSpecificPurpose', 'A free text note describing the specific goal or purpose of this activity – e.g. carrying out 3D data acquisition, restoration, completing a survey, constructing a building.', 'doc')">
                 <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
@@ -2772,6 +1223,13 @@
     @close="isPersonPickerOpen = false"
     @select="handlePersonsSelected"
   />
+  <OrganizationPickerModal
+    :isOpen="isOrgPickerOpen"
+    mode="pick"
+    :current-locale="currentLocale"
+    @close="isOrgPickerOpen = false"
+    @select="handleOrgSelected"
+  />
   <dialog ref="templateModal" class="modal">
     <div class="modal-box max-w-md">
       <h3 class="font-bold text-lg mb-6">{{ currentLocale === 'de' ? 'Vorlage wählen' : 'Choose a Template' }}</h3>
@@ -2835,13 +1293,17 @@
 </template>
 
 <script setup>
-import { ref, reactive, inject, shallowRef, onMounted } from 'vue';
+import { ref, reactive, inject, shallowRef, onMounted, onBeforeUnmount, computed, watch } from 'vue';
 import { load } from '@tauri-apps/plugin-store';
 import SkosmosAutocomplete from '../components/SkosmosAutocomplete.vue';
 import PersonPickerModal from '../components/PersonPickerModal.vue';
-import InstitutionAutocomplete from '../components/InstitutionAutocomplete.vue';
-import PlaceAutocomplete from '../components/PlaceAutocomplete.vue';
+import OrganizationPickerModal from '../components/OrganizationPickerModal.vue';
+import ActivityDcRelations from '../components/ActivityDcRelations.vue';
+import ActivityParadata from '../components/ActivityParadata.vue';
 import {
+  savedOrganizations,
+  recentOrganizations,
+  recordRecentOrganization,
   defaultMetadataLanguage,
   globalRights,
   savedContacts,
@@ -2851,7 +1313,12 @@ import {
   addSavedActor,
   addOrUpdatePerson,
   normalizeYearDate,
-  collectionInstitution
+  formatGeopoliticalCountry,
+  resolveGeopoliticalArea,
+  collectionInstitution,
+  projectHeritageAssets,
+  projectDigitalResources,
+  updateProjectActivities
 } from '../utils/sharedState.js';
 
 const currentLocale = inject('currentLocale', ref('en'));
@@ -4121,6 +2588,7 @@ const maxDate = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1)
 const items = ref([]);
 const isEditing = ref(false);
 const editIndex = ref(null);
+
 const form = reactive({ 'recordInformation.id': '',
   'recordInformation.source': '',
   'recordInformation.source#lang': defaultMetadataLanguage.value || 'de',
@@ -4177,6 +2645,20 @@ const form = reactive({ 'recordInformation.id': '',
   'isPartOf': [],
   'hasCreated': [],
   'dcRelation': [] });
+
+const syncToActivityRegistry = () => {
+  const all = [...(items.value || [])];
+  if (form && (form['recordInformation.id'] || (form['appellation.name'] && form['appellation.name'].length > 0))) {
+    if (!all.some(it => it['recordInformation.id'] === form['recordInformation.id'])) {
+      all.push(form);
+    }
+  }
+  updateProjectActivities(all);
+};
+
+watch(() => [items.value, form['recordInformation.id'], form['appellation.name']], () => {
+  syncToActivityRegistry();
+}, { deep: true, immediate: true });
 
 // Language Selection Helpers
 const toggleLang = (fieldPath, code, isDrawer = false) => {
@@ -4238,6 +2720,57 @@ const activeDrawerField = ref('');
 const drawerEditIndex = ref(-1);
 const drawerForm = reactive({});
 
+const applyConsistsOfPreset = (type) => {
+  const isDe = currentLocale.value === 'de';
+  if (type === 'structured_light') {
+    drawerForm['hadSpecificPurpose'] = isDe
+      ? 'Hochpräzise berührungslose Streifenlicht-3D-Erfassung der Oberfläche zur Erstellung geometrisch exakter digitaler Zwillinge.'
+      : 'High-precision non-contact structured-light 3D scanning of the surface for accurate digital twin geometry.';
+    drawerForm['methods'] = isDe
+      ? 'Streifenlicht-Scanning (Structured light 3D scanning), automatische Punktwolken-Registrierung'
+      : 'Structured light 3D scanning, automatic point cloud alignment & registration';
+    drawerForm['techniques'] = isDe
+      ? 'Berührungsloses optisches Streifenprojektionsverfahren, Sub-Millimeter-Oberflächenabtastung'
+      : 'Non-contact optical fringe projection, sub-millimeter surface sampling';
+    drawerForm['materials'] = isDe
+      ? 'Kalibrierkörper, reflexionsminderndes Kreidespray (falls denkmalfachlich zulässig)'
+      : 'Calibration target, anti-reflective scanning spray where conservationally approved';
+    drawerForm['equipment'] = isDe
+      ? 'Hardware: Artec Leo 3D-Scanner (VCSEL Laser/Streifenlicht, 3D-Genauigkeit bis 0,1 mm); Software: Artec Studio 19 Professional'
+      : 'Hardware: Artec Leo 3D Scanner (VCSEL structured light, 0.1 mm 3D accuracy); Software: Artec Studio 19 Professional';
+  } else if (type === 'photogrammetry') {
+    drawerForm['hadSpecificPurpose'] = isDe
+      ? 'Nahbereichs-Photogrammetrie zur hochauflösenden Textur- und Farbdatenerfassung sowie Structure-from-Motion (SfM) Rekonstruktion.'
+      : 'Close-range photogrammetry for high-resolution texture & color recording and Structure-from-Motion (SfM) mesh generation.';
+    drawerForm['methods'] = isDe
+      ? 'Nahbereichs-Photogrammetrie (Close-range photogrammetry), Structure-from-Motion (SfM), Multi-View Stereo (MVS)'
+      : 'Close-range photogrammetry, Structure-from-Motion (SfM), Multi-View Stereo (MVS)';
+    drawerForm['techniques'] = isDe
+      ? 'Polarisierte Ringbeleuchtung (Cross-Polarisation zur Entspiegelung), Drehteller-gestütztes Multi-Winkel-Aufnahmeverfahren, Farbkalibrierung'
+      : 'Cross-polarised ring lighting, turntable multi-angle capture sequence, color chart calibration';
+    drawerForm['materials'] = isDe
+      ? 'X-Rite ColorChecker Passport, Maßstabsleisten mit Passmarken'
+      : 'X-Rite ColorChecker Passport, scale bars with coded targets';
+    drawerForm['equipment'] = isDe
+      ? 'Hardware: Nikon Z8 spiegellose Vollformatkamera (45.7 MP), Nikkor Z 50mm f/1.8 S, Polfilter, Studioblitze; Software: Agisoft Metashape Pro 2.1 / RealityCapture'
+      : 'Hardware: Nikon Z8 full-frame camera (45.7 MP), Nikkor Z 50mm f/1.8 S, circular polarizers, studio strobes; Software: Agisoft Metashape Pro 2.1 / RealityCapture';
+  } else if (type === 'mesh_processing') {
+    drawerForm['hadSpecificPurpose'] = isDe
+      ? 'Post-Processing der Scandaten: Bereinigung, Remeshing/Retopologie, UV-Unwrapping und physikbasiertes Textur-Baking (PBR).'
+      : 'Scan data post-processing: topology cleanup, retopology/decimation, UV unwrapping and physically based rendering (PBR) texture baking.';
+    drawerForm['methods'] = isDe
+      ? 'Polygondezimierung, Quad-Remeshing, Normal-Map Baking von High-Poly auf Low-Poly, PBR Texturierung'
+      : 'Polygon decimation, quad remeshing, normal map baking from high-poly to low-poly, PBR texture mapping';
+    drawerForm['techniques'] = isDe
+      ? 'Multiresolution Mesh Decimation, Non-overlapping UV-Karten-Generierung, Tangent-Space Normal Baking'
+      : 'Multiresolution mesh decimation, non-overlapping UV packing, tangent-space normal baking';
+    drawerForm['materials'] = '';
+    drawerForm['equipment'] = isDe
+      ? 'Software: Blender 4.3 LTS, Substance 3D Painter / Designer, Instant Meshes'
+      : 'Software: Blender 4.3 LTS, Substance 3D Painter / Designer, Instant Meshes';
+  }
+};
+
 // --- Template State and Logic ---
 const saveSuccessBadge = ref(false);
 const store = shallowRef(null);
@@ -4249,7 +2782,33 @@ const deleteTemplateModal = ref(null);
 const templateToDelete = ref(null);
 const newTemplateName = ref('');
 
+const formSnapshot = ref('');
+const isFormDirty = () => formSnapshot.value !== '' && JSON.stringify(form) !== formSnapshot.value;
+
+const handleInvalid = (event) => {
+  if (event?.target && typeof event.target.scrollIntoView === 'function') {
+    event.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    event.target.focus();
+  }
+};
+
+const handleKeydown = (e) => {
+  if (e.key === 'Escape' && isDrawerOpen.value) {
+    e.preventDefault();
+    closeDrawer();
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+    if (isDrawerOpen.value) {
+      e.preventDefault();
+      saveDrawer();
+    }
+  }
+};
+
 onMounted(async () => {
+  formSnapshot.value = JSON.stringify(form);
+  window.addEventListener('keydown', handleKeydown);
   try {
     store.value = await load('templates.json', { autoSave: true });
     for (const f of ['contacts', 'references', 'temporal', 'spatial']) {
@@ -4272,6 +2831,10 @@ onMounted(async () => {
     }
   }
 });
+
+const clearFormActors = () => {
+  form['actors'] = [];
+};
 
 const openTemplateModal = (field) => {
   activeTemplateField.value = field;
@@ -4384,6 +2947,97 @@ const quickAddActor = (actor) => {
   }
 };
 
+const isOrgPickerOpen = ref(false);
+const orgPickerTarget = ref('actors');
+
+const openOrgPicker = (target = 'actors') => {
+  orgPickerTarget.value = target;
+  isOrgPickerOpen.value = true;
+};
+
+const handleOrgSelected = (org) => {
+  if (!org) return;
+  recordRecentOrganization(org);
+  if (orgPickerTarget.value === 'actors') {
+    if (!form['actors']) form['actors'] = [];
+    const exists = form['actors'].some(a => (a.name || '').trim().toLowerCase() === (org.name || '').trim().toLowerCase());
+    if (!exists) {
+      form['actors'].push({
+        id: org.gnd || org.uri || '',
+        name: org.name,
+        roles: org.role || org.category || 'Institution / Organisation'
+      });
+    }
+  } else if (orgPickerTarget.value === 'contacts') {
+    if (!form['recordInformation.creation.contacts']) form['recordInformation.creation.contacts'] = [];
+    const exists = form['recordInformation.creation.contacts'].some(c => (c.name || '').trim().toLowerCase() === (org.name || '').trim().toLowerCase());
+    if (!exists) {
+      form['recordInformation.creation.contacts'].push({
+        name: org.name,
+        role: org.role || org.category || 'Organisation',
+        organization: org.name,
+        email: org.email || '',
+        'address.buildingName': org.buildingName || '',
+        'address.roadName': org.roadName || '',
+        'address.numberInRoad': org.numberInRoad || '',
+        'address.townOrCity': org.townOrCity || org.city || '',
+        'address.postcodeOrZipcode': org.postcodeOrZipcode || '',
+        'address.country': org.country || ''
+      });
+    }
+    if (activeDrawerField.value === 'recordInformation.creation.contacts') {
+      drawerForm['name'] = org.name;
+      drawerForm['organization'] = org.name;
+      drawerForm['address.buildingName'] = org.buildingName || '';
+      drawerForm['address.roadName'] = org.roadName || '';
+      drawerForm['address.numberInRoad'] = org.numberInRoad || '';
+      drawerForm['address.townOrCity'] = org.townOrCity || org.city || '';
+      drawerForm['address.postcodeOrZipcode'] = org.postcodeOrZipcode || '';
+      drawerForm['address.country'] = org.country || '';
+    }
+  } else if (orgPickerTarget.value === 'happenedAt') {
+    if (!form['happenedAt']) form['happenedAt'] = [];
+    const val = org.gnd ? `${org.name} (GND: ${org.gnd})` : org.name;
+    if (!form['happenedAt'].includes(val)) {
+      form['happenedAt'].push(val);
+    }
+  } else if (orgPickerTarget.value === 'spatial') {
+    selectSpatialOrg(org);
+  } else if (orgPickerTarget.value === 'source') {
+    form['recordInformation.source'] = org.name;
+  }
+  isOrgPickerOpen.value = false;
+};
+
+const selectSpatialOrg = (org) => {
+  if (!org) return;
+  recordRecentOrganization(org);
+  const orgLabel = org.gnd ? `${org.name} (GND: ${org.gnd})` : org.name;
+  form['spatial.locationSet.namedLocation'] = orgLabel;
+  form['spatial.locationSet.geopoliticalArea'] = org.townOrCity || org.city || '';
+  form['spatial.locationSet.geopoliticalAreaType'] = (org.townOrCity || org.city) ? 'city' : '';
+  form['happenedAt'] = [org.gnd ? `https://d-nb.info/gnd/${org.gnd}` : org.name];
+};
+
+const clearSpatialOrg = () => {
+  form['spatial.locationSet.namedLocation'] = '';
+  form['spatial.locationSet.geopoliticalArea'] = '';
+  form['spatial.locationSet.geopoliticalAreaType'] = '';
+  form['happenedAt'] = [];
+};
+
+const setSpatialFromCollection = () => {
+  if (!collectionInstitution.fullLabel) return;
+  form['spatial.locationSet.namedLocation'] = collectionInstitution.fullLabel;
+  form['spatial.locationSet.geopoliticalArea'] = collectionInstitution.city || '';
+  form['spatial.locationSet.geopoliticalAreaType'] = collectionInstitution.city ? 'city' : '';
+  if (collectionInstitution.gnd) {
+    form['happenedAt'] = [`https://d-nb.info/gnd/${collectionInstitution.gnd}`];
+  } else {
+    form['happenedAt'] = [collectionInstitution.fullLabel];
+  }
+};
+
 const isPersonPickerOpen = ref(false);
 const personPickerMode = ref('actors');
 
@@ -4450,10 +3104,21 @@ const saveDrawer = () => {
 };
 
 const removeDrawerItem = (field, index) => {
-  if (confirm(t('deleteEntryPrompt'))) form[field].splice(index, 1);
+  if (Array.isArray(form[field])) {
+    form[field].splice(index, 1);
+  }
 };
 
 const save = () => {
+  if (!form['recordInformation.country']) {
+    form['recordInformation.country'] = collectionInstitution?.country || 'DE';
+  }
+  if (!form['recordInformation.language'] || form['recordInformation.language'].length === 0) {
+    form['recordInformation.language'] = defaultMetadataLanguage.value ? [defaultMetadataLanguage.value] : ['de'];
+  }
+  if (!form['recordInformation.metadataRights']) {
+    form['recordInformation.metadataRights'] = globalRights.metadataRights || 'https://creativecommons.org/publicdomain/zero/1.0/deed.de';
+  }
   if (Array.isArray(form['consistsOf'])) {
     form['consistsOf'].forEach(item => {
       if (item && item.startDate) item.startDate = normalizeYearDate(item.startDate);
@@ -4473,6 +3138,7 @@ const save = () => {
     isEditing.value = true;
     editIndex.value = items.value.length - 1;
   }
+  formSnapshot.value = JSON.stringify(form);
   saveSuccessBadge.value = true;
   setTimeout(() => {
     saveSuccessBadge.value = false;
@@ -4489,16 +3155,15 @@ const edit = (index) => {
       preferredLanguages[k] = form[k][0] || '';
     }
   });
+  formSnapshot.value = JSON.stringify(form);
 };
 
 const remove = (index) => {
-  if(confirm(t('deletePrompt'))) {
-    items.value.splice(index, 1);
-    if (isEditing.value && editIndex.value === index) resetForm();
-  }
+  items.value.splice(index, 1);
+  if (isEditing.value && editIndex.value === index) resetForm(true);
 };
 
-const resetForm = () => {
+const resetForm = (force = false) => {
   const defLang = defaultMetadataLanguage.value || 'de';
   Object.keys(form).forEach(key => {
     if (Array.isArray(form[key])) {
@@ -4516,6 +3181,77 @@ const resetForm = () => {
   isEditing.value = false;
   editIndex.value = null;
   Object.keys(preferredLanguages).forEach(k => delete preferredLanguages[k]);
+  formSnapshot.value = JSON.stringify(form);
+  return true;
 };
-defineExpose({ items, form });
+
+const getActivityValidationStatus = (item) => {
+  if (!item) return { status: 'error', icon: '🔴', label: currentLocale.value === 'de' ? 'Fehler' : 'Error', details: [] };
+  const details = [];
+  const id = String(item['recordInformation.id'] || '').trim();
+  const actType = String(item['activityType'] || '').trim();
+
+  if (!id) details.push(currentLocale.value === 'de' ? 'ID fehlt' : 'Missing ID');
+  if (!actType) details.push(currentLocale.value === 'de' ? 'Aktivitätstyp fehlt' : 'Missing Activity Type');
+
+  if (details.length > 0) {
+    return {
+      status: 'error',
+      icon: '🔴',
+      label: currentLocale.value === 'de' ? 'Pflichtfelder fehlen' : 'Required missing',
+      details
+    };
+  }
+
+  const missingRec = [];
+  if (!item['actors'] || (Array.isArray(item['actors']) && item['actors'].length === 0)) {
+    missingRec.push(currentLocale.value === 'de' ? 'Akteure' : 'Actors');
+  }
+  const dateVal = item['event.date.date'] || item['event.date.dateRangeQualifier'] || '';
+  if (!dateVal) {
+    missingRec.push(currentLocale.value === 'de' ? 'Datum / Zeitraum' : 'Date / Period');
+  }
+
+  if (missingRec.length > 0) {
+    return {
+      status: 'warning',
+      icon: '🟡',
+      label: currentLocale.value === 'de' ? 'Empfohlene Felder fehlen' : 'Recommended missing',
+      details: missingRec
+    };
+  }
+
+  return {
+    status: 'valid',
+    icon: '🟢',
+    label: currentLocale.value === 'de' ? 'Valide & Vollständig' : 'Valid & Complete',
+    details: []
+  };
+};
+
+const validationStats = computed(() => {
+  let valid = 0;
+  let warning = 0;
+  let error = 0;
+  const list = items.value || [];
+  list.forEach(it => {
+    const s = getActivityValidationStatus(it).status;
+    if (s === 'valid') valid++;
+    else if (s === 'warning') warning++;
+    else error++;
+  });
+  return {
+    total: list.length,
+    valid,
+    warning,
+    error,
+    validPercent: list.length > 0 ? Math.round((valid / list.length) * 100) : 0
+  };
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown);
+});
+
+defineExpose({ items, form, save, resetForm, isFormDirty, validationStats, getActivityValidationStatus });
 </script>

@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='utf-8'?>
+<carareWrap xmlns="http://www.carare.eu/carareSchema">
+  <carare id="SPK-SMB-AEMP_AM3_01">
+    <collectionInformation>
+      <id>DE-MUS-015418_Tairkap_Ensemble</id>
+      <title lang="en" preferred="true">Funerary ensemble of the Lady Tairkap</title>
+      <title lang="de" preferred="false">Grabensemble der Dame Tairkap</title>
+      <source lang="de">Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz</source>
+      <rights>
+        <copyrightCreditLine lang="de">Staatliche Museen zu Berlin / BCDH Bonn University</copyrightCreditLine>
+        <accessRights lang="en">Open Access</accessRights>
+        <licence lang="en">https://creativecommons.org/licenses/by-sa/4.0/</licence>
+      </rights>
+      <statement lang="en" preferred="true">Central components of the burial of the Lady Tairkap (ÄM 3 - ÄM 6), 7th century BCE, Thebes.</statement>
+    </collectionInformation>
+    <heritageAssetIdentification>
+      <recordInformation>
+        <id>DE-MUS-015418_ÄM_3_01</id>
+        <source lang="de">Ägyptisches Museum und Papyrussammlung, Berlin</source>
+        <country lang="de">DE</country>
+      </recordInformation>
+      <appellation>
+        <name lang="de" preferred="true">Äußerer, anthropomorpher Sarg der Tairkap (Deckel)</name>
+        <name lang="en" preferred="false">Anthropoid Outer Coffin of a Woman Named Ta-ir-kap (Lid)</name>
+        <id>ÄM 3/01</id>
+      </appellation>
+      <description lang="de">Sargdeckel aus Holz der Spätzeit (25./26. Dynastie) aus Theben (Ägypten). Bemaltes Holz mit Inschriften.</description>
+      <characters>
+        <heritageAssetType lang="en" namespace="AAT" term="coffins" termUID="http://vocab.getty.edu/page/aat/300197585">coffins</heritageAssetType>
+        <temporal>
+          <timeSpan>
+            <startDate>-0746</startDate>
+            <endDate>-0525</endDate>
+          </timeSpan>
+          <periodName lang="en" preferred="true">Late Period (746 - 525 B.C.)</periodName>
+        </temporal>
+        <materials lang="en">wood</materials>
+        <dimensions>
+          <measurementType lang="en">Height</measurementType>
+          <units>centimeters</units>
+          <value>54</value>
+        </dimensions>
+      </characters>
+      <spatial>
+        <locationSet>
+          <namedLocation lang="en" preferred="true" namespace="TGN" term="Thebes" termUID="7001297">Thebes, Egypt</namedLocation>
+          <geopoliticalArea lang="en">Egypt</geopoliticalArea>
+        </locationSet>
+      </spatial>
+    </heritageAssetIdentification>
+    <digitalResource>
+      <recordInformation>
+        <id>SMB-SPK_DO_AM_3_01</id>
+      </recordInformation>
+      <appellation>
+        <name lang="en" preferred="true">Tairkap Outer Coffin Lid 3D-Mesh</name>
+        <id>DO_AM_3_01</id>
+      </appellation>
+      <type>3D</type>
+      <format lang="en">model/obj</format>
+      <link>https://id.smb.museum/object/12345/tairkap.obj</link>
+      <object>https://id.smb.museum/object/12345/tairkap_thumb.jpg</object>
+    </digitalResource>
+    <activity>
+      <recordInformation>
+        <id>ACT_BCDH_2021_TAIRKAP</id>
+      </recordInformation>
+      <appellation>
+        <name lang="en" preferred="true">3D Digitization of the Tairkap Funerary Ensemble</name>
+        <id>ACT_TAIRKAP_3D_2021</id>
+      </appellation>
+      <eventType lang="en" namespace="AAT" term="photogrammetry" termUID="http://vocab.getty.edu/page/aat/300053580">photogrammetry</eventType>
+    </activity>
+  </carare>
+</carareWrap>

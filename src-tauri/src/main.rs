@@ -97,14 +97,30 @@ async fn hash_file_with_progress(window: &Window, path: &str) -> Result<String, 
     let hash_result = hasher.finalize();
     Ok(format!("{:x}", hash_result))
 }
+
+#[tauri::command]
+async fn open_manual_window(app: tauri::AppHandle) -> Result<(), String> {
+    use tauri::Manager;
+    if let Some(window) = app.get_webview_window("manual") {
+        let _ = window.show();
+        let _ = window.set_focus();
+    } else {
+        tauri::WebviewWindowBuilder::new(&app, "manual", tauri::WebviewUrl::App("manual.html".into()))
+            .title("HERMES — Wissenschaftliches Referenzhandbuch / Scholarly Manual")
+            .inner_size(1280.0, 850.0)
+            .build()
+            .map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
+
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
-        // YOU MUST REGISTER THE COMMAND HERE:
-        .invoke_handler(tauri::generate_handler![generate_bag_hashes])
+        .invoke_handler(tauri::generate_handler![generate_bag_hashes, open_manual_window])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
-    hermes_lib::run()
 }

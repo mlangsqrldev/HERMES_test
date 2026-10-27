@@ -12,9 +12,10 @@
   "app": {
     "windows": [
       {
-        "title": "hermes",
-        "width": 800,
-        "height": 600
+        "title": "HERMES — Heritage Metadata Entry System",
+        "width": 1400,
+        "height": 900,
+        "resizable": true
       }
     ],
     "security": {

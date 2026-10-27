@@ -1,0 +1,318 @@
+<?xml version='1.0' encoding='utf-8'?>
+<carareWrap xmlns="http://www.carare.eu/carareSchema">
+  <carare id="SPK-SMB-ANT_SK740">
+    <collectionInformation>
+      <id>DE-MUS-814111_Nikarete_Collection</id>
+      <title lang="de" preferred="true">Grabnaiskos der Nikarete: Weibliches Fragment vom Grabmal der Nikarete</title>
+      <title lang="en" preferred="false">Female fragment of the tomb of Nikarete</title>
+      <source lang="de">Antikensammlung, Berlin. Staatliche Museen zu Berlin</source>
+      <contacts>
+        <name>Valentina Salcedo Paparoni</name>
+        <role>Documentation</role>
+        <organization>Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz</organization>
+      </contacts>
+      <contacts>
+        <name>Matthias Lang</name>
+        <role>Project Lead</role>
+        <organization>Bonn Center for Digital Humanities, Bonn University</organization>
+      </contacts>
+      <rights>
+        <copyrightCreditLine lang="de">Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz / BCDH Bonn University</copyrightCreditLine>
+        <accessRights lang="en">Open Access</accessRights>
+        <reproductionRights lang="en">CC BY-SA 4.0</reproductionRights>
+        <licence lang="en">https://creativecommons.org/licenses/by-sa/4.0/</licence>
+      </rights>
+      <language lang="de">de</language>
+      <language lang="de">en</language>
+      <statement lang="de" preferred="true">Grabnaiskos der Nikarete (SK 740). Weibliches Fragment eines attischen Grabmals der Spätklassik (ca. 330–320 v. Chr.) aus pentelischem Marmor auf Sandsteinsockel, gefunden im Kerameikos zu Athen. Erworben 1820. Hochpräzise 3D-Digitalisierung (Streifenlicht-Scanning Artec Leo und Makro-Photogrammetrie Nikon Z8) durchgeführt durch das Bonn Center for Digital Humanities (BCDH) im Auftrag der Staatlichen Museen zu Berlin.</statement>
+      <creation>
+        <createdOn>2025-04-17</createdOn>
+      </creation>
+      <keywords lang="de" namespace="HECTOR">Grabrelief</keywords>
+      <keywords lang="de" namespace="HECTOR">Grabmonument</keywords>
+      <keywords lang="de" namespace="AAT">Pentelischer Marmor</keywords>
+      <keywords lang="de" namespace="Pleiades">Kerameikos</keywords>
+      <keywords lang="de" namespace="Pleiades">Attika</keywords>
+      <keywords lang="de" namespace="HECTOR">Spätklassik</keywords>
+      <keywords lang="de" namespace="AAT">3D-Digitalisierung</keywords>
+      <keywords lang="de" namespace="AAT">Streifenlicht-Scanning</keywords>
+      <keywords lang="de" namespace="AAT">Photogrammetrie</keywords>
+      <keywords lang="de" namespace="HERMES">Digitaler Zwilling</keywords>
+      <keywords lang="de" namespace="CAA-Preprint">Digitaler Schatten</keywords>
+      <keywords lang="de" namespace="AAT">VR-Lernumgebung</keywords>
+      <coverage>
+        <temporal>
+          <timeSpan>
+            <startDate>-0330</startDate>
+            <endDate>-0320</endDate>
+          </timeSpan>
+          <periodName lang="de" preferred="true">Spätklassik (330 - 320 v. Chr.)</periodName>
+          <displayDate lang="de" preferred="true">330 – 320 v. Chr.</displayDate>
+        </temporal>
+        <spatial>
+          <locationSet>
+            <namedLocation lang="de" preferred="true" namespace="Pleiades" term="Kerameikos" termUID="579986">Kerameikos, Athen, Attika</namedLocation>
+            <geopoliticalArea lang="de">Griechenland</geopoliticalArea>
+          </locationSet>
+        </spatial>
+      </coverage>
+    </collectionInformation>
+    <heritageAssetIdentification>
+      <recordInformation>
+        <id>SK 740</id>
+        <source lang="de">Antikensammlung, Berlin. Staatliche Museen zu Berlin</source>
+        <country lang="de">DE</country>
+        <creation>
+          <date>2025-04-17</date>
+        </creation>
+        <language lang="de">de</language>
+        <language lang="de">en</language>
+        <metadataRights lang="en">https://creativecommons.org/licenses/by-sa/4.0/</metadataRights>
+      </recordInformation>
+      <appellation>
+        <name lang="de" preferred="true">Grabnaiskos der Nikarete: Weibliches Fragment vom Grabmal der Nikarete</name>
+        <name lang="en" preferred="false">Female fragment of the tomb of Nikarete</name>
+        <id>SK 740</id>
+      </appellation>
+      <description lang="de">Weibliches Fragment vom Grabmal der Nikarete. Attischer Grabnaiskos aus pentelischem Marmor auf Sandsteinsockel. Dargestellt ist eine sitzende, trauernde Frauengestalt im Hochrelief. Gefunden im Kerameikos zu Athen. Datierung: Spätklassik, ca. 330–320 v. Chr. Inventarnummer SK 740 der Antikensammlung Berlin.</description>
+      <generalType>Artefact</generalType>
+      <actors>
+        <name lang="de">Nikarete</name>
+        <roles lang="de">Verstorbene / Dargestellte</roles>
+      </actors>
+      <actors>
+        <id>https://lobid.org/organisations/DE-MUS-814111</id>
+        <name lang="de">Antikensammlung, Staatliche Museen zu Berlin</name>
+        <roles lang="de">Eigentümer / Verwahrer</roles>
+      </actors>
+      <conditions>
+        <condition lang="de">Fragment erhalten (bestoßen, Kopf und rechte Hand beschädigt)</condition>
+        <conditionDate lang="de">2025-01-30</conditionDate>
+      </conditions>
+      <provenance lang="de">Gefunden im Kerameikos, Athen (Griechenland). Erworben 1820 für die Antikensammlung Berlin. Provenienznachweis: https://doi.org/10.11588/diglit.69318#0219</provenance>
+      <characters>
+        <heritageAssetType lang="de" namespace="HECTOR" term="Grabrelief" termUID="http://vocabs.bcdh.uni-bonn.de/hector_heritage_assets/concept_9b922858">Grabrelief</heritageAssetType>
+        <heritageAssetType lang="de" namespace="AAT" term="tombstone" termUID="http://vocab.getty.edu/page/aat/300005923">tombstone</heritageAssetType>
+        <heritageAssetType lang="de" namespace="AAT" term="sculpture" termUID="http://vocab.getty.edu/page/aat/300184633">sculpture</heritageAssetType>
+        <heritageAssetType lang="de" namespace="AAT" term="pedestal" termUID="http://vocab.getty.edu/page/aat/300001744">pedestal</heritageAssetType>
+        <heritageAssetType lang="de" namespace="AAT" term="relief" termUID="http://vocab.getty.edu/page/aat/300053622">relief</heritageAssetType>
+        <temporal>
+          <timeSpan>
+            <startDate>-0330</startDate>
+            <endDate>-0320</endDate>
+          </timeSpan>
+          <periodName lang="de" preferred="true">Spätklassik (330 - 320 v. Chr.)</periodName>
+          <displayDate lang="de" preferred="true">330 – 320 v. Chr.</displayDate>
+        </temporal>
+        <materials lang="de">Pentelischer Marmor</materials>
+        <materials lang="de">Sandstein</materials>
+        <dimensions>
+          <extent lang="en">base</extent>
+          <measurementType lang="en">Height</measurementType>
+          <units>centimeters</units>
+          <value>118</value>
+        </dimensions>
+        <dimensions>
+          <extent lang="en">base</extent>
+          <measurementType lang="en">Length</measurementType>
+          <units>centimeters</units>
+          <value>56</value>
+        </dimensions>
+        <dimensions>
+          <extent lang="en">base</extent>
+          <measurementType lang="en">Weight</measurementType>
+          <units>kilograms</units>
+          <value>256</value>
+        </dimensions>
+        <dimensions>
+          <extent lang="en">pedestal</extent>
+          <measurementType lang="en">Height</measurementType>
+          <units>centimeters</units>
+          <value>90</value>
+        </dimensions>
+        <dimensions>
+          <extent lang="en">pedestal</extent>
+          <measurementType lang="en">Length</measurementType>
+          <units>centimeters</units>
+          <value>59</value>
+        </dimensions>
+        <dimensions>
+          <extent lang="en">pedestal</extent>
+          <measurementType lang="en">Width</measurementType>
+          <units>centimeters</units>
+          <value>40</value>
+        </dimensions>
+      </characters>
+      <spatial>
+        <locationSet>
+          <namedLocation lang="de" preferred="true" namespace="Pleiades" term="Kerameikos" termUID="579986">Kerameikos, Athen, Attika</namedLocation>
+          <geopoliticalArea lang="de">Griechenland</geopoliticalArea>
+          <historicalName lang="de" preferred="true">Kerameikos</historicalName>
+        </locationSet>
+      </spatial>
+      <repositoryLocation lang="de">Antikensammlung, Berlin. Staatliche Museen zu Berlin (ISIL: DE-MUS-814111, Inv.-Nr. SK 740)</repositoryLocation>
+      <rights>
+        <copyrightCreditLine lang="de">Antikensammlung, Staatliche Museen zu Berlin – Preußischer Kulturbesitz</copyrightCreditLine>
+        <accessRights lang="en">Freely accessible</accessRights>
+        <licence lang="en">https://creativecommons.org/licenses/by-sa/4.0/</licence>
+      </rights>
+      <references>
+        <appellation>
+          <name lang="de">Permalink SMB Objekt 699203</name>
+          <id>https://id.smb.museum/object/699203</id>
+        </appellation>
+        <link>https://id.smb.museum/object/699203</link>
+      </references>
+      <references>
+        <appellation>
+          <name lang="de">Diglit Provenienzbericht 1820</name>
+          <id>https://doi.org/10.11588/diglit.69318#0219</id>
+        </appellation>
+        <link>https://doi.org/10.11588/diglit.69318#0219</link>
+      </references>
+      <hasRepresentation>DO_3816816_HP</hasRepresentation>
+      <hasRepresentation>DO_3816816_LP</hasRepresentation>
+      <wasDigitizedBy>ACT_BCDH_2025_NIKARETE</wasDigitizedBy>
+    </heritageAssetIdentification>
+    <digitalResource>
+      <recordInformation>
+        <id>DO_3816816_HP</id>
+        <source lang="en">Bonn Center for Digital Humanities, Bonn University</source>
+        <country lang="de">DE</country>
+        <creation>
+          <date>2025-04-19</date>
+        </creation>
+        <metadataRights lang="en">https://creativecommons.org/licenses/by-sa/4.0/</metadataRights>
+      </recordInformation>
+      <appellation>
+        <name lang="en" preferred="true">SK 740 Nikarete High-Poly Master 3D-Mesh (Artec Leo / Nikon Z8)</name>
+        <id>3816816_HP</id>
+      </appellation>
+      <description lang="en">High-Poly 3D Master Mesh of SK 740 Nikarete. Generated from structured-light 3D scanning with Artec Leo (resolution: 0.1 mm) and high-resolution texture photogrammetry with Nikon Z8. Mesh metrics: 15.8 million faces, 7.9 million vertices.</description>
+      <note lang="en">SK_740_Nikarete_HP.obj | SHA256: 1f6d9d3de5e9eb3db5ae0197d7518f484a02dd3ca9a525cb6f6dfcb6b0c3e04d | 06.03.2025 10:30:52</note>
+      <note lang="en">SK_740_Nikarete_HP.mtl | SHA256: 474852e87764e5c092abbb9ae222f0a0f1addea4b6d4ad1050a36ef5405fa711 | 19.04.2025 12:46:30</note>
+      <note lang="en">SK_740_Nikarete_HP.png | SHA256: d4cbe3b97c34bec8f58a9f083a24b6ab67636d0a5bd8edc72c80455cf859a3fe | 06.03.2025 10:30:52</note>
+      <type>3D</type>
+      <format lang="en">model/obj</format>
+      <format lang="en">image/png</format>
+      <formatDetails lang="en">High-Poly Wavefront OBJ + Material MTL + PNG 16k Texture</formatDetails>
+      <extent lang="en">15.8 million faces</extent>
+      <extent lang="en">7.9 million vertices</extent>
+      <extent lang="en">16384 x 16384 pixel texture</extent>
+      <created>2025-04-19</created>
+      <link>https://id.smb.museum/object/699203/SK_740_Nikarete_HP.obj</link>
+      <object>https://id.smb.museum/object/699203/SK_740_Nikarete_HP.png</object>
+      <isShownAt>https://id.smb.museum/object/699203</isShownAt>
+      <rights>
+        <copyrightCreditLine lang="de">Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz / BCDH Bonn University</copyrightCreditLine>
+        <accessRights lang="en">Open Access</accessRights>
+        <reproductionRights lang="en">CC BY-SA 4.0</reproductionRights>
+        <licence lang="en">https://creativecommons.org/licenses/by-sa/4.0/</licence>
+      </rights>
+      <isRepresentationOf>SK 740</isRepresentationOf>
+      <hasDerivative>DO_3816816_LP</hasDerivative>
+    </digitalResource>
+    <digitalResource>
+      <recordInformation>
+        <id>DO_3816816_LP</id>
+        <source lang="en">Bonn Center for Digital Humanities, Bonn University</source>
+        <country lang="de">DE</country>
+        <creation>
+          <date>2025-03-06</date>
+        </creation>
+        <metadataRights lang="en">https://creativecommons.org/licenses/by-sa/4.0/</metadataRights>
+      </recordInformation>
+      <appellation>
+        <name lang="en" preferred="true">SK 740 Nikarete Low-Poly Real-Time Model (VR Derivative with PBR Maps)</name>
+        <id>3816816_LP</id>
+      </appellation>
+      <description lang="en">Decimated, real-time ready 3D mesh designed for WebXR and Virtual Reality (VR Kerameikos Learning Environment). Includes baked Normal Map, Ambient Occlusion Map, and transferred diffuse texture.</description>
+      <note lang="en">SK_740_Nikarete_LP.obj | SHA256: f413506cdd1b9c11a935b8134bf9601bdf9368fe64556b1420bea816e8e841bf | 06.03.2025 11:09:50</note>
+      <note lang="en">sk_740_nikarete_lp_uv_Ambient Occlusion Map from Mesh.jpg | SHA256: 1c9070d58ae52243ca4b42e694055a96d52eae91fc839d45aedc14c0d346c380</note>
+      <note lang="en">sk_740_nikarete_lp_uv_Normal Map from Mesh.jpg | SHA256: b31f5835a3b7a19bc8b69a3fe3056d5134b35f0a4c68ec370370d2f4d01c6642</note>
+      <note lang="en">sk_740_nikarete_lp_uv_Transferred Texture from Mesh.jpg | SHA256: 690d2cc6641777c2feb5e197a5fba351305caa68c68bcc909506cd6652fd0698</note>
+      <type>3D</type>
+      <format lang="en">model/obj</format>
+      <format lang="en">image/jpeg</format>
+      <formatDetails lang="en">Low-Poly OBJ + PBR Maps (Normal, AO, Transferred Diffuse)</formatDetails>
+      <created>2025-03-06</created>
+      <link>https://id.smb.museum/object/699203/SK_740_Nikarete_LP.obj</link>
+      <object>https://id.smb.museum/object/699203/sk_740_nikarete_lp_uv_Transferred Texture from Mesh.jpg</object>
+      <isShownAt>https://id.smb.museum/object/699203</isShownAt>
+      <rights>
+        <copyrightCreditLine lang="de">Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz / BCDH Bonn University</copyrightCreditLine>
+        <accessRights lang="en">Open Access</accessRights>
+        <reproductionRights lang="en">CC BY-SA 4.0</reproductionRights>
+        <licence lang="en">https://creativecommons.org/licenses/by-sa/4.0/</licence>
+      </rights>
+      <isRepresentationOf>SK 740</isRepresentationOf>
+      <isDerivativeOf>DO_3816816_HP</isDerivativeOf>
+    </digitalResource>
+    <activity>
+      <recordInformation>
+        <id>ACT_BCDH_2025_NIKARETE</id>
+        <source lang="en">Bonn Center for Digital Humanities, Bonn University</source>
+        <country lang="de">DE</country>
+        <creation>
+          <date>2025-01-30</date>
+        </creation>
+        <metadataRights lang="en">https://creativecommons.org/licenses/by-sa/4.0/</metadataRights>
+      </recordInformation>
+      <appellation>
+        <name lang="de" preferred="true">3D-Digitalisierung und Texturierung des Grabmals der Nikarete (SK 740)</name>
+        <id>ACT_NIKARETE_3D_2025</id>
+      </appellation>
+      <description lang="de">Streifenlicht-Scanning (Artec Leo, 0,1 mm) und Makro-Photogrammetrie (Nikon Z8, Textur 16384x16384 px) des Grabmals der Nikarete (SK 740). Datenverarbeitung in Artec Studio 19, Blender 4.2, Substance Designer 14 und Lightroom 14.1. Erstellung von Master High-Poly und VR Low-Poly Derivaten.</description>
+      <hasGeneralPurpose lang="en">Capture &amp; Representation (3D Documentation and Interactive Virtual Reality Environment)</hasGeneralPurpose>
+      <eventType lang="en" namespace="AAT" term="3D digitisation" termUID="http://vocab.getty.edu/page/aat/300266025">3D digitisation</eventType>
+      <actors>
+        <id>https://d-nb.info/gnd/36150-1</id>
+        <name lang="de">Bonn Center for Digital Humanities, Bonn University</name>
+        <roles lang="en">digitizer</roles>
+      </actors>
+      <actors>
+        <id>https://lobid.org/organisations/DE-MUS-710014</id>
+        <name lang="de">Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz</name>
+        <roles lang="en">documented_by</roles>
+      </actors>
+      <temporal>
+        <timeSpan>
+          <startDate>2025-01-30</startDate>
+          <endDate>2025-04-19</endDate>
+        </timeSpan>
+        <displayDate lang="de" preferred="true">30.01.2025 – 19.04.2025</displayDate>
+      </temporal>
+      <spatial>
+        <locationSet>
+          <namedLocation lang="de" preferred="true">Antikensammlung, Berlin. Staatliche Museen zu Berlin</namedLocation>
+        </locationSet>
+      </spatial>
+      <consistsOf>
+        <hadSpecificPurpose lang="de">Datenerfassung (Capture) – Streifenlicht-Scanning &amp; Makro-Photogrammetrie</hadSpecificPurpose>
+        <startDate>2025-01-30</startDate>
+        <endDate>2025-01-30</endDate>
+        <methods lang="en">Structured-light 3D scanning</methods>
+        <methods lang="en">Close-range photogrammetry</methods>
+        <techniques lang="de">Freihand-Erfassung im Ausstellungsraum (keine Stative/Kabel erlaubt). Grenzen: Rückseite wandseitig und Unterseite aus konservatorischen Gründen nicht erfasst (Limit).</techniques>
+        <materials lang="de">Pentelischer Marmor</materials>
+        <materials lang="de">Sandstein</materials>
+        <equipment lang="en">Artec Leo (structured-light 3D scanner, 0.1 mm resolution)</equipment>
+        <equipment lang="en">Nikon Z8 (digital camera, 16k textures)</equipment>
+      </consistsOf>
+      <consistsOf>
+        <hadSpecificPurpose lang="de">Modellierung (Representation) – Master-Mesh &amp; VR-Echtzeitderivat</hadSpecificPurpose>
+        <startDate>2025-02-01</startDate>
+        <endDate>2025-04-19</endDate>
+        <methods lang="en">High-poly scan fusion, Mesh decimation, PBR texture baking</methods>
+        <techniques lang="de">Sandsteinsockel für didaktische VR-Nutzung entfernt (Entscheidung). Marmor-Transluzenz mittels Subsurface Scattering simuliert (Simulation). Normal- und AO-Maps aus High-Poly-Master gebacken. Mesh-Fusion und Oberflächenschließung via Artec Studio 19 (deklarierte Blackbox).</techniques>
+        <materials lang="de">Pentelischer Marmor</materials>
+        <equipment lang="en">Artec Studio 19</equipment>
+        <equipment lang="en">Blender 4.2</equipment>
+        <equipment lang="en">Substance Designer 14</equipment>
+        <equipment lang="en">Adobe Photoshop Lightroom 14.1</equipment>
+      </consistsOf>
+      <hasCreated>DO_3816816_HP</hasCreated>
+      <hasCreated>DO_3816816_LP</hasCreated>
+    </activity>
+  </carare>
+</carareWrap>

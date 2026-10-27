@@ -58,6 +58,26 @@ const defaultSeeds = {
     { label: 'Geometrische Periode', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_651a2eb3' },
     { label: 'Orientalisierende Periode', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_5fe19b67' },
     { label: 'Bronzezeit', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_5f4e0c4b' }
+  ],
+  keywords: [
+    { label: 'Grabrelief', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_heritage_assets/concept_9b922858', source: 'HECTOR' },
+    { label: 'Grabmonument', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_heritage_assets/concept_c97ec1e6', source: 'HECTOR' },
+    { label: 'Statue', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_heritage_assets/concept_40fa8b34', source: 'HECTOR' },
+    { label: 'Statuengruppe', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_heritage_assets/concept_a83004fb', source: 'HECTOR' },
+    { label: 'Relief', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_heritage_assets/concept_3081a4fd', source: 'HECTOR' },
+    { label: 'Sarkophag', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_heritage_assets/concept_d5445979', source: 'HECTOR' },
+    { label: 'Stele', uri: 'https://hector.bcdh.uni-bonn.de/steleon', source: 'HECTOR' },
+    { label: 'Büste', uri: 'https://hector.bcdh.uni-bonn.de/bust', source: 'HECTOR' },
+    { label: 'Tempel', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_heritage_assets/concept_3ce7e57c', source: 'HECTOR' },
+    { label: 'Altar', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_heritage_assets/concept_9863d832', source: 'HECTOR' },
+    { label: 'Marmor', uri: 'https://hector.bcdh.uni-bonn.de/marble', source: 'HECTOR' },
+    { label: 'Bronze', uri: 'https://hector.bcdh.uni-bonn.de/bronze', source: 'HECTOR' },
+    { label: 'Kalkstein', uri: 'https://hector.bcdh.uni-bonn.de/limestone', source: 'HECTOR' },
+    { label: 'Spätklassik', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_9c4fae85', source: 'HECTOR' },
+    { label: 'Hellenismus', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_b3634024', source: 'HECTOR' },
+    { label: 'Archaik', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_c0199182', source: 'HECTOR' },
+    { label: 'Klassische Periode', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_4a572b1e', source: 'HECTOR' },
+    { label: 'Römische Kaiserzeit', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_8b1d9bf5', source: 'HECTOR' }
   ]
 };
 
@@ -72,8 +92,11 @@ export function getRecentVocabList(vocabKey) {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          vocabRefs[key] = ref(parsed.slice(0, MAX_RECENT_TERMS));
-          return vocabRefs[key];
+          const filtered = parsed.filter(item => item && item.source !== 'Getty AAT');
+          if (filtered.length > 0) {
+            vocabRefs[key] = ref(filtered.slice(0, MAX_RECENT_TERMS));
+            return vocabRefs[key];
+          }
         }
       }
     } catch (e) {

@@ -103,7 +103,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
             <div>
               <label class="label py-1"><span class="label-text font-bold">{{ currentLocale === 'de' ? 'Name / Institution' : 'Name / Institution' }} *</span></label>
-              <input type="text" v-model="formData.name" required class="input input-sm input-bordered w-full" :placeholder="currentLocale === 'de' ? 'z.B. Dr. Olivia Zorn oder Ägyptisches Museum' : 'e.g. Dr. Olivia Zorn or Museum'" />
+              <input type="text" v-model="formData.name" required class="input input-sm input-bordered w-full" :placeholder="currentLocale === 'de' ? 'z. B. Max Mustermann oder Deutsches Archäologisches Institut' : 'e.g. Jane Doe or Archaeological Institute'" />
             </div>
 
             <div>
@@ -281,13 +281,25 @@
 
       <!-- Modal Footer -->
       <div class="p-4 bg-base-200/80 border-t border-base-300 flex items-center justify-between gap-3">
-        <div class="text-xs text-base-content/60">
-          <span v-if="mode !== 'manage'">
-            {{ selectedIds.size }} {{ currentLocale === 'de' ? 'Personen zur Übernahme markiert' : 'persons selected for import' }}
-          </span>
-          <span v-else>
-            {{ savedPersons.length }} {{ currentLocale === 'de' ? 'gespeicherte Personen im Gesamtpool' : 'saved persons in master pool' }}
-          </span>
+        <div class="flex items-center gap-3">
+          <div class="text-xs text-base-content/60">
+            <span v-if="mode !== 'manage'">
+              {{ selectedIds.size }} {{ currentLocale === 'de' ? 'Personen zur Übernahme markiert' : 'persons selected for import' }}
+            </span>
+            <span v-else>
+              {{ savedPersons.length }} {{ currentLocale === 'de' ? 'gespeicherte Personen im Gesamtpool' : 'saved persons in master pool' }}
+            </span>
+          </div>
+
+          <button
+            v-if="savedPersons.length > 0"
+            type="button"
+            class="btn btn-xs btn-ghost text-error hover:bg-error/10 gap-1 border border-error/30"
+            @click="handleClearAllPersons"
+            :title="currentLocale === 'de' ? 'Löscht alle gespeicherten Personen aus dem Datenpool' : 'Deletes all saved persons from master pool'"
+          >
+            🗑️ {{ currentLocale === 'de' ? 'Gesamten Pool leeren' : 'Clear All' }}
+          </button>
         </div>
 
         <div class="flex items-center gap-2">
@@ -319,7 +331,7 @@
 
 <script setup>
 import { ref, reactive, computed, inject } from 'vue';
-import { savedPersons, addOrUpdatePerson, removeSavedPerson, updateSavedPerson } from '../utils/sharedState.js';
+import { savedPersons, addOrUpdatePerson, removeSavedPerson, updateSavedPerson, clearAllPersons } from '../utils/sharedState.js';
 
 const props = defineProps({
   isOpen: {
@@ -407,13 +419,8 @@ const savePersonForm = () => {
 };
 
 const confirmDeletePerson = (person, index) => {
-  const promptText = currentLocale.value === 'de'
-    ? `Möchten Sie "${person.name}" wirklich aus dem zentralen Personen-Pool entfernen?`
-    : `Do you really want to remove "${person.name}" from the central person pool?`;
-  if (confirm(promptText)) {
-    removeSavedPerson(index);
-    selectedIds.delete(person.name);
-  }
+  removeSavedPerson(index);
+  selectedIds.delete(person.name);
 };
 
 const filteredPersons = computed(() => {
@@ -495,6 +502,11 @@ const confirmSelection = () => {
 
   emit('select', formattedOutput);
   emitClose();
+};
+
+const handleClearAllPersons = () => {
+  clearAllPersons();
+  selectedIds.clear();
 };
 
 const emitClose = () => {

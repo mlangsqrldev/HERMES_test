@@ -14,7 +14,7 @@
           @keydown.escape="close"
           @focus="onFocus"
           :placeholder="placeholder || (currentLocale === 'de' ? 'Einrichtung / GND suchen (z.B. Antikensammlung Berlin)...' : 'Search institution / GND (e.g. Antikensammlung Berlin)...')"
-          class="input input-sm input-bordered w-full pr-8 text-xs"
+          :class="inputClass || 'input input-sm input-bordered w-full pr-8 text-xs'"
           autocomplete="off"
         />
         <!-- Loading spinner / clear -->
@@ -72,12 +72,14 @@
 
 <script setup>
 import { ref, watch, inject, onBeforeUnmount } from 'vue';
+import { savedOrganizations } from '../utils/sharedState.js';
 
 const props = defineProps({
   modelValue: { type: String, default: '' },
   inputId: { type: String, default: 'institution-autocomplete' },
   placeholder: { type: String, default: '' },
-  emitMode: { type: String, default: 'uri' }, // 'uri' | 'gnd' | 'label' | 'isil' (alias for gnd)
+  inputClass: { type: String, default: '' },
+  emitMode: { type: String, default: 'label' }, // 'label' | 'gnd' | 'uri'
 });
 
 const emit = defineEmits(['update:modelValue', 'select']);
@@ -97,7 +99,7 @@ const queryCache = new Map();
 
 // If modelValue is set externally, show it as text
 watch(() => props.modelValue, (val) => {
-  if (!chosenItem.value && val) {
+  if (val !== undefined && val !== null && val !== query.value) {
     query.value = val;
   }
 }, { immediate: true });
@@ -108,6 +110,7 @@ const onFocus = () => {
 
 const onInput = () => {
   chosenItem.value = null;
+  emit('update:modelValue', query.value);
   clearTimeout(debounceTimer);
   if (query.value.trim().length < 2) {
     results.value = [];
@@ -116,8 +119,129 @@ const onInput = () => {
     return;
   }
   loading.value = true;
-  debounceTimer = setTimeout(searchGND, 250);
+  debounceTimer = setTimeout(searchGND, 200);
 };
+
+// Curated instant-response cultural heritage institutions
+const CURATED_INSTITUTIONS = [
+  {
+    id: '5035657-4',
+    gnd: '5035657-4',
+    label: 'Antikensammlung, Staatliche Museen zu Berlin',
+    place: 'Berlin',
+    category: 'Museum, Sammlung',
+    description: 'Bodestraße 1-3, 10178 Berlin · Staatliche Museen zu Berlin',
+    uri: 'https://d-nb.info/gnd/5035657-4'
+  },
+  {
+    id: '35353-X',
+    gnd: '35353-X',
+    label: 'Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz',
+    place: 'Berlin',
+    category: 'Museumsverbund',
+    description: 'Stauffenbergstraße 41, 10785 Berlin',
+    uri: 'https://d-nb.info/gnd/35353-X'
+  },
+  {
+    id: '5035655-0',
+    gnd: '5035655-0',
+    label: 'Ägyptisches Museum und Papyrussammlung, Staatliche Museen zu Berlin',
+    place: 'Berlin',
+    category: 'Museum, Sammlung',
+    description: 'Bodestraße 1-3, 10178 Berlin',
+    uri: 'https://d-nb.info/gnd/5035655-0'
+  },
+  {
+    id: '5035656-2',
+    gnd: '5035656-2',
+    label: 'Vorderasiatisches Museum, Staatliche Museen zu Berlin',
+    place: 'Berlin',
+    category: 'Museum, Sammlung',
+    description: 'Bodestraße 1-3, 10178 Berlin',
+    uri: 'https://d-nb.info/gnd/5035656-2'
+  },
+  {
+    id: '5035658-6',
+    gnd: '5035658-6',
+    label: 'Münzkabinett, Staatliche Museen zu Berlin',
+    place: 'Berlin',
+    category: 'Museum, Sammlung',
+    description: 'Bodestraße 1-3, 10178 Berlin',
+    uri: 'https://d-nb.info/gnd/5035658-6'
+  },
+  {
+    id: '36150-1',
+    gnd: '36150-1',
+    label: 'Bonn Center for Digital Humanities, Universität Bonn',
+    place: 'Bonn',
+    category: 'Forschungsinstitut, Universität',
+    description: 'Am Hof 1, 53113 Bonn · Rheinische Friedrich-Wilhelms-Universität',
+    uri: 'https://d-nb.info/gnd/36150-1'
+  },
+  {
+    id: '2019912-1',
+    gnd: '2019912-1',
+    label: 'LVR-LandesMuseum Bonn (Rheinisches Landesmuseum)',
+    place: 'Bonn',
+    category: 'Museum',
+    description: 'Colmantstraße 14-16, 53115 Bonn',
+    uri: 'https://d-nb.info/gnd/2019912-1'
+  },
+  {
+    id: '1007926-9',
+    gnd: '1007926-9',
+    label: 'Deutsches Archäologisches Institut (DAI)',
+    place: 'Berlin',
+    category: 'Forschungsinstitut',
+    description: 'Podbielskiallee 69-71, 14195 Berlin',
+    uri: 'https://d-nb.info/gnd/1007926-9'
+  },
+  {
+    id: '1009028-9',
+    gnd: '1009028-9',
+    label: 'Leibniz-Zentrum für Archäologie (LEIZA) / RGZM',
+    place: 'Mainz',
+    category: 'Forschungsinstitut, Museum',
+    description: 'Ludwig-Lindenschmit-Forum 1, 55116 Mainz',
+    uri: 'https://d-nb.info/gnd/1009028-9'
+  },
+  {
+    id: '2005521-3',
+    gnd: '2005521-3',
+    label: 'Bayerisches Nationalmuseum',
+    place: 'München',
+    category: 'Museum',
+    description: 'Prinzregentenstraße 3, 80538 München',
+    uri: 'https://d-nb.info/gnd/2005521-3'
+  },
+  {
+    id: '10041280-9',
+    gnd: '10041280-9',
+    label: 'Archäologische Staatssammlung München',
+    place: 'München',
+    category: 'Museum, Archäologie',
+    description: 'Lerchenfeldstraße 2, 80538 München',
+    uri: 'https://d-nb.info/gnd/10041280-9'
+  },
+  {
+    id: '38352-1',
+    gnd: '38352-1',
+    label: 'British Museum',
+    place: 'London',
+    category: 'Museum',
+    description: 'Great Russell St, London WC1B 3DG',
+    uri: 'https://d-nb.info/gnd/38352-1'
+  },
+  {
+    id: '1087308992',
+    gnd: '1087308992',
+    label: 'Musée du Louvre',
+    place: 'Paris',
+    category: 'Museum',
+    description: 'Rue de Rivoli, 75001 Paris',
+    uri: 'https://d-nb.info/gnd/1087308992'
+  }
+];
 
 // --- Lobid-GND API query for corporate bodies (museums, archives, collections, universities) ---
 const searchGND = async () => {
@@ -127,11 +251,52 @@ const searchGND = async () => {
     return;
   }
 
-  // Check cache first for instant sub-millisecond response
-  if (queryCache.has(q)) {
-    results.value = queryCache.get(q);
-    open.value = results.value.length > 0;
+  // 1. Instant match from saved organizations pool + curated institutions
+  const qLower = q.toLowerCase();
+  const poolMatches = (savedOrganizations?.value || []).filter(Boolean).map(org => ({
+    id: org.gnd ? String(org.gnd) : (org.id || ''),
+    gnd: org.gnd ? String(org.gnd) : '',
+    label: org.name || '',
+    place: org.city || '',
+    category: org.role || org.type || 'Organisation',
+    description: [org.city, org.role].filter(Boolean).join(' · '),
+    uri: org.uri || (org.gnd ? `https://d-nb.info/gnd/${org.gnd}` : '')
+  })).filter(inst =>
+    String(inst.label || '').toLowerCase().includes(qLower) ||
+    (inst.gnd && inst.gnd.includes(q)) ||
+    (inst.place && String(inst.place).toLowerCase().includes(qLower)) ||
+    (inst.description && String(inst.description).toLowerCase().includes(qLower))
+  );
+
+  const curatedMatches = CURATED_INSTITUTIONS.filter(inst => 
+    String(inst.label || '').toLowerCase().includes(qLower) ||
+    String(inst.gnd || '').includes(q) ||
+    (inst.place && String(inst.place).toLowerCase().includes(qLower)) ||
+    (inst.description && String(inst.description).toLowerCase().includes(qLower))
+  );
+
+  const instantMatches = [...poolMatches];
+  curatedMatches.forEach(c => {
+    if (!instantMatches.some(m => (m.gnd && m.gnd === c.gnd) || String(m.label || '').toLowerCase() === String(c.label || '').toLowerCase())) {
+      instantMatches.push(c);
+    }
+  });
+
+  if (instantMatches.length > 0) {
+    results.value = [...instantMatches];
+    open.value = true;
     highlighted.value = 0;
+  }
+
+  // Check cache
+  if (queryCache.has(q)) {
+    const cached = queryCache.get(q);
+    const merged = [...instantMatches];
+    cached.forEach(c => {
+      if (!merged.some(m => m.id === c.id)) merged.push(c);
+    });
+    results.value = merged;
+    open.value = results.value.length > 0;
     loading.value = false;
     return;
   }
@@ -168,7 +333,6 @@ const searchGND = async () => {
       const category = categories.slice(0, 2).join(', ');
 
       const description = [place, category].filter(Boolean).join(' · ');
-
       const variants = Array.isArray(m.variantName)
         ? m.variantName.slice(0, 2).join('; ')
         : '';
@@ -182,18 +346,28 @@ const searchGND = async () => {
         description: description || variants,
         variants,
         uri,
-        isil: null, // For backward compatibility if referenced
+        isil: null,
       };
     }).filter(r => r.label && r.label !== r.id);
 
-    queryCache.set(q, mapped);
-    results.value = mapped;
+    const merged = [...instantMatches];
+    mapped.forEach(c => {
+      if (!merged.some(m => m.id === c.id)) merged.push(c);
+    });
+
+    queryCache.set(q, merged);
+    results.value = merged;
     open.value = results.value.length > 0;
     highlighted.value = 0;
   } catch (e) {
     if (e.name !== 'AbortError') {
-      console.error('Lobid GND search error:', e);
-      results.value = [];
+      console.warn('Lobid GND search notice:', e);
+      if (instantMatches.length > 0) {
+        results.value = instantMatches;
+        open.value = true;
+      } else {
+        results.value = [];
+      }
     }
   } finally {
     loading.value = false;

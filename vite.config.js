@@ -17,6 +17,16 @@ export default defineConfig(async () => ({
     port: 1420,
     strictPort: true,
     host: host || false,
+    proxy: {
+      '/api/pleiades': {
+        target: 'https://pleiades.stoa.org',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/pleiades/, ''),
+        headers: {
+          'User-Agent': 'HERMES/0.1.6 (https://github.com)'
+        }
+      }
+    },
     hmr: host
       ? {
           protocol: "ws",
@@ -25,8 +35,16 @@ export default defineConfig(async () => ({
         }
       : undefined,
     watch: {
-      // 3. tell Vite to ignore watching `src-tauri`
-      ignored: ["**/src-tauri/**"],
+      // 3. tell Vite to ignore watching non-source directories and large docs
+      ignored: [
+        "**/src-tauri/**",
+        "**/CARARE/**",
+        "**/*.docx",
+        "**/*.pdf",
+        "**/*.txt",
+        "**/*.md",
+        "**/dist/**"
+      ],
     },
   },
 }));

@@ -1,0 +1,363 @@
+<?xml version='1.0' encoding='utf-8'?>
+<carareWrap xmlns="http://www.carare.eu/carareSchema">
+  <carare id="CARARE-FANTASY-ATLAS-SPHERE-01">
+    <collectionInformation>
+      <id>DE-IAA-9999999_Atlantis_Curated_Collection</id>
+      <title lang="de" preferred="true">Schätze der ägäischen Tiefen: Das Pantheon der versunkenen Sphären von Thera-Atlantis</title>
+      <title lang="en" preferred="false">Treasures of the Aegean Deeps: The Pantheon of Sunken Spheres of Thera-Atlantis</title>
+      <source lang="de">Institut für Archäo-Astronomie und Imaginäre Altertümer (IAA), Bonn</source>
+      <contacts>
+        <name>Prof. Dr. Aurelia Thalassa von Morstein</name>
+        <role>Leitende Kuratorin &amp; Archäo-Astronomin</role>
+        <organization>Institut für Archäo-Astronomie und Imaginäre Altertümer (IAA)</organization>
+        <address>
+          <buildingName>Atlantis-Palais / Wissenschaftszentrum</buildingName>
+          <numberInRoad>42</numberInRoad>
+          <roadName>Am Hofgarten der Mysterien</roadName>
+          <townOrCity>Bonn</townOrCity>
+          <postcodeOrZipcode>53113</postcodeOrZipcode>
+          <country>DE</country>
+        </address>
+        <phone>+49 228 73-9999</phone>
+        <fax>+49 228 73-9998</fax>
+        <email>aurelia.morstein@iaa-bonn.org</email>
+      </contacts>
+      <contacts>
+        <name>Dr. Lysandros Kephalos</name>
+        <role>Restaurierungs- und Konservierungsleitung</role>
+        <organization>Hellenic Underwater Antiquities &amp; Heritage Preservation</organization>
+        <email>kephalos@underwater-heritage.gr</email>
+      </contacts>
+      <rights>
+        <copyrightCreditLine lang="de">Institut für Archäo-Astronomie und Imaginäre Altertümer (IAA), Bonn / BCDH Bonn</copyrightCreditLine>
+        <accessRights lang="en">Open Access for Academic Research and Education</accessRights>
+        <reproductionRights lang="en">CC BY-SA 4.0 International</reproductionRights>
+        <licence lang="en">https://creativecommons.org/licenses/by-sa/4.0/</licence>
+        <europeanaRights>Creative Commons - Attribution, ShareAlike (BY-SA)</europeanaRights>
+      </rights>
+      <language lang="de">de</language>
+      <language lang="en">en</language>
+      <statement lang="de" preferred="true">Die Kollektion 'Schätze der ägäischen Tiefen' umfasst archäologische Fundkomplexe einer hochstehenden spätbronzezeitlichen Himmelskunde aus dem versunkenen Seamount-Areal von Thera-Atlantis. Sämtliche Objekte wurden interdisziplinär durch Archäo-Astronomen, Metallurgen und 3D-Messtechniker des IAA Bonn mittels Streifenlicht-Scanning und Multispektral-Photogrammetrie bis in den Mikrometerbereich digitalisiert.</statement>
+      <creation>
+        <createdOn>2026-10-23</createdOn>
+        <query>SELECT * FROM IAA_ATLANTIS_CORPUS WHERE era='Late Bronze Age' AND material='Orichalcum'</query>
+      </creation>
+      <keywords lang="de" namespace="HECTOR">Himmelsmechanismus</keywords>
+      <keywords lang="de" namespace="AAT">Orichalcum</keywords>
+      <keywords lang="de" namespace="AAT">Archäoastronomie</keywords>
+      <keywords lang="de" namespace="Pleiades">Atlantis</keywords>
+      <keywords lang="de" namespace="HECTOR">Späte Bronzezeit</keywords>
+      <keywords lang="de" namespace="HECTOR">Kultisches Instrument</keywords>
+      <keywords lang="de" namespace="AAT">3D-Digitalisierung</keywords>
+      <keywords lang="de" namespace="AAT">Streifenlicht-Scanning</keywords>
+      <keywords lang="de" namespace="HERMES">Multispektral-Photogrammetrie</keywords>
+      <keywords lang="de" namespace="HERMES">Digitaler Zwilling</keywords>
+      <coverage>
+        <temporal>
+          <timeSpan>
+            <startDate>-1400</startDate>
+            <endDate>-1180</endDate>
+            <dateRangeQualifier>http://n2t.net/ark:/99152/p05krdx8w33</dateRangeQualifier>
+          </timeSpan>
+          <periodName lang="de" preferred="true">Spätbronzezeitliche Ägäis / Mykenisch-Minoische Ära</periodName>
+          <displayDate>ca. 1400 v. Chr. – 1180 v. Chr.</displayDate>
+        </temporal>
+        <spatial>
+          <locationSet>
+            <namedLocation lang="de">Versunkene Caldera-Terrasse von Thera (Santorin)</namedLocation>
+            <geopoliticalArea lang="de">Ägäis, Griechenland</geopoliticalArea>
+            <geopoliticalAreaType>Inselarchipel</geopoliticalAreaType>
+            <cadastralReference>GR-CYCLADES-SANTORINI-SUB-TERR-7</cadastralReference>
+          </locationSet>
+        </spatial>
+      </coverage>
+      <dcRelation>https://corpus.iaa-bonn.org/collections/atlantis-spheres</dcRelation>
+    </collectionInformation>
+    <heritageAssetIdentification>
+      <recordInformation>
+        <id>HERMES-HA-ATL-001</id>
+        <source lang="de">Institut für Archäo-Astronomie und Imaginäre Altertümer (IAA), Bonn</source>
+        <country lang="de">DE</country>
+        <creation>
+          <date>2026-10-23</date>
+        </creation>
+        <language lang="de">de</language>
+        <language lang="de">en</language>
+        <metadataRights>https://creativecommons.org/publicdomain/zero/1.0/</metadataRights>
+      </recordInformation>
+      <appellation>
+        <name lang="de" preferred="true">Die Oreichalkos-Sphäre des Atlas: Drehbarer Himmelsglobus mit astronomischem Räderwerk von Thera-Atlantis</name>
+        <name lang="en" preferred="false">The Orichalcum Celestial Sphere of Atlas: Geared Astronomical Mechanism from Thera-Atlantis</name>
+        <name lang="el" preferred="false">Η Ορειχάλκινη Ουράνια Σφαίρα του Άτλαντα: Αστρονομικός Μηχανισμός Θήρας-Ατλαντίδος</name>
+        <id>IAA-INV-2026-SPH-01</id>
+      </appellation>
+      <description lang="de">Prachtvoll ausgeführter, hohler Himmelsglobus (Durchmesser 48,5 cm) aus feuervergoldeter Oreichalkos-Legierung mit konzentrischen inneren Ringen zur Vorhersage von Sonnen- und Mondfinsternissen sowie der Heliozentrik der Plejaden. Die Sternbilder sind als gravierte zoomorphe Figuren mit punktuellen Einlagen aus geschliffenem Lapislazuli und Bergkristall markiert. Die Mechanik besteht aus 32 zahnradartigen Bronzesegmenten mit präzisen Winkelteilungen. Fundort: In 142 Metern Wassertiefe in einer versiegelten Pithos-Kammer am submarinen Südost-Hang von Santorin geborgen.</description>
+      <generalType>Artefact</generalType>
+      <actors>
+        <id>PER-IAA-001</id>
+        <name lang="de">Prof. Dr. Aurelia Thalassa von Morstein</name>
+        <actorType>Person</actorType>
+        <roles lang="de">Archäologische Expeditionsleitung &amp; Entdeckerin</roles>
+        <placeOfActivity lang="de">Bonn &amp; Ägäis</placeOfActivity>
+      </actors>
+      <actors>
+        <id>PER-IAA-002</id>
+        <name lang="de">Dr. Lysandros Kephalos</name>
+        <actorType>Person</actorType>
+        <roles lang="de">Konservierung &amp; Entsalzung</roles>
+      </actors>
+      <actors>
+        <id>ORG-IAA-BONN</id>
+        <name lang="de">Bonn Center for Digital Humanities (BCDH)</name>
+        <actorType>Organisation</actorType>
+        <roles lang="de">Hochpräzise 3D-Digitalisierung &amp; Datenverarbeitung</roles>
+      </actors>
+      <designations>
+        <protectionType lang="de">Internationales Kulturgut von herausragendem Wert (UNESCO Weltkulturerbe-Status)</protectionType>
+        <grade lang="de">Klasse I (Singuläres Unikat)</grade>
+        <dateFrom>2026-01-15</dateFrom>
+        <displayDate>Seit 15. Januar 2026 unter partiellem Schutz</displayDate>
+      </designations>
+      <conditions>
+        <condition lang="de">Vollständig und funktionsfähig; oberflächliche Malachit- und Cuprit-Edelpatina stabilisiert</condition>
+        <conditionAssessment lang="de">Sehr gut; interne Zahnrad-Mechanik nach elektrochemischer Entsalzung gängig</conditionAssessment>
+        <conditionDate>2026-06-10</conditionDate>
+        <displayDate>Befund vom 10. Juni 2026</displayDate>
+        <wasPresentAt>Restaurierungslabor für Unterwasserfunde Athen / IAA Bonn</wasPresentAt>
+      </conditions>
+      <provenance lang="de">Geborgen im Mai 2025 während der Tiefsee-Forschungskampagne 'PROJECT AETHRA' mittels Tauchroboter ROV Okeanos in 142 m Tiefe am submarinen Steilabhang von Thera-Südost. Geschenk der Hellenischen Republik an das IAA Bonn zu Forschungszwecken im Rahmen bilateraler Abkommen.</provenance>
+      <characters>
+        <heritageAssetType lang="de" namespace="HECTOR" term="Kultisches Instrument" termUID="http://hector.dainst.org/vocab/ritual_instrument">Kultisches Instrument</heritageAssetType>
+        <heritageAssetType lang="en" namespace="AAT" term="astronomical models" termUID="http://vocab.getty.edu/page/aat/300211327">astronomical models</heritageAssetType>
+        <heritageAssetType lang="en" namespace="AAT" term="spheres (geometric figures)" termUID="http://vocab.getty.edu/page/aat/300055644">spheres</heritageAssetType>
+        <temporal>
+          <timeSpan>
+            <startDate>-1350</startDate>
+            <endDate>-1280</endDate>
+            <dateRangeQualifier>http://n2t.net/ark:/99152/p05krdx8w33</dateRangeQualifier>
+          </timeSpan>
+          <periodName lang="de" preferred="true">Späthelladisch III B / Spätbronzezeit (1350–1280 v. Chr.)</periodName>
+          <displayDate>ca. 1350 – 1280 v. Chr.</displayDate>
+          <scientificDate lang="de">1325 ± 25 calBC</scientificDate>
+          <scientificDateMethod lang="de">Radiokarbonmethode (C14) an organischen Dichtungsfasern &amp; OSL-Thermolumineszenz</scientificDateMethod>
+        </temporal>
+        <materials lang="de">Oreichalkos (Kupfer-Zink-Gold-Legierung)</materials>
+        <materials lang="de">Lapislazuli</materials>
+        <materials lang="de">Bergkristall</materials>
+        <materials lang="de">Meteoriteneisen (Achsenlager)</materials>
+        <inscriptions lang="grc" type="Weihinschrift / Zodiak-Skala" namespace="Kypro-Minoischer Duktus">ΑΤΛΑΣ ΕΠΟΙΗΣΕΝ ΟΥΡΑΝΟΘΕΝ — ΑΣΤΡΟΘΕΣΙΑ ΤΩΝ ΩΚΕΑΝΙΔΩΝ ΚΑΙ ΠΛΕΙΑΔΩΝ</inscriptions>
+        <dimensions>
+          <measurementType lang="de">Durchmesser</measurementType>
+          <units>Zentimeter</units>
+          <value>48.5</value>
+        </dimensions>
+        <dimensions>
+          <measurementType lang="de">Höhe mit Sockel</measurementType>
+          <units>Zentimeter</units>
+          <value>62.0</value>
+        </dimensions>
+        <dimensions>
+          <measurementType lang="de">Gesamtmasse</measurementType>
+          <units>Kilogramm</units>
+          <value>18.75</value>
+        </dimensions>
+        <dimensions>
+          <extent lang="de">Wandstärke der Halbkugelschalen</extent>
+          <measurementType lang="de">Materialstärke</measurementType>
+          <units>Millimeter</units>
+          <value>4.2</value>
+        </dimensions>
+      </characters>
+      <spatial>
+        <locationSet>
+          <namedLocation lang="de" preferred="true">Thera-Südost / Seamount Atlantis (Submarines Areal Gamma-7)</namedLocation>
+          <geopoliticalArea lang="de">Kykladen / Ägäisches Meer</geopoliticalArea>
+          <geopoliticalAreaType>Archipel</geopoliticalAreaType>
+          <historicalName lang="grc" preferred="true">Καλλίστη / Στρογγύλη (Kallistē / Strongylē)</historicalName>
+        </locationSet>
+        <geometry>
+          <spatialReferenceSystem>EPSG:4326 (WGS84)</spatialReferenceSystem>
+          <quickpoint>
+            <x>25.432500</x>
+            <y>36.385400</y>
+            <z>-142.5</z>
+            <accuracy>± 1.5 m (USBL-Unterwassernavigation)</accuracy>
+          </quickpoint>
+        </geometry>
+      </spatial>
+      <repositoryLocation lang="de">IAA Bonn, Schatzkammer der Ägäis, Saal IV, Hochsicherheitsvitrine 12 (Inv. IAA-INV-2026-SPH-01)</repositoryLocation>
+      <rights>
+        <copyrightCreditLine lang="de">Institut für Archäo-Astronomie und Imaginäre Altertümer (IAA), Bonn</copyrightCreditLine>
+        <accessRights lang="en">Open Access / Wissenschaftliche Nachnutzung frei</accessRights>
+        <reproductionRights lang="en">CC BY-SA 4.0 International</reproductionRights>
+        <licence lang="en">https://creativecommons.org/licenses/by-sa/4.0/</licence>
+      </rights>
+      <references>
+        <appellation>
+          <name lang="de">von Morstein, A. T. et al. (2026): Der Himmel von Thera-Atlantis. Prähistorische Himmelsmechanik und Oreichalkos-Metallurgie im 14. Jh. v. Chr. In: Journal of Aegean Archeoastronomy 44, S. 112–189.</name>
+          <id>DOI:10.11588/jaa.2026.1.99841</id>
+        </appellation>
+        <type lang="de">Monographie / Peer-Reviewed Journal</type>
+        <rights>Open Access (CC BY 4.0)</rights>
+        <link>https://doi.org/10.11588/jaa.2026.1.99841</link>
+      </references>
+      <hasRepresentation>DO_IAA_ATL_SPH01_MASTER_HP</hasRepresentation>
+      <hasRepresentation>DO_IAA_ATL_SPH01_WEB3D_GLTF</hasRepresentation>
+      <isSuccessorOf>Kultschrein Pithos-Kammer VII</isSuccessorOf>
+      <wasPresentAt>Tauchkampagne AETHRA 2025</wasPresentAt>
+      <hasPart>Zahnrad-Kranz Zodiac-Ring I</hasPart>
+      <hasPart>Achsenlager Lapislazuli-Inlay II</hasPart>
+      <isPartOf>Heiligtum der Astraea (Versunkenes Ensemble)</isPartOf>
+      <isReplicaOf>Rekonstruktions-Guss Bonn 2026</isReplicaOf>
+      <wasDigitizedBy>ACT-2026-IAA-DIGI-01</wasDigitizedBy>
+      <dcRelation>https://ark.iaa-bonn.org/ark:/99152/atlas_sphere_01</dcRelation>
+    </heritageAssetIdentification>
+    <digitalResource>
+      <recordInformation>
+        <id>DO_IAA_ATL_SPH01_MASTER_HP</id>
+        <source lang="de">Bonn Center for Digital Humanities (BCDH) / IAA Bonn</source>
+        <country lang="de">DE</country>
+        <creation>
+          <date>2026-04-15</date>
+        </creation>
+        <language lang="en">en</language>
+        <metadataRights>https://creativecommons.org/licenses/by-sa/4.0/</metadataRights>
+      </recordInformation>
+      <appellation>
+        <name lang="en" preferred="true">Atlas Sphere Master High-Poly 3D Mesh (Artec Leo / Nikon Z8 Macro SfM)</name>
+        <id>DO_IAA_ATL_SPH01_MASTER_HP</id>
+      </appellation>
+      <description lang="de">Wissenschaftlicher 3D-Masterdatensatz der Oreichalkos-Sphäre des Atlas. Erfasst mittels kombinierter optischer Triangulation (Artec Leo 2026 Pro, Punktgenauigkeit 0.05 mm) und multispektraler Nahbereichs-Photogrammetrie (Nikon Z8, 45.7 MP, polarisiertes Ringlicht). 3D-Paradaten: Vollständige 360°-Erfassung inklusive Hohlraumspiegelung; Geometrische Löcher in mikroskopischen Zahnflanken per Screened Poisson Reconstruction (Depth 14) geschlossen; Messrauschen bilateral unter Erhalt von Gravurlinien geglättet; PBR-Karten händisch anhand spektraler Remissionsmessungen kalibriert.</description>
+      <note lang="de">Archiv-Master für Finite-Elemente-Simulation und Restaurierungsdokumentation. Nur für wissenschaftliche Partner.</note>
+      <actors>
+        <name lang="de">Matthias Lang (BCDH)</name>
+        <roles lang="en">3D Digitisation Specialist &amp; Pipeline Architect</roles>
+      </actors>
+      <type>3D</type>
+      <format>model/obj</format>
+      <format>application/x-ply</format>
+      <format>image/tiff</format>
+      <formatDetails lang="de">Mesh-Kategorie: Master High-Poly | Polygone: 32.400.000 Faces | Vertices: 16.200.000 | Texturauflösung: 16384x16384 (16K Master TIFF) | PBR-Kanäle: Albedo, Normal (16-bit Tangent), Roughness, Metallic, Ambient Occlusion, Displacement | Hardware: Artec Leo 2026 Pro (0.05 mm Genauigkeit) | Software: Artec Studio 19, RealityCapture 1.4, Blender 4.2 LTS, Substance 3D Designer 14</formatDetails>
+      <extent>32.4 Mio. Faces, 16.2 Mio. Vertices, 16K PBR-Texturen, 1.42 GB Dateigröße</extent>
+      <created>2026-04-15</created>
+      <language lang="en">en</language>
+      <link>https://data.iaa-bonn.org/models/atlas_sphere_master_hp.obj</link>
+      <object>https://data.iaa-bonn.org/previews/atlas_sphere_thumb.jpg</object>
+      <isShownAt>https://viewer.iaa-bonn.org/object/IAA-INV-2026-SPH-01</isShownAt>
+      <rights>
+        <copyrightCreditLine lang="de">BCDH Bonn / IAA Bonn</copyrightCreditLine>
+        <accessRights lang="en">Open Access Academic</accessRights>
+        <reproductionRights lang="en">CC BY-SA 4.0</reproductionRights>
+        <licence lang="en">https://creativecommons.org/licenses/by-sa/4.0/</licence>
+      </rights>
+      <isRepresentationOf>HERMES-HA-ATL-001</isRepresentationOf>
+      <hasDerivative>DO_IAA_ATL_SPH01_WEB3D_GLTF</hasDerivative>
+      <dcRelation>ACT-2026-IAA-DIGI-01</dcRelation>
+    </digitalResource>
+    <digitalResource>
+      <recordInformation>
+        <id>DO_IAA_ATL_SPH01_WEB3D_GLTF</id>
+        <source lang="de">BCDH Bonn</source>
+        <country lang="de">DE</country>
+        <creation>
+          <date>2026-04-18</date>
+        </creation>
+        <language lang="en">en</language>
+      </recordInformation>
+      <appellation>
+        <name lang="en" preferred="true">Atlas Sphere Web-Ready 3D Derivative (glTF 2.0 / GLB)</name>
+        <id>DO_IAA_ATL_SPH01_WEB3D_GLTF</id>
+      </appellation>
+      <description lang="de">Echtzeit- und VR-optimiertes Web-3D-Modell (glTF/GLB) mit gebackener 4K-Normal-Map und PBR-Materialien für flüssige 60-FPS-Darstellung im Web-Browser.</description>
+      <type>3D</type>
+      <format>model/gltf-binary</format>
+      <format>model/gltf+json</format>
+      <formatDetails lang="de">Mesh-Kategorie: Low-Poly / Realtime Web-Ready | Polygone: 85.000 Triangles | Vertices: 43.500 | Textur: 4096x4096 WebP | Optimierung: Draco Geometry Compression</formatDetails>
+      <extent>85k Triangles, 4K PBR, 14.8 MB GLB</extent>
+      <created>2026-04-18</created>
+      <link>https://data.iaa-bonn.org/models/atlas_sphere_web3d.glb</link>
+      <object>https://data.iaa-bonn.org/previews/atlas_sphere_web_thumb.jpg</object>
+      <isShownAt>https://3d.iaa-bonn.org/view/atlas_sphere</isShownAt>
+      <rights>
+        <copyrightCreditLine lang="de">BCDH Bonn / IAA Bonn</copyrightCreditLine>
+        <accessRights lang="en">Open Access</accessRights>
+        <reproductionRights lang="en">CC BY-SA 4.0</reproductionRights>
+        <licence lang="en">https://creativecommons.org/licenses/by-sa/4.0/</licence>
+      </rights>
+      <isRepresentationOf>HERMES-HA-ATL-001</isRepresentationOf>
+      <isDerivativeOf>DO_IAA_ATL_SPH01_MASTER_HP</isDerivativeOf>
+    </digitalResource>
+    <activity>
+      <recordInformation>
+        <id>ACT-2026-IAA-DIGI-01</id>
+        <source lang="de">BCDH Bonn</source>
+        <creation>
+          <date>2026-04-20</date>
+        </creation>
+      </recordInformation>
+      <appellation>
+        <name lang="de" preferred="true">Ganzheitliche 3D-Digitalisierung, photometrische Oberflächenerfassung und Paradata-Dokumentation der Oreichalkos-Sphäre</name>
+        <id>ACT-2026-IAA-DIGI-01</id>
+      </appellation>
+      <description lang="de">Interdisziplinärer Digitalisierungsworkflow zur berührungslosen Erfassung geometrischer und optischer Eigenschaften der Oreichalkos-Sphäre des Atlas. Gemäß London Charter und Sevilla Principles wurden alle messtechnischen Entscheidungen, Filtergrenzen und Rekonstruktionsschritte lückenlos protokolliert.</description>
+      <hasGeneralPurpose lang="en">Scientific 3D preservation, finite element structural analysis, and interactive museum dissemination</hasGeneralPurpose>
+      <eventType lang="en" namespace="AAT" term="3D digitisation" termUID="http://vocab.getty.edu/page/aat/300435427">3D digitisation</eventType>
+      <actors>
+        <id>ACTOR-ML-001</id>
+        <name lang="de">Dr. Matthias Lang</name>
+        <actorType>Person</actorType>
+        <roles lang="de">Leitung 3D-Digitalisierung &amp; Datenarchitektur</roles>
+      </actors>
+      <actors>
+        <id>ACTOR-VS-002</id>
+        <name lang="de">Valentina Salcedo Paparoni</name>
+        <actorType>Person</actorType>
+        <roles lang="de">Makro-Photogrammetrie &amp; Texturberechnung</roles>
+      </actors>
+      <temporal>
+        <timeSpan>
+          <startDate>2026-02-01</startDate>
+          <endDate>2026-04-15</endDate>
+        </timeSpan>
+        <periodName lang="de">Projektphase Frühjahr 2026</periodName>
+        <displayDate>1. Februar 2026 – 15. April 2026</displayDate>
+      </temporal>
+      <spatial>
+        <locationSet>
+          <namedLocation lang="de">Digital Humanities 3D-Labor, BCDH Universität Bonn</namedLocation>
+        </locationSet>
+      </spatial>
+      <consistsOf>
+        <hadSpecificPurpose lang="de">Hochauflösendes Streifenlicht-Scanning der Primärgeometrie und Gravurdetails</hadSpecificPurpose>
+        <startDate>2026-02-05</startDate>
+        <endDate>2026-02-20</endDate>
+        <methods lang="en">Structured-light optical surface scanning</methods>
+        <techniques lang="en">Sub-millimeter optical triangulation (0.05 mm)</techniques>
+        <equipment lang="en">Artec Leo 2026 Pro, Drehteller mit Antireflexions-Auflage, Artec Studio 19</equipment>
+      </consistsOf>
+      <consistsOf>
+        <hadSpecificPurpose lang="de">Makro-Photogrammetrie und kalibrierte PBR-Texturgenerierung</hadSpecificPurpose>
+        <startDate>2026-02-22</startDate>
+        <endDate>2026-03-10</endDate>
+        <methods lang="en">Close-range SfM photogrammetry</methods>
+        <techniques lang="en">Cross-polarized multispectral ring lighting (Glanzunterdrückung)</techniques>
+        <equipment lang="en">Nikon Z8 (45.7 MP), NIKKOR Z MC 105mm f/2.8 VR S, RealityCapture 1.4, Adobe Lightroom 14.1</equipment>
+      </consistsOf>
+      <consistsOf>
+        <hadSpecificPurpose lang="de">Geometrische Fusion, Hole Filling und Normal-Map-Baking</hadSpecificPurpose>
+        <startDate>2026-03-15</startDate>
+        <endDate>2026-04-12</endDate>
+        <methods lang="en">Poisson surface reconstruction and normal map projection</methods>
+        <techniques lang="en">Screened Poisson Depth 14, non-manifold vertex cleaning</techniques>
+        <equipment lang="en">Blender 4.2 LTS, Substance 3D Designer 14, MeshLab 2024</equipment>
+      </consistsOf>
+      <assessments lang="de">Qualitätsprüfung nach ISO 17025 bestanden; mittlere Oberflächenabweichung &lt; 0.03 mm; 100% Farbtreue (Delta-E &lt; 1.2)</assessments>
+      <occurredAt>Bonn / Labor Am Hof 1</occurredAt>
+      <happenedAt>2026-02-01 bis 2026-04-15</happenedAt>
+      <wasPresentAt>HERMES-HA-ATL-001</wasPresentAt>
+      <hasCreated>DO_IAA_ATL_SPH01_MASTER_HP</hasCreated>
+      <hasCreated>DO_IAA_ATL_SPH01_WEB3D_GLTF</hasCreated>
+      <dcRelation>https://projects.iaa-bonn.org/aethra-3d</dcRelation>
+    </activity>
+  </carare>
+</carareWrap>

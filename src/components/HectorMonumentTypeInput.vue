@@ -30,31 +30,12 @@
         >
           <span class="text-primary font-bold mr-0.5">+</span>
           <span>{{ chip.label }}</span>
-          <span v-if="chip.facet" class="badge badge-ghost badge-xs opacity-60 text-[9px] ml-0.5">{{ chip.facet }}</span>
         </button>
       </div>
     </div>
 
-    <!-- 2. Facet Quick-Filters for HECTOR Vocabulary -->
-    <div class="flex flex-wrap items-center gap-1.5 text-xs">
-      <span class="font-bold opacity-60 uppercase tracking-wider text-[10px] mr-1">
-        {{ currentLocale === 'de' ? 'Facetten:' : 'Facets:' }}
-      </span>
-      <button
-        v-for="facet in facets"
-        :key="facet.id"
-        type="button"
-        class="btn btn-xs normal-case"
-        :class="activeFacet === facet.id ? 'btn-primary font-bold shadow-xs' : 'btn-ghost border border-base-300 font-medium'"
-        @click="activeFacet = facet.id"
-      >
-        <span>{{ facet.icon }}</span>
-        <span>{{ currentLocale === 'de' ? facet.nameDe : facet.nameEn }}</span>
-      </button>
-    </div>
-
-    <!-- 3. Selected Items & Search Input -->
-    <div class="flex flex-wrap gap-2 p-2.5 input input-bordered h-auto min-h-[3.25rem] items-center w-full bg-base-100 focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary">
+    <!-- 2. Selected Items & Search Input -->
+    <div class="flex flex-wrap gap-2 p-2.5 border border-base-300 rounded-xl relative overflow-visible h-auto min-h-[3.25rem] items-center w-full bg-base-100 focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary">
       <div
         v-for="(item, idx) in modelValue"
         :key="idx"
@@ -91,11 +72,11 @@
         <!-- Autocomplete Suggestions Dropdown -->
         <div
           v-if="showDropdown && (suggestions.length > 0 || isSearching)"
-          class="absolute left-0 top-full mt-2 w-88 max-w-[90vw] z-50 bg-base-100 rounded-box shadow-xl border border-base-300 max-h-64 overflow-y-auto"
+          class="absolute left-0 top-full mt-2 w-88 max-w-[90vw] z-[100] bg-base-100 rounded-box shadow-xl border border-base-300 max-h-64 overflow-y-auto"
         >
           <div v-if="isSearching" class="p-3 text-xs text-base-content/60 flex items-center gap-2">
             <span class="loading loading-spinner loading-xs text-primary"></span>
-            {{ currentLocale === 'de' ? 'Suche in HECTOR-Facetten...' : 'Searching in HECTOR facets...' }}
+            {{ currentLocale === 'de' ? 'Suche im HECTOR-Vokabular...' : 'Searching in HECTOR vocabulary...' }}
           </div>
           <ul v-else class="menu menu-xs p-1">
             <li v-for="(suggestion, sIdx) in filteredSuggestions" :key="suggestion.uri || sIdx">
@@ -143,29 +124,10 @@ const showDropdown = ref(false);
 const isSearching = ref(false);
 const suggestions = ref([]);
 const highlightedIndex = ref(-1);
-const activeFacet = ref('all');
 
 const recentTerms = getRecentVocabList('monument_type');
 
-const facets = [
-  { id: 'all', icon: '🏛️', nameDe: 'Alle Facetten', nameEn: 'All Facets' },
-  { id: 'arch', icon: '🏛️', nameDe: 'Architektur & Grab', nameEn: 'Architecture & Grave' },
-  { id: 'sculpt', icon: '🗿', nameDe: 'Plastik & Relief', nameEn: 'Sculpture & Relief' },
-  { id: 'container', icon: '🏺', nameDe: 'Sarkophag & Gefäß', nameEn: 'Sarcophagus & Vessel' },
-  { id: 'other', icon: '💡', nameDe: 'Beleuchtung & Sonstiges', nameEn: 'Lighting & Other' }
-];
-
-const filteredSuggestions = computed(() => {
-  if (activeFacet.value === 'all') return suggestions.value;
-  return suggestions.value.filter(s => {
-    const f = (s.facet || '').toLowerCase();
-    if (activeFacet.value === 'arch') return f.includes('architektur') || f.includes('grab') || f.includes('tempel') || f.includes('altar');
-    if (activeFacet.value === 'sculpt') return f.includes('plastik') || f.includes('relief') || f.includes('statue') || f.includes('porträt');
-    if (activeFacet.value === 'container') return f.includes('behälter') || f.includes('gefäß') || f.includes('sarkophag') || f.includes('keramik');
-    if (activeFacet.value === 'other') return f.includes('beleuchtung') || f.includes('ornament') || f.includes('gerät');
-    return true;
-  });
-});
+const filteredSuggestions = computed(() => suggestions.value);
 
 const getDisplayLabel = (item) => {
   if (!item) return '';

@@ -35,7 +35,7 @@
     </div>
 
     <!-- 2. Selected Materials List & Integrated Input -->
-    <div class="flex flex-wrap gap-2 p-2.5 input input-bordered h-auto min-h-[3.25rem] items-center w-full bg-base-100 focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary">
+    <div class="flex flex-wrap gap-2 p-2.5 border border-base-300 rounded-xl relative overflow-visible h-auto min-h-[3.25rem] items-center w-full bg-base-100 focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary">
       <div
         v-for="(item, idx) in modelValue"
         :key="idx"
@@ -72,7 +72,7 @@
         <!-- Autocomplete Suggestions Dropdown -->
         <div
           v-if="showDropdown && (suggestions.length > 0 || isSearching)"
-          class="absolute left-0 top-full mt-2 w-80 max-w-[90vw] z-50 bg-base-100 rounded-box shadow-xl border border-base-300 max-h-64 overflow-y-auto"
+          class="absolute left-0 top-full mt-2 w-80 max-w-[90vw] z-[100] bg-base-100 rounded-box shadow-xl border border-base-300 max-h-64 overflow-y-auto"
         >
           <div v-if="isSearching" class="p-3 text-xs text-base-content/60 flex items-center gap-2">
             <span class="loading loading-spinner loading-xs text-primary"></span>
@@ -125,6 +125,10 @@ const highlightedIndex = ref(-1);
 const recentMaterials = getRecentVocabList('materials');
 
 const getDisplayLabel = (item) => {
+  if (!item) return '';
+  if (typeof item === 'object') {
+    return item._value || item['#term'] || item.term || item.label || item.prefLabel || item.name || '';
+  }
   if (typeof item !== 'string') return String(item);
   const match = item.match(/^(.*?)\s*<.*?>$/);
   return match ? match[1] : item;
@@ -135,12 +139,12 @@ const isAlreadySelected = (chip) => {
   const chipLabel = (chip.label || chip.prefLabel || '').toLowerCase();
   const chipUri = chip.uri || '';
   return current.some(item => {
-    if (typeof item === 'string') {
-      if (chipUri && item.includes(chipUri)) return true;
-      const display = getDisplayLabel(item).toLowerCase();
-      return display === chipLabel;
+    const display = getDisplayLabel(item).toLowerCase();
+    if (chipUri) {
+      if (typeof item === 'string' && item.includes(chipUri)) return true;
+      if (typeof item === 'object' && (item['#termUID'] === chipUri || item['#namespace'] === chipUri || item.uri === chipUri)) return true;
     }
-    return false;
+    return display === chipLabel;
   });
 };
 

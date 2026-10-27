@@ -39,38 +39,79 @@
         </button>
       </div>
 
-      <!-- 2. Person Pool, API Settings & Global Rights Box -->
-      <div class="flex items-center gap-2">
+      <!-- 2. Pools, Settings & Global Rights -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <!-- Person Pool -->
         <button
           type="button"
-          class="btn btn-xs gap-1.5 btn-outline border-base-300 hover:border-primary hover:bg-primary/10"
+          class="btn btn-xs gap-1.5 btn-outline border-base-300 hover:border-primary hover:bg-primary/10 shadow-xs"
           @click="isPersonModalOpen = true"
           :title="currentLocale === 'de' ? 'Zentralen Personen- und Akteurs-Pool öffnen und verwalten' : 'Open and manage central persons & actors pool'"
         >
           <span class="text-sm">👥</span>
-          <span class="font-bold text-xs">{{ currentLocale === 'de' ? 'Personen-Pool' : 'Persons Pool' }}</span>
+          <span class="font-bold text-xs">{{ currentLocale === 'de' ? 'Personen' : 'Persons' }}</span>
           <span class="badge badge-xs badge-neutral font-semibold">{{ savedPersons.length }}</span>
         </button>
 
+        <!-- Organization Pool -->
         <button
           type="button"
-          class="btn btn-xs gap-1.5 btn-outline border-base-300 hover:border-secondary hover:bg-secondary/10"
+          class="btn btn-xs gap-1.5 btn-outline border-base-300 hover:border-primary hover:bg-primary/10 shadow-xs"
+          @click="isOrgModalOpen = true"
+          :title="currentLocale === 'de' ? 'Zentralen Organisations- und Institutionen-Pool öffnen und verwalten' : 'Open and manage central organizations & institutions pool'"
+        >
+          <span class="text-sm">🏛️</span>
+          <span class="font-bold text-xs">{{ currentLocale === 'de' ? 'Organisationen' : 'Organizations' }}</span>
+          <span class="badge badge-xs badge-primary font-semibold text-primary-content">{{ savedOrganizations.length }}</span>
+        </button>
+
+        <!-- Collections Pool -->
+        <button
+          type="button"
+          class="btn btn-xs gap-1.5 btn-outline border-base-300 hover:border-accent hover:bg-accent/10 shadow-xs"
+          @click="isCollectionModalOpen = true"
+          :title="currentLocale === 'de' ? 'Sammlungs-Pool (Collections) verwalten und Profile auswählen' : 'Manage collections pool and select collection profiles'"
+        >
+          <span class="text-sm">📂</span>
+          <span class="font-bold text-xs">{{ currentLocale === 'de' ? 'Sammlungen' : 'Collections' }}</span>
+          <span class="badge badge-xs badge-accent font-semibold">{{ savedCollections.length }}</span>
+        </button>
+
+        <!-- Master Campaign Presets (Kampagnen-Klammer) -->
+        <button
+          type="button"
+          class="btn btn-xs gap-1.5 btn-outline border-base-300 hover:border-warning hover:bg-warning/10 shadow-xs"
+          @click="isCampaignModalOpen = true"
+          :title="currentLocale === 'de' ? 'Kampagnen-Klammer & Vererbung für alle Objekte konfigurieren' : 'Configure master campaign presets & inheritance'"
+        >
+          <span class="text-sm">🎯</span>
+          <span class="font-bold text-xs">{{ currentLocale === 'de' ? 'Kampagne' : 'Campaign' }}</span>
+          <span class="badge badge-xs" :class="campaignPreset.active ? 'badge-warning font-semibold text-warning-content' : 'badge-ghost'">
+            {{ campaignPreset.active ? (currentLocale === 'de' ? 'Aktiv' : 'On') : (currentLocale === 'de' ? 'Aus' : 'Off') }}
+          </span>
+        </button>
+
+        <!-- API Settings -->
+        <button
+          type="button"
+          class="btn btn-xs gap-1.5 btn-outline border-base-300 hover:border-secondary hover:bg-secondary/10 shadow-xs"
           @click="isApiSettingsOpen = true"
           :title="currentLocale === 'de' ? 'API-Zugangsdaten für GeoNames, Wikidata und Pleiades konfigurieren' : 'Configure API credentials for GeoNames, Wikidata and Pleiades'"
         >
           <span class="text-sm">🔑</span>
-          <span class="font-bold text-xs">{{ currentLocale === 'de' ? 'API-Zugangsdaten' : 'API Credentials' }}</span>
+          <span class="font-bold text-xs">{{ currentLocale === 'de' ? 'APIs' : 'APIs' }}</span>
         </button>
 
+        <!-- Rights Collapsible Trigger -->
         <button
           type="button"
-          class="btn btn-xs gap-1.5"
+          class="btn btn-xs gap-1.5 shadow-xs"
           :class="isRightsExpanded ? 'btn-neutral' : 'btn-outline border-base-300'"
           @click="isRightsExpanded = !isRightsExpanded"
         >
           <span class="text-sm">⚖️</span>
-          <span class="font-bold text-xs">{{ currentLocale === 'de' ? 'Zentrale Rechte & Lizenzen' : 'Global Rights & Licenses' }}</span>
-          <span class="badge badge-xs badge-primary font-mono truncate max-w-[120px]" :title="globalRights.licence">
+          <span class="font-bold text-xs">{{ currentLocale === 'de' ? 'Rechte' : 'Rights' }}</span>
+          <span class="badge badge-xs badge-primary font-mono truncate max-w-[110px]" :title="globalRights.licence">
             {{ getLicenceShortCode(globalRights.licence) || 'CC BY 4.0' }}
           </span>
           <svg
@@ -93,6 +134,31 @@
       @close="isPersonModalOpen = false"
     />
 
+    <!-- Organization Pool Modal -->
+    <OrganizationPickerModal
+      :isOpen="isOrgModalOpen"
+      mode="manage"
+      :currentLocale="currentLocale"
+      @close="isOrgModalOpen = false"
+    />
+
+    <!-- Collection Pool Modal -->
+    <CollectionPickerModal
+      :isOpen="isCollectionModalOpen"
+      mode="manage"
+      :currentLocale="currentLocale"
+      @close="isCollectionModalOpen = false"
+      @select="handleCollectionSelect"
+    />
+
+    <!-- Master Campaign Preset Modal -->
+    <CampaignPresetModal
+      :isOpen="isCampaignModalOpen"
+      :currentLocale="currentLocale"
+      @close="isCampaignModalOpen = false"
+      @bulk-apply-campaign="handleBulkApplyCampaign"
+    />
+
     <!-- API Settings Modal -->
     <ApiSettingsModal
       :isOpen="isApiSettingsOpen"
@@ -102,20 +168,20 @@
 
     <!-- Collapsible Rights & Licenses Box ("einmal für alles eintragen") -->
     <div v-show="isRightsExpanded" class="p-4 bg-base-100 border-t border-base-200 transition-all">
-      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
         <div>
           <h4 class="font-bold text-sm flex items-center gap-1.5 text-base-content">
             <span>⚖️</span>
-            {{ currentLocale === 'de' ? 'Einmal für alle Datensätze festlegen' : 'Define once for all records' }}
+            {{ currentLocale === 'de' ? 'Globale Rechteverwaltung (Einmal für alle Datensätze festlegen)' : 'Global Rights Management (Define once for all records)' }}
           </h4>
           <p class="text-xs opacity-60">
-            {{ currentLocale === 'de' ? 'Diese Angaben werden für Kulturgüter, 3D-Modelle, Bilder und Aktivitäten automatisch übernommen.' : 'These values are automatically applied to heritage assets, 3D models, images, and activities.' }}
+            {{ currentLocale === 'de' ? 'Rechte werden hier global konfiguriert und automatisch in alle Kulturgüter, Digitalisate und Aktivitäten übernommen.' : 'Rights are managed globally here and automatically inherited by all assets, digital resources, and activities.' }}
           </p>
         </div>
 
-        <!-- 1-Click Presets -->
+        <!-- 1-Click Master Presets -->
         <div class="flex flex-wrap gap-1 items-center">
-          <span class="text-[11px] opacity-60 font-semibold uppercase mr-1">{{ currentLocale === 'de' ? 'Vorlagen:' : 'Presets:' }}</span>
+          <span class="text-[11px] opacity-60 font-semibold uppercase mr-1">{{ currentLocale === 'de' ? 'Schnellvorlagen:' : 'Quick Presets:' }}</span>
           <button
             type="button"
             class="btn btn-xs btn-outline normal-case font-normal"
@@ -140,66 +206,148 @@
         </div>
       </div>
 
-      <!-- Fields Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-        <!-- Metadaten-Rechte -->
-        <div>
-          <label class="label py-1">
-            <span class="label-text text-xs font-bold">{{ currentLocale === 'de' ? 'Metadaten-Lizenz (CARARE)' : 'Metadata License' }}</span>
-          </label>
-          <input
-            type="text"
-            v-model="globalRights.metadataRights"
-            class="input input-sm input-bordered w-full text-xs font-mono"
-            placeholder="z.B. CC0 1.0 Universal"
-          />
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
+        <!-- 1. METADATEN-RECHTE (z.B. CC0 1.0 Universal für Metadaten) -->
+        <div class="lg:col-span-4 p-3.5 bg-primary/5 rounded-2xl border border-primary/20 flex flex-col justify-between">
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-1.5 mb-2 pb-1 border-b border-primary/15">
+              <span class="font-bold text-xs uppercase tracking-wider text-primary flex items-center gap-1.5 whitespace-nowrap">
+                <span>🏛️</span>
+                <span>{{ currentLocale === 'de' ? '1. Metadaten-Rechte' : '1. Metadata Rights' }}</span>
+              </span>
+              <span class="badge badge-primary badge-xs font-semibold shrink-0">CARARE / Europeana</span>
+            </div>
+            <p class="text-[11px] text-base-content/60 mb-2 leading-relaxed">
+              {{ currentLocale === 'de'
+                ? 'Gilt für die beschreibenden Metadaten im CARARE-Dokument (Europeana verlangt standardmäßig CC0).'
+                : 'Applies to descriptive metadata in the CARARE record (Europeana requires CC0 by default).' }}
+            </p>
+
+            <label class="label py-0.5">
+              <span class="label-text text-xs font-semibold">
+                {{ currentLocale === 'de' ? 'Metadaten-Lizenz:' : 'Metadata License:' }}
+              </span>
+            </label>
+            <input
+              type="text"
+              v-model="globalRights.metadataRights"
+              class="input input-sm input-bordered w-full font-mono text-xs mb-2"
+              placeholder="z.B. CC0 1.0 Universal"
+              @change="emitApplyRights"
+            />
+
+            <!-- Metadaten Schnell-Buttons -->
+            <div class="flex flex-wrap gap-1">
+              <button
+                type="button"
+                class="badge badge-xs cursor-pointer transition-all"
+                :class="globalRights.metadataRights === 'CC0 1.0 Universal' ? 'badge-primary font-bold' : 'badge-ghost border border-base-300'"
+                @click="globalRights.metadataRights = 'CC0 1.0 Universal'; emitApplyRights()"
+              >
+                CC0 1.0 Universal
+              </button>
+              <button
+                type="button"
+                class="badge badge-xs cursor-pointer transition-all"
+                :class="globalRights.metadataRights === 'Public Domain Mark 1.0' ? 'badge-primary font-bold' : 'badge-ghost border border-base-300'"
+                @click="globalRights.metadataRights = 'Public Domain Mark 1.0'; emitApplyRights()"
+              >
+                Public Domain Mark 1.0
+              </button>
+            </div>
+          </div>
         </div>
 
-        <!-- Lizenz der Medien/Modelle -->
-        <div>
-          <label class="label py-1">
-            <span class="label-text text-xs font-bold">{{ currentLocale === 'de' ? 'Digitalisat-Lizenz (Modelle/Bilder)' : 'Resource License' }}</span>
-          </label>
-          <select
-            v-model="globalRights.licence"
-            class="select select-sm select-bordered w-full text-xs font-mono"
-            @change="emitApplyRights"
-          >
-            <option
-              v-for="lic in CC_LICENCES"
-              :key="lic.code"
-              :value="currentLocale === 'en' ? lic.uriEn : lic.uriDe"
-            >
-              {{ currentLocale === 'de' ? lic.labelDe : lic.labelEn }}
-            </option>
-            <option v-if="isCustomLicence" :value="globalRights.licence">
-              {{ globalRights.licence }}
-            </option>
-          </select>
-        </div>
+        <!-- 2. DATEN- & DIGITALISAT-RECHTE (3D-Modelle, Bilder, Punktwolken) -->
+        <div class="lg:col-span-8 p-3.5 bg-base-200/40 rounded-2xl border border-base-300 flex flex-col justify-between">
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-1.5 mb-2 pb-1 border-b border-base-300/60">
+              <span class="font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5 whitespace-nowrap">
+                <span>🧊</span>
+                <span>{{ currentLocale === 'de' ? '2. Daten- & Medien-Rechte (3D / Bilder)' : '2. Data & Media Rights (3D / Images)' }}</span>
+              </span>
+              <span class="badge badge-neutral badge-xs font-mono font-semibold shrink-0">
+                {{ getLicenceShortCode(globalRights.licence) || 'CC BY 4.0' }}
+              </span>
+            </div>
+            <p class="text-[11px] text-base-content/60 mb-2 leading-relaxed">
+              {{ currentLocale === 'de'
+                ? 'Gilt für die eigentlichen 3D-Daten, Texturen, Orthofotos und Rohbilder (Lizenz, Credit-Line und Zugang).'
+                : 'Applies to actual 3D data, textures, orthophotos, and RAW images (license, credit line, and access).' }}
+            </p>
 
-        <!-- Zugangsrechte -->
-        <div>
-          <label class="label py-1">
-            <span class="label-text text-xs font-bold">{{ currentLocale === 'de' ? 'Zugangsrechte (Access)' : 'Access Rights' }}</span>
-          </label>
-          <select v-model="globalRights.accessRights" class="select select-sm select-bordered w-full text-xs">
-            <option value="Open access">Open access (Öffentlich zugänglich)</option>
-            <option value="Restricted access">Restricted access (Eingeschränkt)</option>
-          </select>
-        </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2.5">
+              <!-- Digitalisat-Lizenz -->
+              <div>
+                <label class="label py-0.5">
+                  <span class="label-text text-xs font-semibold">
+                    {{ currentLocale === 'de' ? 'Daten-Lizenz (Digitalisate):' : 'Data License (Resources):' }}
+                  </span>
+                </label>
+                <select
+                  v-model="globalRights.licence"
+                  class="select select-sm select-bordered w-full text-xs font-mono"
+                  @change="emitApplyRights"
+                >
+                  <option
+                    v-for="lic in CC_LICENCES"
+                    :key="lic.code"
+                    :value="currentLocale === 'en' ? lic.uriEn : lic.uriDe"
+                  >
+                    {{ lic.code }} — {{ currentLocale === 'de' ? lic.labelDe : lic.labelEn }}
+                  </option>
+                  <option v-if="isCustomLicence" :value="globalRights.licence">
+                    {{ globalRights.licence }}
+                  </option>
+                </select>
+              </div>
 
-        <!-- Copyright Credit Line -->
-        <div class="lg:col-span-1">
-          <label class="label py-1">
-            <span class="label-text text-xs font-bold">{{ currentLocale === 'de' ? 'Rechteinhaber / Credit Line' : 'Copyright Credit Line' }}</span>
-          </label>
-          <input
-            type="text"
-            v-model="globalRights.copyrightCreditLine"
-            class="input input-sm input-bordered w-full text-xs"
-            placeholder="z.B. Stiftung Preußischer Kulturbesitz..."
-          />
+              <!-- Zugangsrechte -->
+              <div>
+                <label class="label py-0.5">
+                  <span class="label-text text-xs font-semibold">
+                    {{ currentLocale === 'de' ? 'Zugangsrechte (Access):' : 'Access Rights:' }}
+                  </span>
+                </label>
+                <select v-model="globalRights.accessRights" class="select select-sm select-bordered w-full text-xs" @change="emitApplyRights">
+                  <option value="Open access">Open access (Öffentlich zugänglich)</option>
+                  <option value="Restricted access">Restricted access (Eingeschränkt)</option>
+                </select>
+              </div>
+
+              <!-- Copyright / Credit Line -->
+              <div>
+                <label class="label py-0.5">
+                  <span class="label-text text-xs font-semibold">
+                    {{ currentLocale === 'de' ? 'Rechteinhaber / Credit Line:' : 'Copyright / Credit Line:' }}
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  v-model="globalRights.copyrightCreditLine"
+                  class="input input-sm input-bordered w-full text-xs"
+                  placeholder="z.B. Staatliche Museen zu Berlin / BCDH Uni Bonn"
+                  @change="emitApplyRights"
+                />
+              </div>
+
+              <!-- Reproduktionsrechte -->
+              <div>
+                <label class="label py-0.5">
+                  <span class="label-text text-xs font-semibold">
+                    {{ currentLocale === 'de' ? 'Reproduktionsrechte:' : 'Reproduction Rights:' }}
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  v-model="globalRights.reproductionRights"
+                  class="input input-sm input-bordered w-full text-xs"
+                  placeholder="z.B. Freie Nutzung für Wissenschaft und Forschung"
+                  @change="emitApplyRights"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -232,8 +380,22 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { defaultMetadataLanguage, globalRights, saveGlobalRights, savedPersons, CC_LICENCES, getLicenceShortCode, resolveLicenceUri } from '../utils/sharedState.js';
+import { 
+  defaultMetadataLanguage, 
+  globalRights, 
+  saveGlobalRights, 
+  savedPersons, 
+  savedOrganizations, 
+  savedCollections,
+  campaignPreset,
+  CC_LICENCES, 
+  getLicenceShortCode, 
+  resolveLicenceUri 
+} from '../utils/sharedState.js';
 import PersonPickerModal from './PersonPickerModal.vue';
+import OrganizationPickerModal from './OrganizationPickerModal.vue';
+import CollectionPickerModal from './CollectionPickerModal.vue';
+import CampaignPresetModal from './CampaignPresetModal.vue';
 import ApiSettingsModal from './ApiSettingsModal.vue';
 import FlagIcon from './FlagIcon.vue';
 
@@ -244,12 +406,25 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['apply-rights', 'apply-language']);
+const emit = defineEmits(['apply-rights', 'apply-language', 'apply-collection', 'bulk-apply-campaign']);
 
 const isRightsExpanded = ref(false);
 const isPersonModalOpen = ref(false);
+const isOrgModalOpen = ref(false);
+const isCollectionModalOpen = ref(false);
+const isCampaignModalOpen = ref(false);
 const isApiSettingsOpen = ref(false);
 const appliedToast = ref('');
+
+const handleCollectionSelect = (col) => {
+  emit('apply-collection', col);
+  showToast(props.currentLocale === 'de' ? `Sammlung "${col.title || col.id}" ausgewählt!` : `Collection "${col.title || col.id}" selected!`);
+};
+
+const handleBulkApplyCampaign = (preset) => {
+  emit('bulk-apply-campaign', preset);
+  showToast(props.currentLocale === 'de' ? 'Kampagne auf alle Datensätze übertragen!' : 'Campaign presets applied to all records!');
+};
 
 const isCustomLicence = computed(() => {
   if (!globalRights.licence) return false;

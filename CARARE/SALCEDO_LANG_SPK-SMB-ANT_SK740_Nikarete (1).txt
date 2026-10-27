@@ -1,0 +1,150 @@
+---
+created: 2025-04-17
+author:
+  - first_name: valentina
+  - last_name: salcedo paparoni
+  - affiliation: staatliche museen zu berlin. stiftung preußischer kulturbesitz
+  - affiliation_url: https://lobid.org/organisations/DE-MUS-710014
+author:
+  - first_name: matthias
+  - last_name: lang
+  - affiliation: bonn center for digital humanities. bonn university
+  - affiliation_url: https://d-nb.info/gnd/36150-1
+type: documentation
+type_url: http://vocab.getty.edu/page/aat/300054638
+documentation_license: CC BY-SA-NC 4.0
+documentation_license_url: https://creativecommons.org/licenses/by-sa/4.0/
+---
+
+## Original Object
+
+- **titel_de:** *Grabnaiskos der Nikarete: Weibliches Fragment vom Grabmal der Nikarete*
+- **titel_en:** *Female fragment of the tomb of Nikarete*
+- **time-span:** 330 – 320 B.C.
+- **object_measurement_heigth:** 118
+- **object_measurement_length:** 56
+- **object_measurement_weigth:** 256
+- **supporting_measurement_heigth:** 90
+- **supporting_measurement_length:** 59
+- **supporting_measurement_width:** 40
+- **size_dimension_units_for_distance:** centimeters <http://vocab.getty.edu/page/aat/300379098>
+- **size_dimension_units_for weight:** kilograms <http://vocab.getty.edu/page/aat/300379226>
+- **object_genre:** sculpture <http://vocab.getty.edu/page/aat/300184633>
+- **supporting_and_resisting_element:** pedestal <http://vocab.getty.edu/page/aat/300001744>
+- **object_material:** marble <http://vocab.getty.edu/page/aat/300011443>
+- **supporting_material:** sandstone <http://vocab.getty.edu/page/aat/300011376>
+- **sculpture_technique:** relief <http://vocab.getty.edu/page/aat/300053622>
+- **sepulchral_monument:** tombstone <http://vocab.getty.edu/page/aat/300005923>
+- **location:** Antikensammlung, Berlin. Staatliche Museen zu Berlin
+- **isil:** DE-MUS-814111 <https://lobid.org/organisations/DE-MUS-814111>
+- **Inventory Number:** SK 740
+- **acquisition_year:** 1820
+- **provenance:** https://doi.org/10.11588/diglit.69318#0219
+- **permalink:** https://id.smb.museum/object/699203
+
+## 3D-Model
+- **SMB-SPK_digital_object_ID:** 3816816
+- **digitized_by:** Bonn Center for Digital Humanities. Bonn University <https://d-nb.info/gnd/36150-1>
+- **date-time:** 2025-01-30 [YYYY-MM-DD]
+- **data_processing_equipment:** scanner <http://vocab.getty.edu/page/aat/300237891>
+- **scanner:** structured-light 3D scanner
+- **scanner_hardware:** Artec Leo
+- **scanner_resolution:** 0,1 millimeter
+- **photographic_equipment:** digital camera <http://vocab.getty.edu/page/aat/300266792>
+- **photographic_hardware:** Nikon Z8
+- **texture_generation:** Nikon Z8
+- **texture_resolution** 16384 x 16384 pixel
+- **software:** 
+    - Artec Studio 19
+    - Blender 4.2
+    - Substance Designer 14
+    - Adobe Photoshop Lightroom 14.1
+- **object_data_measurement_faces:** 15,8 millions
+- **object_data_measurement_verts:** 7,9 millions
+- **documented_by:** Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz <https://lobid.org/organisations/DE-MUS-710014>
+- **data_set_license:** CC BY-SA 4.0 <https://creativecommons.org/licenses/by-sa/4.0/>
+
+## Contents:
+1. SK_740_Nikarete_HP --> high-poly model
+
+| Name | Creation Date | SHA256 Checksum |
+|---|---|---|
+| SK_740_Nikarete_HP.mtl | 19.04.2025 12:46:30 | 474852e87764e5c092abbb9ae222f0a0f1addea4b6d4ad1050a36ef5405fa711 |
+| SK_740_Nikarete_HP.obj | 06.03.2025 10:30:52 | 1f6d9d3de5e9eb3db5ae0197d7518f484a02dd3ca9a525cb6f6dfcb6b0c3e04d |
+| SK_740_Nikarete_HP.png | 06.03.2025 10:30:52 | d4cbe3b97c34bec8f58a9f083a24b6ab67636d0a5bd8edc72c80455cf859a3fe |
+
+2. SK_740_Nikarete_LP --> low-poly model
+
+| Name | Creation Date | SHA256 Checksum |
+|---|---|---|
+| SK_740_Nikarete_LP.mtl | 06.03.2025 11:09:50 | 6d964e5fd26051bfca0d0b2ef4e4cfbad72a650731a06e59c664fb7b14d063a4 |
+| SK_740_Nikarete_LP.obj | 06.03.2025 11:09:50 | f413506cdd1b9c11a935b8134bf9601bdf9368fe64556b1420bea816e8e841bf |
+| sk_740_nikarete_lp_uv_Ambient Occlusion Map from Mesh.jpg | 06.03.2025 11:03:18 | 1c9070d58ae52243ca4b42e694055a96d52eae91fc839d45aedc14c0d346c380 |
+| sk_740_nikarete_lp_uv_Normal Map from Mesh.jpg | 06.03.2025 11:04:08 | b31f5835a3b7a19bc8b69a3fe3056d5134b35f0a4c68ec370370d2f4d01c6642 |
+| sk_740_nikarete_lp_uv_Transferred Texture from Mesh.jpg | 06.03.2025 11:09:26 | 690d2cc6641777c2feb5e197a5fba351305caa68c68bcc909506cd6652fd0698 |
+
+3. SK_740_Nikarete_texture_images --> images used for texturing process (jpg)
+
+| Name | Creation Date | SHA256 Checksum |
+|---|---|---|
+| SK_740_Nikarete (1 von 59).jpg | 06.03.2025 10:15:50 | 221ea62d552fbbd395a6e3af23f1f0749910aee7938a47f33d7e6dbf549eaec3 |
+| SK_740_Nikarete (10 von 59).jpg | 06.03.2025 10:15:56 | e92027b7a63a3deb3b78e1f09c4712cf48519262109cfb3c49a3816455585b5c |
+| SK_740_Nikarete (11 von 59).jpg | 06.03.2025 10:15:54 | 4f1f75a7949e769ad583172723fb0eea8e6b379b67353032f47d391cce98a281 |
+| SK_740_Nikarete (12 von 59).jpg | 06.03.2025 10:15:56 | 488173892cbff2daf14d6a089632b737e6627d2963515735a3dcefb42e91314f |
+| SK_740_Nikarete (13 von 59).jpg | 06.03.2025 10:15:56 | 4b8d96c589255e0cdefa5142fd9da7359414c4c981296672ff6cd8a5c60eb9df |
+| SK_740_Nikarete (14 von 59).jpg | 06.03.2025 10:15:56 | 91301088195cc43c31ead15f5d077960a96e8e58babc62afef702bb1141cbd9d |
+| SK_740_Nikarete (15 von 59).jpg | 06.03.2025 10:15:56 | 18a7bb82b65438e424a6d1bfe363a6a32dd14ac5016e48e6fef3c1ec396ce23e |
+| SK_740_Nikarete (16 von 59).jpg | 06.03.2025 10:15:58 | 77b152e6b36a980bdd9a8cb9605a24c65390b29bbb256429ad868ae544ebed31 |
+| SK_740_Nikarete (17 von 59).jpg | 06.03.2025 10:15:58 | 498d0e86ac7af79fc581d363d7a1e5de038538ebc61fc3ebc52864cd440128ff |
+| SK_740_Nikarete (18 von 59).jpg | 06.03.2025 10:15:58 | 5a3da1f50d8ae9a07ab3b466fc87fd026c39279e2c93dfd8b6adbbf3052d8419 |
+| SK_740_Nikarete (19 von 59).jpg | 06.03.2025 10:15:58 | 3957a658652c07a1708d0e93fa809667f1aab2b4325e8bc852bba174c4e1ca74 |
+| SK_740_Nikarete (2 von 59).jpg | 06.03.2025 10:15:52 | ef5e64adfdb7f83f6eb219f1255a7b37ccca690df564194bf2ee89e9b0b6eff2 |
+| SK_740_Nikarete (20 von 59).jpg | 06.03.2025 10:15:58 | 97709c95ea1a2951c1c9edf4548d0bd405af5bb5e772f90de1549cf82311507c |
+| SK_740_Nikarete (21 von 59).jpg | 06.03.2025 10:16:00 | db4e7a09f29116b005d6c14af1e1cdc733a2b00304dc791e494b6a7a9e587e76 |
+| SK_740_Nikarete (22 von 59).jpg | 06.03.2025 10:16:00 | e267691d302946c5382c648e8e79accaa289822607ea87018dda3db4f0b68a96 |
+| SK_740_Nikarete (23 von 59).jpg | 06.03.2025 10:16:00 | bfe1802e24eb37951162d95c6316e573b01d25ffc1e0cca3eaa64a0cb418f966 |
+| SK_740_Nikarete (24 von 59).jpg | 06.03.2025 10:16:00 | 2db14e1c130411f703c49afe588d0c3e395174c3c068ea61cbdc2bb339bcf66a |
+| SK_740_Nikarete (25 von 59).jpg | 06.03.2025 10:16:00 | 2a7fada665f3857c47a471c5493fa6c2e2d7623af8886aafaf608e7ed0f025a2 |
+| SK_740_Nikarete (26 von 59).jpg | 06.03.2025 10:16:00 | b202a747aef2403f68cab878837a4d898d8e5936d739c90533541bb6ec50569f |
+| SK_740_Nikarete (27 von 59).jpg | 06.03.2025 10:16:02 | c6e044acdafadf9558fc5c7714393039b7a49ca390397702be268b33111a1551 |
+| SK_740_Nikarete (28 von 59).jpg | 06.03.2025 10:16:02 | 3e82c845108d96bf16aaaa1ee0086863434dbc8744e4b173135bce169cc78949 |
+| SK_740_Nikarete (29 von 59).jpg | 06.03.2025 10:16:02 | ebb54c8796bfd992a9e997734735d644f8f6d442e208244c8b612e94b30c6808 |
+| SK_740_Nikarete (3 von 59).jpg | 06.03.2025 10:15:52 | 1a45eca4be51bbca1c6483d71e29380c5b889df365e3895baa3229eaff742a4c |
+| SK_740_Nikarete (30 von 59).jpg | 06.03.2025 10:16:02 | b8e01200aaa788f17d39b8f3f8094e83c050dcc70d53a4d141676f91d5f0c33e |
+| SK_740_Nikarete (31 von 59).jpg | 06.03.2025 10:16:04 | dd4741fe622fb422550939164c0013ef8c403db7561b7e209afc51009d557496 |
+| SK_740_Nikarete (32 von 59).jpg | 06.03.2025 10:16:04 | dbd2aefa4f9d8b72305ae8d153c4b0db8a8eca0bb58df22bde35c1d977b44e98 |
+| SK_740_Nikarete (33 von 59).jpg | 06.03.2025 10:16:06 | b7f421ad67162c7d7bacf8eac71b0d381964d09b1e6eb0d641bcf66ad747d667 |
+| SK_740_Nikarete (34 von 59).jpg | 06.03.2025 10:16:06 | f648733503f2e60bbe4443a6af03c53dcfef0d38dccd7cbe5e5b1fc1aa7524c9 |
+| SK_740_Nikarete (35 von 59).jpg | 06.03.2025 10:16:06 | 7178a0f4d51a26115e538663a18708bea70706dfa9398079021c09af400a0180 |
+| SK_740_Nikarete (36 von 59).jpg | 06.03.2025 10:16:06 | 74e6ffb51410d365f9bf1db98c0f48b74afcd527b47174f91c4933e7345ed233 |
+| SK_740_Nikarete (37 von 59).jpg | 06.03.2025 10:16:06 | 4da6ee235791193bfed6e27ad46b23c31776c11204736f6c3f1d74e0f73322dd |
+| SK_740_Nikarete (38 von 59).jpg | 06.03.2025 10:16:08 | 6505f0409888c9198db82401835df4b0b08b81199cc0cf0c14c3c473699d0e2f |
+| SK_740_Nikarete (39 von 59).jpg | 06.03.2025 10:16:08 | adb0ed4e9f08cd2bd377cec02e9deb887a45baeaa1ca8e3ef8ff752924976547 |
+| SK_740_Nikarete (4 von 59).jpg | 06.03.2025 10:15:52 | 5796adb7eb166b4c9a2d6e045fa71c3f31f38f1b16cb8e66528b2e05ba4ade97 |
+| SK_740_Nikarete (40 von 59).jpg | 06.03.2025 10:16:08 | 2a676f0a4194da7aed49d651e866b47f1092fda1dc6a94534a9a24d3836020e6 |
+| SK_740_Nikarete (41 von 59).jpg | 06.03.2025 10:16:08 | 60b223fad386c3ddc9691e3361fff1d83b1bd5003c7e9bc677930a428ab1fb5a |
+| SK_740_Nikarete (42 von 59).jpg | 06.03.2025 10:16:08 | f45bdc4fefc56ce2c9de4fa9dc81b32bbebd1146d206af21370a6a9f2da30384 |
+| SK_740_Nikarete (43 von 59).jpg | 06.03.2025 10:16:10 | d57029ff9d54a9750aeb0ac4d229aafbecf781c0aaefced36df1890c591e6c11 |
+| SK_740_Nikarete (44 von 59).jpg | 06.03.2025 10:16:10 | 2728b8d516379a1a8e8bf2487175ddaaa067604d32f3ceea0797492112272729 |
+| SK_740_Nikarete (45 von 59).jpg | 06.03.2025 10:16:10 | e04e26f97710117ad01cda2d863d7774360073de8fdb46b5b323e9e0c34cb5e9 |
+| SK_740_Nikarete (46 von 59).jpg | 06.03.2025 10:16:10 | 3e9ec126d3dede989e81fd5dc18a2c76372e459dcc0c323e22a4803e5cacbeec |
+| SK_740_Nikarete (47 von 59).jpg | 06.03.2025 10:16:10 | 8f7856362b4fd74899ce33ba18e08d8a0567e89b2d2c8bea6aaaf3a7d4c00c5b |
+| SK_740_Nikarete (48 von 59).jpg | 06.03.2025 10:16:12 | 8c092e1282cfb730ca1de52d59140505718d7a70fcd348ad3eaf1cba383c2892 |
+| SK_740_Nikarete (49 von 59).jpg | 06.03.2025 10:16:12 | fbeace359c43e6d6964126127db7f3950d8c5da62633b8a6a7b12fb9d2cd870a |
+| SK_740_Nikarete (5 von 59).jpg | 06.03.2025 10:15:52 | e47dcb686dd2de44ce575a947622e571386f6ca65fcfc7dddb4d0fe3b50c146f |
+| SK_740_Nikarete (50 von 59).jpg | 06.03.2025 10:16:12 | 27f8291bd22f1ffc8bff6f8cb13b54bc43f6cd10389e4defa51c80144678ab02 |
+| SK_740_Nikarete (51 von 59).jpg | 06.03.2025 10:16:12 | acb89c291a7a657f12a1985ed79e19395cab968d4591e293bc97a09f4353353f |
+| SK_740_Nikarete (52 von 59).jpg | 06.03.2025 10:16:12 | ac5a3716af8732ebd0704701277a2eefef04c8e0950229b3945e424a9f7b3b9c |
+| SK_740_Nikarete (53 von 59).jpg | 06.03.2025 10:16:14 | 823cc0573e8b53e56796626e8506da1a6a7f50942ddc7cfea3e7d6f9f3f510c7 |
+| SK_740_Nikarete (54 von 59).jpg | 06.03.2025 10:16:14 | 3fa9541e759843d13dbe9be40af02039958621fe7b8c461ae2d171b93c87e95f |
+| SK_740_Nikarete (55 von 59).jpg | 06.03.2025 10:16:14 | a13159a8e9f27bbae3a9d48f957db6a85aa31d7a2b4040396c06849ad0b4b6b5 |
+| SK_740_Nikarete (56 von 59).jpg | 06.03.2025 10:16:14 | 09910b49d40ad67b04632cfea882681886efc75d014e61bd7fe0c512de96dd4d |
+| SK_740_Nikarete (57 von 59).jpg | 06.03.2025 10:16:14 | 54141712483cbd31a8de832aae3a642af7e6b08254815f706b88ca342b4e7f24 |
+| SK_740_Nikarete (58 von 59).jpg | 06.03.2025 10:16:16 | e59a4494b279d93b601df37649c5be2077af12b0ff58f3a553162edbc3d35a7f |
+| SK_740_Nikarete (59 von 59).jpg | 06.03.2025 10:16:16 | 268763fc64a2147bb64317335f7c4717e92d81a0c384ed4604d1f1363d7d2dbe |
+| SK_740_Nikarete (6 von 59).jpg | 06.03.2025 10:15:54 | 663003739796b2470ffb951b7493c28f406ca2093135c0d54fcd64222bdfece6 |
+| SK_740_Nikarete (7 von 59).jpg | 06.03.2025 10:15:54 | 96729d4fb21244feb01bc4762161655a9117801d73498b44f6b395d5e820aa36 |
+| SK_740_Nikarete (8 von 59).jpg | 06.03.2025 10:15:54 | 1708a89476b5ce031c2ca7f531bfdf0e2a5ac189452bf0eaedb6a5c817cdd276 |
+| SK_740_Nikarete (9 von 59).jpg | 06.03.2025 10:15:54 | 069339d5c20b64cd7e5704a887b3fba87822c8b1a4e38434be6999447fb8c069 |
+
+4. SALCEDO_LANG_SPK-SMB-ANT_SK740_Nikarete.txt --> Documentation file contains meta- and paradata information.
