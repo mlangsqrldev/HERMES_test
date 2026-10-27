@@ -33,4 +33,15 @@ dist-ssr
 
 # Rust / Tauri
 src-tauri/target/
-src-tauri/gen/
+src-tauri/gen/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Release-Builds / Installer
+HERMES_Windows_Release_Package/
+*.msi
+
+# Scratch-/Temp-Dateien
+scratch_*
