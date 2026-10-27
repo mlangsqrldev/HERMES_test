@@ -114,13 +114,44 @@ async fn open_manual_window(app: tauri::AppHandle) -> Result<(), String> {
     Ok(())
 }
 
+/// Appends a message to %LOCALAPPDATA%\de.uni-bonn.bcdh\hermes_crash.log.
+/// Release builds have no console (windows_subsystem = "windows"), so startup
+/// errors would otherwise be invisible.
+fn write_crash_log(msg: &str) {
+    use std::io::Write;
+    let dir = std::env::var("LOCALAPPDATA")
+        .map(|p| std::path::PathBuf::from(p).join("de.uni-bonn.bcdh"))
+        .unwrap_or_else(|_| std::env::temp_dir());
+    let _ = std::fs::create_dir_all(&dir);
+    if let Ok(mut f) = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(dir.join("hermes_crash.log"))
+    {
+        let ts = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_secs())
+            .unwrap_or(0);
+        let _ = writeln!(f, "[unix {}] {}", ts, msg);
+    }
+}
+
 fn main() {
-    tauri::Builder::default()
+    std::panic::set_hook(Box::new(|info| {
+        let bt = std::backtrace::Backtrace::force_capture();
+        write_crash_log(&format!("PANIC: {}\n{}", info, bt));
+    }));
+
+    let result = tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![generate_bag_hashes, open_manual_window])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .run(tauri::generate_context!());
+
+    if let Err(e) = result {
+        write_crash_log(&format!("Tauri run error: {:?}", e));
+        std::process::exit(1);
+    }
 }
