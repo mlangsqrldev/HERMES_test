@@ -881,6 +881,60 @@
 
           </div>
 
+          <!-- Contacts Table in Creation -->
+          <div class="col-span-full border border-base-200 bg-base-100 p-3.5 rounded-xl mt-2 mb-2 shadow-xs">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5 pb-2 border-b border-base-200">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-sm text-base-content flex items-center gap-1.5">
+                  <span>👥</span>
+                  <span>{{ getLabel('recordInformation.creation.contacts', 'contacts') }}</span>
+                </span>
+                <span class="badge badge-xs badge-neutral font-mono">{{ (form['recordInformation.creation.contacts'] || []).length }}</span>
+              </div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <button type="button" class="btn btn-xs btn-outline btn-accent gap-1" @click.prevent="openOrgPicker('contacts')">
+                  🏛️ {{ currentLocale === 'de' ? 'Organisation' : 'Organization' }}
+                </button>
+                <button type="button" class="btn btn-xs btn-secondary gap-1 font-bold shadow-xs" @click.prevent="openPersonPicker('contacts')">
+                  👤 {{ currentLocale === 'de' ? 'Aus Personen-Pool wählen' : 'Select from Person Pool' }}
+                </button>
+                <button type="button" class="btn btn-xs btn-primary gap-1" @click.prevent="openDrawer('recordInformation.creation.contacts')">
+                  + {{ currentLocale === 'de' ? 'Kontakt anlegen' : 'Add Contact' }}
+                </button>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="table table-xs w-full table-zebra">
+                <thead class="bg-base-200/60">
+                  <tr>
+                    <th>{{ getLabel('recordInformation.creation.contacts.name', 'name') }}</th>
+                    <th>{{ getLabel('recordInformation.creation.contacts.role', 'role') }}</th>
+                    <th>{{ getLabel('recordInformation.creation.contacts.organization', 'organization') }}</th>
+                    <th>{{ getLabel('recordInformation.creation.contacts.email', 'email') }}</th>
+                    <th class="w-20">{{ t('actions') }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(subItem, subIdx) in form['recordInformation.creation.contacts']" :key="subIdx">
+                    <td class="font-semibold">{{ subItem['name'] }}</td>
+                    <td>{{ subItem['role'] }}</td>
+                    <td>{{ subItem['organization'] }}</td>
+                    <td>{{ subItem['email'] }}</td>
+                    <td>
+                      <div class="flex gap-1">
+                        <button type="button" class="btn btn-xs btn-ghost text-info" @click.prevent="openDrawer('recordInformation.creation.contacts', subIdx)">{{ t('edit') }}</button>
+                        <button type="button" class="btn btn-xs btn-ghost text-error" @click.prevent="removeDrawerItem('recordInformation.creation.contacts', subIdx)">✕</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr v-if="!form['recordInformation.creation.contacts'] || form['recordInformation.creation.contacts'].length === 0">
+                    <td colspan="5" class="text-center text-base-content/40 py-3 italic">{{ t('noItems') }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
           </div>
 
@@ -1116,35 +1170,23 @@
 
         <div class="form-control w-full mb-4">
 
-        <div class="flex flex-row items-center">
-
-          <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('description', 'description') }}</span><span class="text-accent font-black">*</span></label>
-
-          
-
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('description', 'Free-text description of the heritage asset. Can be provided in multiple languages.', 'doc')" v-if="getLabel('description', 'Free-text description of the heritage asset. Can be provided in multiple languages.', 'doc')">
-
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-
-                          fill="currentColor"
-
-                          stroke-width="2.5"
-
-                          stroke="currentColor"
-
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-
+        <div class="flex flex-row items-center justify-between">
+          <div class="flex flex-row items-center">
+            <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('description', 'description') }}</span><span class="text-accent font-black">*</span></label>
+            <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('description', 'Free-text description of the heritage asset. Can be provided in multiple languages.', 'doc')" v-if="getLabel('description', 'Free-text description of the heritage asset. Can be provided in multiple languages.', 'doc')">
+              <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
+                <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
+                            fill="currentColor"
+                            stroke-width="2.5"
+                            stroke="currentColor"
+                            class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
               </button>
+            </div>
+          </div>
+          <LanguageBadgePicker v-model="form['description#lang']" />
+        </div>
 
-              </div>
-
-              </div>
-
-          <textarea v-model="form['description']" class="textarea textarea-bordered w-full h-24" :placeholder="getLabel('description', 'e.g. Female fragment of an Attic grave naiskos in Pentelic marble, executed in relief technique ...', 'plac')"></textarea>
-
-          
+        <textarea v-model="form['description']" class="textarea textarea-bordered w-full h-24" :placeholder="getLabel('description', 'e.g. Female fragment of an Attic grave naiskos in Pentelic marble, executed in relief technique ...', 'plac')"></textarea>
 
         </div>
 
@@ -1922,7 +1964,10 @@
 
              </div>
 
-             <button type="button" class="btn btn-sm btn-primary" @click.prevent="if(!form['characters.inscriptions']) form['characters.inscriptions'] = []; form['characters.inscriptions'].push(''); inlineEditing['characters.inscriptions_' + (form['characters.inscriptions'].length - 1)] = true;">{{ currentLocale === 'de' ? getLabel('characters.inscriptions', 'characters.inscriptions') + ' ' + t('add') : t('add') + ' ' + getLabel('characters.inscriptions', 'characters.inscriptions') }}</button>
+             <div class="flex items-center gap-2">
+               <LanguageBadgePicker v-model="form['characters.inscriptions#lang']" />
+               <button type="button" class="btn btn-sm btn-primary" @click.prevent="if(!form['characters.inscriptions']) form['characters.inscriptions'] = []; form['characters.inscriptions'].push(''); inlineEditing['characters.inscriptions_' + (form['characters.inscriptions'].length - 1)] = true;">{{ currentLocale === 'de' ? getLabel('characters.inscriptions', 'characters.inscriptions') + ' ' + t('add') : t('add') + ' ' + getLabel('characters.inscriptions', 'characters.inscriptions') }}</button>
+             </div>
 
           </div>
 
@@ -2353,14 +2398,17 @@
               </div>
             </div>
 
-            <button
-              type="button"
-              class="btn btn-xs btn-outline btn-primary gap-1 font-semibold"
-              @click.prevent="openOrgPickerForRepo"
-              :title="currentLocale === 'de' ? 'Organisation aus dem Pool auswählen' : 'Pick organization from pool'"
-            >
-              🏛️ {{ currentLocale === 'de' ? 'Aus Organisations-Pool wählen' : 'Pick from Organization Pool' }}
-            </button>
+            <div class="flex items-center gap-2">
+              <LanguageBadgePicker v-model="form['repositoryLocation#lang']" />
+              <button
+                type="button"
+                class="btn btn-xs btn-outline btn-primary gap-1 font-semibold"
+                @click.prevent="openOrgPickerForRepo"
+                :title="currentLocale === 'de' ? 'Organisation aus dem Pool auswählen' : 'Pick organization from pool'"
+              >
+                🏛️ {{ currentLocale === 'de' ? 'Aus Organisations-Pool wählen' : 'Pick from Organization Pool' }}
+              </button>
+            </div>
           </div>
 
           <!-- Selected Repository Location Display Badge -->
@@ -2628,6 +2676,12 @@
 
       <div v-if="activeDrawerField === 'recordInformation.creation.contacts'">
 
+        <div class="flex justify-end gap-2 mb-3">
+          <button type="button" class="btn btn-xs btn-secondary gap-1" @click.prevent="openPersonPicker('contacts')">
+            👤 {{ currentLocale === 'de' ? 'Aus Personen-Pool übernehmen' : 'Fill from Person Pool' }}
+          </button>
+        </div>
+
         <div class="grid grid-cols-1 gap-x-6">
 
         <div class="form-control w-full mb-4">
@@ -2726,31 +2780,23 @@
 
         <div class="form-control w-full mb-4">
 
-        <div class="flex flex-row items-center">
-
-          <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('recordInformation.creation.contacts.organization', 'organization') }}</span><span class="text-accent font-black">*</span></label>
-
-          
-
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('recordInformation.creation.contacts.organization', 'Organisation to which the contact person belongs.', 'doc')" v-if="getLabel('recordInformation.creation.contacts.organization', 'Organisation to which the contact person belongs.', 'doc')">
-
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-
-                          fill="currentColor"
-
-                          stroke-width="2.5"
-
-                          stroke="currentColor"
-
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-
+        <div class="flex flex-row items-center justify-between">
+          <div class="flex flex-row items-center">
+            <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('recordInformation.creation.contacts.organization', 'organization') }}</span><span class="text-accent font-black">*</span></label>
+            <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('recordInformation.creation.contacts.organization', 'Organisation to which the contact person belongs.', 'doc')" v-if="getLabel('recordInformation.creation.contacts.organization', 'Organisation to which the contact person belongs.', 'doc')">
+              <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
+                <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
+                            fill="currentColor"
+                            stroke-width="2.5"
+                            stroke="currentColor"
+                            class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
               </button>
-
-              </div>
-
-              </div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-xs btn-ghost text-accent gap-1" @click.prevent="openOrgPicker('contacts')">
+            🏛️ {{ currentLocale === 'de' ? 'Aus Pool' : 'From Pool' }}
+          </button>
+        </div>
 
                         <input type="text"     required v-model="drawerForm['organization']" class="input input-bordered w-full validator " :placeholder="getLabel('recordInformation.creation.contacts.organization', 'e.g. Stiftung Preußischer Kulturbesitz, Staatliche Museen zu Berlin', 'plac')" />
 
@@ -5099,6 +5145,8 @@ import PlaceAutocomplete from '../components/PlaceAutocomplete.vue';
 import SpatialMapPicker from '../components/SpatialMapPicker.vue';
 
 import HeritageAssetDcRelations from '../components/HeritageAssetDcRelations.vue';
+
+import LanguageBadgePicker from '../components/LanguageBadgePicker.vue';
 
 import { 
 
@@ -10982,23 +11030,31 @@ const handleOrgSelected = (org) => {
 
   } else if (orgPickerTarget.value === 'contacts') {
 
-    if (!form['recordInformation.creation.contacts']) form['recordInformation.creation.contacts'] = [];
+    if (activeDrawerField.value === 'recordInformation.creation.contacts' && isDrawerOpen.value) {
 
-    const exists = form['recordInformation.creation.contacts'].some(c => (c.name || '').trim().toLowerCase() === (org.name || '').trim().toLowerCase());
+      drawerForm['organization'] = org.name;
 
-    if (!exists) {
+    } else {
 
-      form['recordInformation.creation.contacts'].push({
+      if (!form['recordInformation.creation.contacts']) form['recordInformation.creation.contacts'] = [];
 
-        name: org.name,
+      const exists = form['recordInformation.creation.contacts'].some(c => (c.name || '').trim().toLowerCase() === (org.name || '').trim().toLowerCase());
 
-        role: org.category || 'Organisation',
+      if (!exists) {
 
-        organization: org.name,
+        form['recordInformation.creation.contacts'].push({
 
-        email: ''
+          name: org.name,
 
-      });
+          role: org.category || 'Organisation',
+
+          organization: org.name,
+
+          email: ''
+
+        });
+
+      }
 
     }
 
@@ -11071,6 +11127,22 @@ const handlePersonsSelected = (selectedList) => {
     });
 
   } else if (personPickerMode.value === 'contacts') {
+
+    if (activeDrawerField.value === 'recordInformation.creation.contacts' && isDrawerOpen.value && selectedList.length > 0) {
+
+      const p = selectedList[0];
+
+      drawerForm['name'] = p.name || '';
+
+      drawerForm['role'] = p.role || p.roles || '';
+
+      drawerForm['organization'] = p.organization || '';
+
+      drawerForm['email'] = p.email || '';
+
+      return;
+
+    }
 
     if (!form['recordInformation.creation.contacts']) form['recordInformation.creation.contacts'] = [];
 

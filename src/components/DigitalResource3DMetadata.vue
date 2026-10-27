@@ -20,80 +20,48 @@
       </div>
     </div>
 
-    <!-- 1. METHODEN-WAHL (PHOTOGRAMMETRIE, SLS, TLS, HYBRID) -->
+    <!-- Schema Info Banner -->
+    <div class="mb-4 p-3.5 bg-primary/5 rounded-xl border border-primary/20 flex items-start gap-3">
+      <div class="text-xl">ℹ️</div>
+      <div class="text-xs text-base-content/75 space-y-1">
+        <p class="font-bold text-primary">
+          {{ currentLocale === 'de'
+            ? 'Hinweis zum CARARE 2.0 Schema (Methoden & Equipment):'
+            : 'CARARE 2.0 Schema Notice (Methods & Equipment):' }}
+        </p>
+        <p>
+          {{ currentLocale === 'de'
+            ? 'Angaben zur Erfassungsmethode (Photogrammetrie, SLS, TLS), zu Kameras, 3D-Scannern und Verarbeitungssoftware gehören schema-konform zur Aktivität (Activity -> consistsOf). Dieses Panel dokumentiert die technischen Eigenschaften der digitalen Ressource selbst (Dateiformat, Polygone, Texturen, Extent).'
+            : 'Acquisition methods (Photogrammetry, SLS, TLS), cameras, 3D scanners and software belong schema-conformantly to Activity sub-events (Activity -> consistsOf). This panel documents the technical properties of the digital resource itself (file format, polygons, textures, extent).' }}
+        </p>
+      </div>
+    </div>
+
+    <!-- 1. RESSOURCEN- & ASSET-TYP -->
     <div class="mb-5 p-3.5 bg-base-200/40 rounded-xl border border-base-300">
       <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
         <label class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5">
-          <span>🎯</span>
-          <span>{{ currentLocale === 'de' ? '1. Primäres Erfassungsverfahren (Digitalisierungsmethode)' : '1. Primary Acquisition Method' }}</span>
+          <span>🧊</span>
+          <span>{{ currentLocale === 'de' ? '1. Typ der digitalen Ressource' : '1. Digital Resource Asset Type' }}</span>
           <span class="text-accent font-black">*</span>
         </label>
         <span class="text-[11px] text-base-content/50">
-          {{ currentLocale === 'de' ? 'Bestimmt die abzufragenden technischen Parameter' : 'Determines technical parameters queried' }}
+          {{ currentLocale === 'de' ? 'Bestimmt die abzufragenden Netz- und Geometrieparameter' : 'Determines geometry parameters' }}
         </span>
       </div>
 
-      <!-- Method Buttons / Tabs -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+      <div class="flex flex-wrap gap-2">
         <button
+          v-for="at in ASSET_TYPES"
+          :key="at.code"
           type="button"
-          class="btn btn-sm flex items-center justify-center gap-2 transition-all"
-          :class="acquisitionMethod === 'photogrammetry' ? 'btn-secondary text-secondary-content font-bold shadow-sm' : 'btn-ghost border border-base-300 hover:border-secondary/60'"
-          @click="setMethod('photogrammetry')"
+          class="btn btn-sm gap-2 transition-all"
+          :class="assetType === at.code ? 'btn-primary font-bold shadow-xs' : 'btn-ghost border border-base-300 hover:border-primary/50'"
+          @click="setAssetType(at.code)"
         >
-          <span>📷</span>
-          <span class="truncate">{{ currentLocale === 'de' ? 'Photogrammetrie' : 'Photogrammetry' }}</span>
+          <span>{{ at.icon }}</span>
+          <span>{{ currentLocale === 'de' ? at.labelDe : at.labelEn }}</span>
         </button>
-
-        <button
-          type="button"
-          class="btn btn-sm flex items-center justify-center gap-2 transition-all"
-          :class="acquisitionMethod === 'sls' ? 'btn-primary text-primary-content font-bold shadow-sm' : 'btn-ghost border border-base-300 hover:border-primary/60'"
-          @click="setMethod('sls')"
-        >
-          <span>💡</span>
-          <span class="truncate">SLS (Streifenlicht)</span>
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-sm flex items-center justify-center gap-2 transition-all"
-          :class="acquisitionMethod === 'tls' ? 'btn-accent text-accent-content font-bold shadow-sm' : 'btn-ghost border border-base-300 hover:border-accent/60'"
-          @click="setMethod('tls')"
-        >
-          <span>🌐</span>
-          <span class="truncate">TLS (Laserscan)</span>
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-sm flex items-center justify-center gap-2 transition-all"
-          :class="acquisitionMethod === 'hybrid' ? 'btn-neutral text-neutral-content font-bold shadow-sm' : 'btn-ghost border border-base-300 hover:border-neutral/60'"
-          @click="setMethod('hybrid')"
-        >
-          <span>🔀</span>
-          <span class="truncate">{{ currentLocale === 'de' ? 'Hybrid / Kombiniert' : 'Hybrid / Multi' }}</span>
-        </button>
-      </div>
-
-      <!-- Resource Asset Output Type Sub-Selector -->
-      <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-base-300/60">
-        <span class="text-xs font-semibold text-base-content/70">
-          {{ currentLocale === 'de' ? 'Datensatz-Typ dieser Ressource:' : 'Asset Type of this Resource:' }}
-        </span>
-        <div class="flex flex-wrap gap-1.5">
-          <button
-            v-for="at in ASSET_TYPES"
-            :key="at.code"
-            type="button"
-            class="badge badge-sm gap-1 py-2 cursor-pointer transition-all"
-            :class="assetType === at.code ? 'badge-primary font-bold' : 'badge-ghost border border-base-300 hover:border-primary/50'"
-            @click="setAssetType(at.code)"
-          >
-            <span>{{ at.icon }}</span>
-            <span>{{ currentLocale === 'de' ? at.labelDe : at.labelEn }}</span>
-          </button>
-        </div>
       </div>
     </div>
 
@@ -987,7 +955,7 @@ const emit = defineEmits([
 // ----------------------------------------------------
 // Acquisition Method & Asset Type
 // ----------------------------------------------------
-const acquisitionMethod = ref('photogrammetry');
+const acquisitionMethod = ref('');
 const assetType = ref('mesh');
 
 const ASSET_TYPES = [

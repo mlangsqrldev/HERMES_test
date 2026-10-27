@@ -87,7 +87,7 @@
         leave-from-class="opacity-100 translate-y-0 max-h-[600px]"
         leave-to-class="opacity-0 -translate-y-2 max-h-0 overflow-hidden"
       >
-        <div v-if="showAddForm || editingIndex !== null" class="p-4 bg-primary/5 border-b border-primary/20">
+        <div ref="formContainerRef" v-if="showAddForm || editingIndex !== null" class="p-4 bg-primary/5 border-b border-primary/20">
           <div class="flex items-center justify-between mb-3">
             <h4 class="font-bold text-sm text-primary flex items-center gap-1.5">
               <span>{{ editingIndex !== null ? '✏️' : '➕' }}</span>
@@ -249,7 +249,7 @@
               type="button"
               class="btn btn-ghost btn-xs btn-square text-info hover:bg-info/10"
               :title="currentLocale === 'de' ? 'Eintrag bearbeiten' : 'Edit entry'"
-              @click.stop="startEditPerson(person, index)"
+              @click.stop="startEditPerson(person)"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -259,7 +259,7 @@
               type="button"
               class="btn btn-ghost btn-xs btn-square text-error hover:bg-error/10"
               :title="currentLocale === 'de' ? 'Aus Pool entfernen' : 'Remove from pool'"
-              @click.stop="confirmDeletePerson(person, index)"
+              @click.stop="confirmDeletePerson(person)"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -379,19 +379,22 @@ const resetFormData = () => {
   editingIndex.value = null;
 };
 
-const cancelEditForm = () => {
-  resetFormData();
-};
+const formContainerRef = ref(null);
 
-const startEditPerson = (person, index) => {
-  editingIndex.value = index;
-  showAddForm.value = false;
+const startEditPerson = (person) => {
+  const actualIdx = (savedPersons.value || []).findIndex(p => p === person || (p.name === person.name && p.id === person.id));
+  editingIndex.value = actualIdx !== -1 ? actualIdx : 0;
+  showAddForm.value = true;
   formData.name = person.name || '';
   formData.roles = person.roles || person.role || '';
   formData.id = person.id || '';
   formData.organization = person.organization || '';
   formData.email = person.email || '';
   formData.type = person.type || 'person';
+
+  setTimeout(() => {
+    formContainerRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
 };
 
 const savePersonForm = () => {
@@ -407,7 +410,7 @@ const savePersonForm = () => {
     type: formData.type
   };
 
-  if (editingIndex.value !== null) {
+  if (editingIndex.value !== null && editingIndex.value >= 0) {
     updateSavedPerson(editingIndex.value, personObj);
   } else {
     addOrUpdatePerson(personObj);
@@ -418,8 +421,11 @@ const savePersonForm = () => {
   resetFormData();
 };
 
-const confirmDeletePerson = (person, index) => {
-  removeSavedPerson(index);
+const confirmDeletePerson = (person) => {
+  const actualIdx = (savedPersons.value || []).findIndex(p => p === person || (p.name === person.name && p.id === person.id));
+  if (actualIdx !== -1) {
+    removeSavedPerson(actualIdx);
+  }
   selectedIds.delete(person.name);
 };
 

@@ -106,7 +106,7 @@
         leave-from-class="opacity-100 translate-y-0 max-h-[600px]"
         leave-to-class="opacity-0 -translate-y-2 max-h-0 overflow-hidden"
       >
-        <div v-if="showAddForm || editingIndex !== null" class="p-4 bg-primary/5 border-b border-primary/20">
+        <div ref="formContainerRef" v-if="showAddForm || editingIndex !== null" class="p-4 bg-primary/5 border-b border-primary/20">
           <div class="flex items-center justify-between mb-3">
             <h4 class="font-bold text-sm text-primary flex items-center gap-1.5">
               <span>{{ editingIndex !== null ? '✏️' : '➕' }}</span>
@@ -231,44 +231,43 @@
 
           <!-- Right: Actions -->
           <div class="flex items-center gap-1.5 shrink-0">
-            <template v-if="mode === 'pick'">
-              <button
-                type="button"
-                class="btn btn-sm btn-primary gap-1 shadow-xs"
-                @click="selectOrganization(org)"
-              >
-                <span>✓</span>
-                {{ locale === 'de' ? 'Auswählen' : 'Select' }}
-              </button>
-            </template>
+            <button
+              v-if="org.gnd"
+              type="button"
+              class="btn btn-xs btn-ghost text-base-content/60 hover:text-primary"
+              @click.stop="openGndLink(org.gnd)"
+              title="GND Eintrag im Web öffnen"
+            >
+              🔗
+            </button>
 
-            <template v-else>
-              <button
-                v-if="org.gnd"
-                type="button"
-                class="btn btn-xs btn-ghost text-base-content/60 hover:text-primary"
-                @click="openGndLink(org.gnd)"
-                title="GND Eintrag im Web öffnen"
-              >
-                🔗
-              </button>
-              <button
-                type="button"
-                class="btn btn-xs btn-ghost"
-                @click="startEdit(org, idx)"
-                title="Bearbeiten"
-              >
-                ✏️
-              </button>
-              <button
-                type="button"
-                class="btn btn-xs btn-ghost text-error"
-                @click="removeOrganization(idx)"
-                title="Entfernen"
-              >
-                🗑️
-              </button>
-            </template>
+            <button
+              type="button"
+              class="btn btn-xs btn-ghost"
+              @click.stop="startEdit(org)"
+              title="Bearbeiten"
+            >
+              ✏️
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-xs btn-ghost text-error"
+              @click.stop="removeOrganization(org)"
+              title="Entfernen"
+            >
+              🗑️
+            </button>
+
+            <button
+              v-if="mode === 'pick'"
+              type="button"
+              class="btn btn-sm btn-primary gap-1 shadow-xs ml-1"
+              @click="selectOrganization(org)"
+            >
+              <span>✓</span>
+              {{ locale === 'de' ? 'Auswählen' : 'Select' }}
+            </button>
           </div>
         </div>
       </div>
@@ -415,18 +414,27 @@ const saveFormData = () => {
   resetFormData();
 };
 
-const startEdit = (org, index) => {
-  editingIndex.value = index;
+const formContainerRef = ref(null);
+
+const startEdit = (org) => {
+  const actualIdx = (savedOrganizations.value || []).findIndex(o => o === org || (o && o.name === org.name && o.gnd === org.gnd));
+  editingIndex.value = actualIdx !== -1 ? actualIdx : 0;
   Object.assign(formData, org);
   showAddForm.value = true;
+  setTimeout(() => {
+    formContainerRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
 };
 
 const cancelEditForm = () => {
   resetFormData();
 };
 
-const removeOrganization = (index) => {
-  removeSavedOrganization(index);
+const removeOrganization = (org) => {
+  const actualIdx = (savedOrganizations.value || []).findIndex(o => o === org || (o && o.name === org.name && o.gnd === org.gnd));
+  if (actualIdx !== -1) {
+    removeSavedOrganization(actualIdx);
+  }
 };
 
 const selectOrganization = (org) => {
