@@ -1,0 +1,28 @@
+HERMES — Heritage Metadata Entry System (v0.1.6)
+Wissenschaftliches Erfassungssystem für Archäologie & Museum
+Universität Bonn — Bonn Center for Digital Humanities (BCDH)
+================================================================
+
+Inhalt dieses Pakets:
+---------------------
+1. HERMES.exe
+   - Portable Standalone-Anwendung (benötigt keine Installation).
+   - Kann direkt per Doppelklick auf jedem 64-Bit Windows-PC (Windows 10 / 11) gestartet werden.
+   - Handbuch und Anwendung sind vollständig integriert: Klick auf "Manual" in der Kopfzeile
+     öffnet das zweisprachige Handbuch in einem separaten Desktop-Fenster.
+
+2. HERMES_Setup_v0.1.6.exe
+   - Standard-Windows-Installer (NSIS).
+   - Installiert HERMES mit Desktop-Verknüpfung und Startmenü-Eintrag.
+
+3. HERMES_Installer_v0.1.6.msi
+   - Windows Installer MSI-Paket für institutionelle / IT-Rollouts.
+
+4. HERMES_Handbuch_Manual.html
+   - Das vollständige zweisprachige wissenschaftliche Referenzhandbuch (DE / EN)
+     als eigenständige Datei für jeden Webbrowser.
+
+Voraussetzungen:
+----------------
+- 64-Bit Windows 10 oder Windows 11.
+- Microsoft Edge WebView2 Runtime (auf Windows 10/11 standardmäßig vorinstalliert).

@@ -40,8 +40,6 @@ __pycache__/
 *.py[cod]
 
 # Release-Builds / Installer
-HERMES_Windows_Release_Package/
-*.msi
 
 # Scratch-/Temp-Dateien
 scratch_*
