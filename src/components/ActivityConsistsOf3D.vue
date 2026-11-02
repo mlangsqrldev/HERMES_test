@@ -1,5 +1,5 @@
 <template>
-  <div class="col-span-full border-2 border-primary/20 bg-base-100 rounded-2xl p-5 mb-6 shadow-sm">
+  <div class="col-span-full border-2 border-primary/20 bg-base-100 rounded-2xl p-5 mb-6 shadow-sm" data-xml-tag="consistsOf">
     <!-- Header -->
     <div class="flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b border-base-200">
       <div class="flex items-center gap-2.5">
@@ -44,45 +44,45 @@
         </span>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
         <button
           type="button"
-          class="btn btn-sm flex items-center justify-center gap-2 transition-all"
+          class="btn btn-sm flex items-center justify-start gap-2.5 px-3 transition-all"
           :class="activeMethod === 'photogrammetry' ? 'btn-secondary text-secondary-content font-bold shadow-xs' : 'btn-ghost border border-base-300 hover:border-secondary/60'"
           @click="selectMethod('photogrammetry')"
         >
           <span>📷</span>
-          <span class="truncate">{{ currentLocale === 'de' ? 'Photogrammetrie' : 'Photogrammetry' }}</span>
+          <span>{{ currentLocale === 'de' ? 'Photogrammetrie (SfM / MVS)' : 'Photogrammetry (SfM / MVS)' }}</span>
         </button>
 
         <button
           type="button"
-          class="btn btn-sm flex items-center justify-center gap-2 transition-all"
+          class="btn btn-sm flex items-center justify-start gap-2.5 px-3 transition-all"
           :class="activeMethod === 'sls' ? 'btn-primary text-primary-content font-bold shadow-xs' : 'btn-ghost border border-base-300 hover:border-primary/60'"
           @click="selectMethod('sls')"
         >
           <span>💡</span>
-          <span class="truncate">SLS (Streifenlicht)</span>
+          <span>{{ currentLocale === 'de' ? 'SLS (Streifenlichtscanning)' : 'SLS (Structured Light)' }}</span>
         </button>
 
         <button
           type="button"
-          class="btn btn-sm flex items-center justify-center gap-2 transition-all"
+          class="btn btn-sm flex items-center justify-start gap-2.5 px-3 transition-all"
           :class="activeMethod === 'tls' ? 'btn-accent text-accent-content font-bold shadow-xs' : 'btn-ghost border border-base-300 hover:border-accent/60'"
           @click="selectMethod('tls')"
         >
           <span>🌐</span>
-          <span class="truncate">TLS (Laserscan)</span>
+          <span>{{ currentLocale === 'de' ? 'TLS (Terrestrischer Laserscan)' : 'TLS (Terrestrial Laser Scan)' }}</span>
         </button>
 
         <button
           type="button"
-          class="btn btn-sm flex items-center justify-center gap-2 transition-all"
+          class="btn btn-sm flex items-center justify-start gap-2.5 px-3 transition-all"
           :class="activeMethod === 'hybrid' ? 'btn-neutral text-neutral-content font-bold shadow-xs' : 'btn-ghost border border-base-300 hover:border-neutral/60'"
           @click="selectMethod('hybrid')"
         >
           <span>🔀</span>
-          <span class="truncate">{{ currentLocale === 'de' ? 'Hybrid (SLS + Photo)' : 'Hybrid (SLS + Photo)' }}</span>
+          <span>{{ currentLocale === 'de' ? 'Hybrid (SLS + Photogrammetrie)' : 'Hybrid (SLS + Photogrammetry)' }}</span>
         </button>
       </div>
     </div>
@@ -90,27 +90,29 @@
     <!-- 2. HARDWARE & SOFTWARE KONFIGURATOR -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
       <!-- Left: Hardware Equipment -->
-      <div class="p-3.5 bg-base-200/40 rounded-xl border border-base-200">
-        <div class="flex items-center justify-between mb-2">
-          <label class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5">
-            <span>📷</span>
-            <span>{{ currentLocale === 'de' ? 'Hardware-Equipment (Kamera / Scanner)' : 'Hardware Equipment (Camera / Scanner)' }}</span>
-          </label>
-        </div>
+      <div class="p-4 bg-base-200/40 rounded-xl border border-base-200 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5">
+              <span>📷</span>
+              <span>{{ currentLocale === 'de' ? 'Hardware-Equipment (Kamera / Scanner)' : 'Hardware Equipment (Camera / Scanner)' }}</span>
+            </label>
+          </div>
 
-        <!-- Quick Presets -->
-        <div class="flex flex-wrap gap-1 mb-2.5">
-          <button
-            v-for="hw in currentHwPresets"
-            :key="hw.name"
-            type="button"
-            class="badge badge-xs hover:badge-primary cursor-pointer transition-all gap-0.5"
-            :class="selectedHardware.includes(hw.name) ? 'badge-primary font-bold' : 'badge-ghost border border-base-300'"
-            @click="toggleHardware(hw.name)"
-          >
-            <span>+</span>
-            <span>{{ hw.name }}</span>
-          </button>
+          <!-- Quick Presets -->
+          <div class="flex flex-wrap gap-1.5 mb-3">
+            <button
+              v-for="hw in currentHwPresets"
+              :key="hw.name"
+              type="button"
+              class="preset-chip"
+              :class="selectedHardware.includes(hw.name) ? 'ring-2 ring-primary bg-primary/15 font-bold' : ''"
+              @click="toggleHardware(hw.name)"
+            >
+              <span>{{ selectedHardware.includes(hw.name) ? '✓' : '+' }}</span>
+              <span>{{ hw.name }}</span>
+            </button>
+          </div>
         </div>
 
         <input
@@ -122,27 +124,29 @@
       </div>
 
       <!-- Right: Processing Software & Techniques -->
-      <div class="p-3.5 bg-base-200/40 rounded-xl border border-base-200">
-        <div class="flex items-center justify-between mb-2">
-          <label class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5">
-            <span>💻</span>
-            <span>{{ currentLocale === 'de' ? 'Verarbeitungs-Software & Pipeline' : 'Processing Software & Pipeline' }}</span>
-          </label>
-        </div>
+      <div class="p-4 bg-base-200/40 rounded-xl border border-base-200 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5">
+              <span>💻</span>
+              <span>{{ currentLocale === 'de' ? 'Verarbeitungs-Software & Pipeline' : 'Processing Software & Pipeline' }}</span>
+            </label>
+          </div>
 
-        <!-- Software Presets -->
-        <div class="flex flex-wrap gap-1 mb-2.5">
-          <button
-            v-for="sw in SOFTWARE_PRESETS"
-            :key="sw"
-            type="button"
-            class="badge badge-xs hover:badge-secondary cursor-pointer transition-all gap-0.5"
-            :class="selectedSoftware.includes(sw) ? 'badge-secondary font-bold' : 'badge-ghost border border-base-300'"
-            @click="toggleSoftware(sw)"
-          >
-            <span>+</span>
-            <span>{{ sw }}</span>
-          </button>
+          <!-- Software Presets -->
+          <div class="flex flex-wrap gap-1.5 mb-3">
+            <button
+              v-for="sw in SOFTWARE_PRESETS"
+              :key="sw"
+              type="button"
+              class="preset-chip"
+              :class="selectedSoftware.includes(sw) ? 'ring-2 ring-secondary bg-secondary/15 font-bold' : ''"
+              @click="toggleSoftware(sw)"
+            >
+              <span>{{ selectedSoftware.includes(sw) ? '✓' : '+' }}</span>
+              <span>{{ sw }}</span>
+            </button>
+          </div>
         </div>
 
         <input
@@ -192,7 +196,7 @@
         <div class="space-y-1 min-w-0 flex-1">
           <div class="flex items-center gap-2 flex-wrap">
             <span class="badge badge-xs badge-neutral font-mono">#{{ idx + 1 }}</span>
-            <span class="font-bold text-base-content truncate">
+            <span class="font-bold text-base-content leading-snug">
               {{ item.hadSpecificPurpose || (currentLocale === 'de' ? 'Teilschritt ohne Titel' : 'Sub-activity') }}
             </span>
             <span v-if="item['hadSpecificPurpose#lang'] || item['#lang']" class="badge badge-xs badge-ghost uppercase font-mono">
@@ -201,14 +205,17 @@
           </div>
 
           <div class="flex items-center gap-3 text-base-content/70 flex-wrap text-[11px]">
-            <span v-if="item.methods">
-              <strong>{{ currentLocale === 'de' ? 'Methode:' : 'Method:' }}</strong> {{ item.methods }}
+            <span v-if="item.methods && (!Array.isArray(item.methods) || item.methods.length > 0)">
+              <strong>{{ currentLocale === 'de' ? 'Methode(n):' : 'Method(s):' }}</strong>
+              {{ Array.isArray(item.methods) ? item.methods.join(' • ') : item.methods }}
             </span>
-            <span v-if="item.techniques">
-              <strong>{{ currentLocale === 'de' ? 'Technik:' : 'Technique:' }}</strong> {{ item.techniques }}
+            <span v-if="item.techniques && (!Array.isArray(item.techniques) || item.techniques.length > 0)">
+              <strong>{{ currentLocale === 'de' ? 'Technik(en):' : 'Technique(s):' }}</strong>
+              {{ Array.isArray(item.techniques) ? `${item.techniques.length}× (${item.techniques[0]}...)` : item.techniques }}
             </span>
-            <span v-if="item.equipment">
-              <strong>{{ currentLocale === 'de' ? 'Equipment:' : 'Equipment:' }}</strong> {{ item.equipment }}
+            <span v-if="item.equipment && (!Array.isArray(item.equipment) || item.equipment.length > 0)">
+              <strong>{{ currentLocale === 'de' ? 'Equipment:' : 'Equipment:' }}</strong>
+              {{ Array.isArray(item.equipment) ? item.equipment.join(' • ') : item.equipment }}
             </span>
           </div>
         </div>

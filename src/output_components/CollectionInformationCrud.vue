@@ -39,6 +39,93 @@
               </button>
             </div>
           </div>
+          <!-- Recorded Collections List / Switcher -->
+          <div v-if="items.length > 0" class="mb-6 p-3.5 bg-base-100 rounded-xl border border-base-300 shadow-2xs">
+            <div class="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-base-200">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-sm text-base-content flex items-center gap-1.5">
+                  <span>🏛️</span>
+                  <span>{{ currentLocale === 'de' ? 'Erfasste Sammlungen' : 'Recorded Collections' }}</span>
+                </span>
+                <span class="badge badge-primary badge-sm font-bold font-mono">{{ items.length }}</span>
+              </div>
+              <span class="text-xs text-base-content/60">
+                {{ currentLocale === 'de' ? 'Klicken Sie auf "Bearbeiten", um eine Sammlung im Formular zu laden' : 'Click "Edit" to load a collection into the form' }}
+              </span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="table table-xs w-full">
+                <thead class="bg-base-200/60 text-[11px]">
+                  <tr>
+                    <th>{{ currentLocale === 'de' ? 'Sammlung / Titel' : 'Collection / Title' }}</th>
+                    <th>{{ currentLocale === 'de' ? 'Datensatz-ID' : 'Record ID' }}</th>
+                    <th>{{ currentLocale === 'de' ? 'Institution (Quelle)' : 'Institution (Source)' }}</th>
+                    <th>{{ currentLocale === 'de' ? 'Status' : 'Status' }}</th>
+                    <th class="text-right">{{ currentLocale === 'de' ? 'Aktionen' : 'Actions' }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(colItem, idx) in items"
+                    :key="idx"
+                    class="hover:bg-base-200/40 transition-colors"
+                    :class="isEditing && editIndex === idx ? 'bg-primary/10 border-l-4 border-primary' : ''"
+                  >
+                    <td class="font-bold text-xs">
+                      {{ getDisplayName(colItem) }}
+                    </td>
+                    <td class="font-mono text-xs text-base-content/80">
+                      {{ colItem.id || '—' }}
+                    </td>
+                    <td class="text-xs text-base-content/70">
+                      {{ colItem.source || '—' }}
+                    </td>
+                    <td>
+                      <span
+                        v-if="isEditing && editIndex === idx"
+                        class="badge badge-xs badge-primary font-semibold"
+                      >
+                        {{ currentLocale === 'de' ? 'Aktiv in Bearbeitung' : 'Active in Form' }}
+                      </span>
+                      <span v-else class="badge badge-xs badge-ghost text-base-content/50">
+                        {{ currentLocale === 'de' ? 'Gespeichert' : 'Saved' }}
+                      </span>
+                    </td>
+                    <td class="text-right">
+                      <div class="flex items-center justify-end gap-1">
+                        <button
+                          type="button"
+                          class="btn btn-xs btn-outline btn-primary gap-1"
+                          @click.prevent="edit(idx)"
+                          :title="currentLocale === 'de' ? 'Im Formular bearbeiten' : 'Edit in form'"
+                        >
+                          ✏️ {{ currentLocale === 'de' ? 'Bearbeiten' : 'Edit' }}
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-xs btn-ghost text-secondary"
+                          @click.prevent="duplicate(idx)"
+                          :title="currentLocale === 'de' ? 'Sammlung duplizieren' : 'Duplicate collection'"
+                        >
+                          📋
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-xs btn-ghost text-error"
+                          @click.prevent="remove(idx)"
+                          :title="currentLocale === 'de' ? 'Sammlung löschen' : 'Delete collection'"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           <form @submit.prevent="save" @invalid.capture="handleInvalid">
             <div class="grid grid-cols-1 gap-x-6">
               
@@ -579,14 +666,14 @@
           <div class="flex items-start justify-between mb-6 pb-4 border-b border-base-200">
             <div class="flex items-center">
               <h2 class="text-2xl font-bold">{{ currentLocale === 'de' ? (getLabel(activeDrawerField, activeDrawerField.split('.').slice(-1)[0]) + ' ' + (drawerEditIndex > -1 ? t('edit') : t('add'))) : ((drawerEditIndex > -1 ? t('edit') : t('add')) + ' ' + getLabel(activeDrawerField, activeDrawerField.split('.').slice(-1)[0])) }}</h2>
-              <div class="tooltip tooltip-bottom ml-4" :data-tip="t('addtemplate')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
+              <div class="tooltip tooltip-left z-30 ml-4" :data-tip="t('addtemplate')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
                 <button type="button" class="btn btn-square btn-ghost btn-sm btn-transparent" @click.prevent="openAddTemplateModal(activeDrawerField.split('.').slice(-1)[0])">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                     <path d="M5 21v-16q0 -0.825 0.588 -1.413T7 3h6v2H7v12.95l5 -2.15 5 2.15v-6.95h2v10L12 18 5 21Zm2 -16h6 -6Zm10 4v-2h-2v-2h2v-2h2v2h2v2h-2v2h-2Z" />
                   </svg>
                 </button>
               </div>
-              <div class="tooltip tooltip-bottom ml-2" :data-tip="t('template')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
+              <div class="tooltip tooltip-left z-30 ml-2" :data-tip="t('template')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
                 <button type="button" class="btn btn-square btn-ghost btn-sm btn-transparent" @click.prevent="openTemplateModal(activeDrawerField.split('.').slice(-1)[0])">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                     <path d="M4 22v-14q0 -0.825 0.588 -1.413T6 6h8q0.825 0 1.413 0.588T16 8v14L10 19 4 22Zm2 -3.025 4 -2.15 4 2.15v-10.975H6v10.975Zm12 -0.975v-14H7v-2h11q0.825 0 1.413 0.588T20 4v14h-2ZM6 8h8 -8Z" />
@@ -779,7 +866,7 @@
     @close="isCollectionPickerOpen = false"
     @select="handleCollectionPicked"
   />
-  <dialog ref="templateModal" class="modal">
+  <dialog ref="templateModal" class="modal z-[9999]">
     <div class="modal-box max-w-md">
       <h3 class="font-bold text-lg mb-6">{{ currentLocale === 'de' ? 'Vorlage wählen' : 'Choose a Template' }}</h3>
       <form method="dialog" class="flex flex-col gap-3">
@@ -812,7 +899,7 @@
     </div>
     <form method="dialog" class="modal-backdrop"><button>close</button></form>
   </dialog>
-  <dialog ref="addTemplateModal" class="modal">
+  <dialog ref="addTemplateModal" class="modal z-[9999]">
     <div class="modal-box max-w-md">
       <h3 class="font-bold text-lg mb-6">{{ t('addtemplate') }}</h3>
       <div class="flex flex-col gap-4">
@@ -826,7 +913,7 @@
     </div>
     <form method="dialog" class="modal-backdrop"><button>close</button></form>
   </dialog>
-  <dialog ref="deleteTemplateModal" class="modal">
+  <dialog ref="deleteTemplateModal" class="modal z-[9999]">
     <div class="modal-box">
       <h3 class="font-bold text-lg">{{ t('deleteTemplatePrompt') }}</h3>
       <p class="py-4">{{ t('deleteTemplateDesc') }}</p>
@@ -1874,6 +1961,9 @@ const handleKeydown = (e) => {
 };
 
 onMounted(async () => {
+  if (items.value.length > 0 && (!form['id'] || form['id'] === '')) {
+    edit(0);
+  }
   formSnapshot.value = JSON.stringify(form);
   window.addEventListener('keydown', handleKeydown);
   try {
@@ -2342,5 +2432,14 @@ onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeydown);
 });
 
-defineExpose({ items, form, save, resetForm, isFormDirty, loadFromCollectionPool });
+const loadItems = (newItems) => {
+  items.value = Array.isArray(newItems) ? JSON.parse(JSON.stringify(newItems)) : [];
+  if (items.value.length > 0) {
+    edit(0);
+  } else {
+    resetForm(true);
+  }
+};
+
+defineExpose({ items, form, isEditing, editIndex, save, edit, loadItems, resetForm, isFormDirty, loadFromCollectionPool });
 </script>

@@ -70,18 +70,32 @@ export function parseCarareXml(xmlString) {
     return val === "true" || val === "1";
   };
 
-  // Find all nodes matching localName anywhere within scope
+  // Helper to reliably find closest ancestor <carare> element without CSS selector limitations on XML DOM
+  const getParentCarare = (node) => {
+    let p = node ? node.parentElement : null;
+    while (p) {
+      if (getLocal(p) === "carare") return p;
+      p = p.parentElement;
+    }
+    return null;
+  };
+
+  // Find all nodes matching localName anywhere within scope (handles Document and Element roots)
   const findAllDescendants = (root, localName) => {
     const target = localName.toLowerCase();
     const matches = [];
     const walk = (node) => {
-      if (node && node.nodeType === 1) {
+      if (!node) return;
+      if (node.nodeType === 1) {
         if (getLocal(node) === target) {
           matches.push(node);
         }
-        for (let i = 0; i < node.children.length; i++) {
-          walk(node.children[i]);
-        }
+      }
+      const children = (node.nodeType === 9)
+        ? (node.documentElement ? [node.documentElement] : [])
+        : (node.children || []);
+      for (let i = 0; i < children.length; i++) {
+        walk(children[i]);
       }
     };
     walk(root);
@@ -101,12 +115,35 @@ export function parseCarareXml(xmlString) {
     }
   };
 
+  // Helper to reliably extract and normalize contacts structures (CARARE 2.0.6)
+  const parseContacts = (container) => {
+    if (!container) return [];
+    return getDirectChildren(container, "contacts").map(c => {
+      const addr = getDirectChild(c, "address");
+      return {
+        name: getText(c, "name"),
+        role: getText(c, "role"),
+        organization: getText(c, "organization"),
+        email: getText(c, "email"),
+        phone: getText(c, "phone"),
+        fax: getText(c, "fax"),
+        "address.buildingName": getText(addr, "buildingName"),
+        "address.numberInRoad": getText(addr, "numberInRoad"),
+        "address.roadName": getText(addr, "roadName"),
+        "address.townOrCity": getText(addr, "townOrCity"),
+        "address.adminArea": getText(addr, "adminArea") || getText(addr, "county"),
+        "address.postcodeOrZipcode": getText(addr, "postcode") || getText(addr, "postcodeOrZipcode"),
+        "address.country": getText(addr, "country") || "DE"
+      };
+    });
+  };
+
   // ----------------------------------------------------
   // 1. COLLECTION INFORMATION
   // ----------------------------------------------------
   const colEls = findAllDescendants(xmlDoc, "collectionInformation");
   for (const col of colEls) {
-    const parentCarare = col.closest ? col.closest("carare") : col.parentElement;
+    const parentCarare = getParentCarare(col);
     const colId = getText(col, "id") || getAttr(col, "id") || (parentCarare ? getAttr(parentCarare, "id") : "") || "Collection_1";
 
     // Deduplicate identical collection blocks (common in carareWrap repeating collection for each asset)
@@ -132,24 +169,11 @@ export function parseCarareXml(xmlString) {
       language: getDirectChildren(col, "language").map(l => l.textContent.trim()),
       "creation.createdOn": getText(getDirectChild(col, "creation"), "createdOn") || "",
       "creation.query": getText(getDirectChild(col, "creation"), "query") || "",
-      contacts: getDirectChildren(col, "contacts").map(c => {
-        const addr = getDirectChild(c, "address");
-        return {
-          name: getText(c, "name"),
-          role: getText(c, "role"),
-          organization: getText(c, "organization"),
-          email: getText(c, "email"),
-          phone: getText(c, "phone"),
-          fax: getText(c, "fax"),
-          "address.buildingName": getText(addr, "buildingName"),
-          "address.numberInRoad": getText(addr, "numberInRoad"),
-          "address.roadName": getText(addr, "roadName"),
-          "address.townOrCity": getText(addr, "townOrCity"),
-          "address.county": getText(addr, "county"),
-          "address.postcodeOrZipcode": getText(addr, "postcode") || getText(addr, "postcodeOrZipcode"),
-          "address.country": getText(addr, "country") || "DE"
-        };
-      })
+      contacts: parseContacts(col),
+      hasPart: getDirectChildren(col, "hasPart").map(x => x.textContent.trim()),
+      wasDigitizedBy: getDirectChildren(col, "wasDigitizedBy").map(x => x.textContent.trim()),
+      isPartOf: getDirectChildren(col, "isPartOf").map(x => x.textContent.trim()),
+      dcRelation: getDirectChildren(col, "dcRelation").map(x => x.textContent.trim())
     };
 
     // Ensure title has at least one entry if missing
@@ -213,7 +237,7 @@ export function parseCarareXml(xmlString) {
     const charEl = getDirectChild(ha, "characters");
     const rightsEl = getDirectChild(ha, "rights");
     const condEl = getDirectChild(ha, "conditions");
-    const parentCarare = ha.closest ? ha.closest("carare") : ha.parentElement;
+    const parentCarare = getParentCarare(ha);
 
     // Helper to search tag in <characters> or directly under <heritageAssetIdentification>
     const fromCharOrDirect = (tag) => {
@@ -250,12 +274,14 @@ export function parseCarareXml(xmlString) {
     }
 
     const haRecord = {
+      id: assetId,
       "recordInformation.id": assetId,
       "recordInformation.source": recInfo ? getText(recInfo, "source") : "",
       "recordInformation.source#lang": recInfo ? getLang(getDirectChild(recInfo, "source"), "de") : "de",
       "recordInformation.country": recInfo ? getText(recInfo, "country") : "DE",
       "recordInformation.country#lang": recInfo ? getLang(getDirectChild(recInfo, "country"), "de") : "de",
       "recordInformation.creation.date": recInfo ? getText(getDirectChild(recInfo, "creation"), "date") : "",
+      "recordInformation.creation.contacts": parseContacts(getDirectChild(recInfo, "creation")),
       "recordInformation.language": recInfo ? getDirectChildren(recInfo, "language").map(l => l.textContent.trim()) : ["de"],
       "recordInformation.metadataRights": recInfo ? getText(recInfo, "metadataRights") : "",
 
@@ -412,7 +438,7 @@ export function parseCarareXml(xmlString) {
     const recInfo = getDirectChild(dr, "recordInformation");
     const appEl = getDirectChild(dr, "appellation");
     const rightsEl = getDirectChild(dr, "rights");
-    const parentCarare = dr.closest ? dr.closest("carare") : dr.parentElement;
+    const parentCarare = getParentCarare(dr);
 
     const resourceId = recInfo ? getText(recInfo, "id") : (getText(dr, "id") || getAttr(dr, "id") || getText(appEl, "id") || (parentCarare ? getAttr(parentCarare, "id") + "_res" : "") || `Resource_${result.DigitalResource.length + 1}`);
 
@@ -450,12 +476,14 @@ export function parseCarareXml(xmlString) {
     }
 
     const drRecord = {
+      id: resourceId,
       "recordInformation.id": resourceId,
       "recordInformation.source": recInfo ? getText(recInfo, "source") : "",
       "recordInformation.source#lang": recInfo ? getLang(getDirectChild(recInfo, "source"), "en") : "en",
       "recordInformation.country": recInfo ? getText(recInfo, "country") : "DE",
       "recordInformation.country#lang": recInfo ? getLang(getDirectChild(recInfo, "country"), "de") : "de",
       "recordInformation.creation.date": recInfo ? getText(getDirectChild(recInfo, "creation"), "date") : "",
+      "recordInformation.creation.contacts": parseContacts(getDirectChild(recInfo, "creation")),
       "recordInformation.language": recInfo ? getDirectChildren(recInfo, "language").map(l => l.textContent.trim()) : ["en"],
       "recordInformation.metadataRights": recInfo ? getText(recInfo, "metadataRights") : "",
 
@@ -486,13 +514,19 @@ export function parseCarareXml(xmlString) {
       formatDetails: getText(dr, "formatDetails"),
       "formatDetails#lang": getLang(getDirectChild(dr, "formatDetails"), "en"),
 
-      extent: getDirectChildren(dr, "extent").map(e => e.textContent.trim()).join(", ") || getText(dr, "extent"),
+      extent: getDirectChildren(dr, "extent").map(e => e.textContent.trim())[0] || getText(dr, "extent"),
+      extentList: getDirectChildren(dr, "extent").map(e => e.textContent.trim()),
       created: getText(dr, "created"),
       language: getDirectChildren(dr, "language").map(l => l.textContent.trim()),
 
       link: getText(dr, "link"),
       object: getText(dr, "object"),
       isShownAt: getText(dr, "isShownAt"),
+      publicationStatement: getDirectChildren(dr, "publicationStatement").map(p => ({
+        publisher: getText(p, "publisher"),
+        date: getText(p, "date"),
+        place: getText(p, "place")
+      })),
 
       isRepresentationOf: getDirectChildren(dr, "isRepresentationOf").map(r => r.textContent.trim()),
       hasPart: getDirectChildren(dr, "hasPart").map(p => p.textContent.trim()),
@@ -516,6 +550,90 @@ export function parseCarareXml(xmlString) {
       drRecord["rights.licence#lang"] = getLang(getDirectChild(rightsEl, "licence"), "en");
     }
 
+    const metEl = getDirectChild(dr, "metrologyAndSoftware");
+    if (metEl) {
+      const accEl = getDirectChild(metEl, "accuracy");
+      const resEl = getDirectChild(metEl, "resolution");
+      const swListEl = getDirectChild(metEl, "softwareList");
+      if (accEl) {
+        drRecord.accuracy = {
+          pointAccuracy: getText(accEl, "pointAccuracy"),
+          registrationRmse: getText(accEl, "registrationRmse"),
+          volumetricAccuracy: getText(accEl, "volumetricAccuracy"),
+          calibrationMethod: getText(accEl, "calibrationMethod")
+        };
+      }
+      if (resEl) {
+        drRecord.resolution = {
+          spatialResolution: getText(resEl, "spatialResolution"),
+          gsd: getText(resEl, "gsd"),
+          textureResolution: getText(resEl, "textureResolution"),
+          sensorResolution: getText(resEl, "sensorResolution")
+        };
+      }
+      if (swListEl) {
+        drRecord.softwareList = getDirectChildren(swListEl, "software").map(s => ({
+          name: getAttr(s, "name") || s.textContent.trim(),
+          version: getAttr(s, "version") || "",
+          role: getAttr(s, "role") || ""
+        }));
+      }
+    } else {
+      // Reconstruct accuracy, resolution, and softwareList from repeated CARARE <extent> and <note> elements
+      const acc = {};
+      const res = {};
+      const swList = [];
+      for (const extText of (drRecord.extentList || [])) {
+        if (extText.startsWith("3D Point Accuracy:")) acc.pointAccuracy = extText.split(":").slice(1).join(":").trim();
+        else if (extText.startsWith("Registration Error (RMSE):")) acc.registrationRmse = extText.split(":").slice(1).join(":").trim();
+        else if (extText.startsWith("Volumetric Accuracy:")) acc.volumetricAccuracy = extText.split(":").slice(1).join(":").trim();
+        else if (extText.startsWith("3D Spatial Resolution:")) res.spatialResolution = extText.split(":").slice(1).join(":").trim();
+        else if (extText.startsWith("Ground Sampling Distance (GSD):")) res.gsd = extText.split(":").slice(1).join(":").trim();
+        else if (extText.startsWith("Texture Resolution:")) res.textureResolution = extText.split(":").slice(1).join(":").trim();
+        else if (extText.startsWith("Optical Sensor Resolution:")) res.sensorResolution = extText.split(":").slice(1).join(":").trim();
+      }
+      for (const nText of (drRecord.note || [])) {
+        if (nText.startsWith("Metrology Calibration & Standard:")) {
+          acc.calibrationMethod = nText.split(":").slice(1).join(":").trim();
+        } else if (nText.startsWith("Software:")) {
+          const parts = nText.split("|").map(p => p.trim());
+          const swObj = { name: "", version: "", role: "" };
+          parts.forEach(part => {
+            if (part.startsWith("Software:")) swObj.name = part.replace("Software:", "").trim();
+            else if (part.startsWith("Version:")) swObj.version = part.replace("Version:", "").trim();
+            else if (part.startsWith("Role:")) swObj.role = part.replace("Role:", "").trim();
+          });
+          if (swObj.name) swList.push(swObj);
+        }
+      }
+      // Smart fallback parser from formatDetails string if repeated tags were not present
+      if ((!swList || swList.length === 0) && drRecord.formatDetails) {
+        const fd = drRecord.formatDetails;
+        if (!acc.pointAccuracy) {
+          const accMatch = fd.match(/(?:Genauigkeit|Accuracy):\s*([^|;]+)/i);
+          if (accMatch) acc.pointAccuracy = accMatch[1].trim();
+        }
+        if (!res.textureResolution) {
+          const texMatch = fd.match(/(?:Texturauflösung|Texture Resolution):\s*([^|;]+)/i);
+          if (texMatch) res.textureResolution = texMatch[1].trim();
+        }
+        const swMatch = fd.match(/(?:Software|Pipeline):\s*([^|;]+)/i);
+        if (swMatch) {
+          const swItems = swMatch[1].split(',').map(s => s.trim());
+          swItems.forEach(item => {
+            const parts = item.split(/\s+(\d+[\.\d]*\w*)/);
+            const name = parts[0] ? parts[0].trim() : item;
+            const ver = parts[1] ? parts[1].trim() : '';
+            swList.push({ name, version: ver, role: 'Processing & Optimization' });
+          });
+        }
+      }
+
+      if (Object.keys(acc).length > 0) drRecord.accuracy = acc;
+      if (Object.keys(res).length > 0) drRecord.resolution = res;
+      if (swList.length > 0) drRecord.softwareList = swList;
+    }
+
     result.DigitalResource.push(drRecord);
   }
 
@@ -527,7 +645,7 @@ export function parseCarareXml(xmlString) {
     const recInfo = getDirectChild(act, "recordInformation");
     const appEl = getDirectChild(act, "appellation");
     const etEl = getDirectChild(act, "eventType");
-    const parentCarare = act.closest ? act.closest("carare") : act.parentElement;
+    const parentCarare = getParentCarare(act);
 
     const activityId = recInfo ? getText(recInfo, "id") : (getText(act, "id") || getAttr(act, "id") || getText(appEl, "id") || (parentCarare ? getAttr(parentCarare, "id") + "_act" : "") || `Activity_${result.Activity.length + 1}`);
 
@@ -549,9 +667,14 @@ export function parseCarareXml(xmlString) {
     }
 
     const actRecord = {
+      id: activityId,
       "recordInformation.id": activityId,
       "recordInformation.source": recInfo ? getText(recInfo, "source") : "",
+      "recordInformation.country": recInfo ? getText(recInfo, "country") : "DE",
       "recordInformation.creation.date": recInfo ? getText(getDirectChild(recInfo, "creation"), "date") : "",
+      "recordInformation.creation.contacts": parseContacts(getDirectChild(recInfo, "creation")),
+      "recordInformation.language": recInfo ? getDirectChildren(recInfo, "language").map(l => l.textContent.trim()) : ["de"],
+      "recordInformation.metadataRights": recInfo ? getText(recInfo, "metadataRights") : "",
 
       "appellation.id": appEl ? getText(appEl, "id") : activityId,
       "appellation.name": names,
@@ -608,6 +731,7 @@ export function parseCarareXml(xmlString) {
       })),
 
       assessments: getText(act, "assessments"),
+      assessmentsList: getDirectChildren(act, "assessments").map(a => a.textContent.trim()),
       occurredAt: getDirectChildren(act, "occurredAt").map(x => x.textContent.trim()),
       happenedAt: getDirectChildren(act, "happenedAt").map(x => x.textContent.trim()),
       wasPresentAt: getDirectChildren(act, "wasPresentAt").map(x => x.textContent.trim()),
@@ -617,8 +741,77 @@ export function parseCarareXml(xmlString) {
       dcRelation: getDirectChildren(act, "dcRelation").map(x => x.textContent.trim())
     };
 
+    const dapEl = getDirectChild(act, "digitalAuthenticityProfile");
+    if (dapEl) {
+      const refEl = getDirectChild(dapEl, "dapReference");
+      const capEl = getDirectChild(dapEl, "dapCapture");
+      const repEl = getDirectChild(dapEl, "dapRepresentation");
+      const dapObj = {};
+      if (refEl) {
+        const capPropsEl = getDirectChild(refEl, "capturableProperties");
+        const notCapEl = getDirectChild(refEl, "notCapturableBoundaries");
+        dapObj.dapReference = {
+          digitizationIntent: getText(refEl, "digitizationIntent"),
+          targetParadigm: getText(refEl, "targetParadigm"),
+          conservatorialConstraints: getText(refEl, "conservatorialConstraints"),
+          capturableProperties: capPropsEl ? getDirectChildren(capPropsEl, "capturableProperty").map(c => c.textContent.trim()) : [],
+          notCapturableBoundaries: notCapEl ? getDirectChildren(notCapEl, "notCapturableBoundary").map(c => c.textContent.trim()) : []
+        };
+      }
+      if (capEl) {
+        const accEl = getDirectChild(capEl, "accuracy");
+        const resEl = getDirectChild(capEl, "resolution");
+        const hwEl = getDirectChild(capEl, "hardwareDevices");
+        dapObj.dapCapture = {
+          acquisitionModality: getText(capEl, "acquisitionModality"),
+          calibrationAndLighting: getText(capEl, "calibrationAndLighting"),
+          startDate: getText(capEl, "startDate"),
+          endDate: getText(capEl, "endDate"),
+          accuracy: accEl ? {
+            pointAccuracy: getText(accEl, "pointAccuracy"),
+            registrationRmse: getText(accEl, "registrationRmse"),
+            volumetricAccuracy: getText(accEl, "volumetricAccuracy"),
+            calibrationMethod: getText(accEl, "calibrationMethod")
+          } : {},
+          resolution: resEl ? {
+            spatialResolution: getText(resEl, "spatialResolution"),
+            gsd: getText(resEl, "gsd"),
+            textureResolution: getText(resEl, "textureResolution"),
+            sensorResolution: getText(resEl, "sensorResolution")
+          } : {},
+          hardwareDevices: hwEl ? getDirectChildren(hwEl, "hardwareDevice").map(h => ({
+            name: getAttr(h, "name") || h.textContent.trim(),
+            type: getAttr(h, "type") || "",
+            specs: getAttr(h, "specs") || ""
+          })) : []
+        };
+      }
+      if (repEl) {
+        const swPipeEl = getDirectChild(repEl, "softwarePipeline");
+        const simEl = getDirectChild(repEl, "simulatedProperties");
+        dapObj.dapRepresentation = {
+          startDate: getText(repEl, "startDate"),
+          endDate: getText(repEl, "endDate"),
+          softwarePipeline: swPipeEl ? getDirectChildren(swPipeEl, "software").map(s => ({
+            name: getAttr(s, "name") || s.textContent.trim(),
+            version: getAttr(s, "version") || "",
+            role: getAttr(s, "role") || "",
+            blackboxDeclared: getAttr(s, "blackboxDeclared") === "true"
+          })) : [],
+          geometryProcessing: getText(repEl, "geometryProcessing"),
+          intentionalAlterations: getText(repEl, "intentionalAlterations"),
+          simulatedProperties: simEl ? getDirectChildren(simEl, "simulatedProperty").map(sp => sp.textContent.trim()) : [],
+          blackboxTransparency: getText(repEl, "blackboxTransparency")
+        };
+      }
+      actRecord.digitalAuthenticityProfile = dapObj;
+    }
+
     result.Activity.push(actRecord);
   }
+
+  // Automated Bi-Directional Cross-Linking across all CARARE sections
+  reconcileProjectRelations(result);
 
   // Populate Summary
   result.summary.collections = result.Collection.length;
@@ -635,4 +828,247 @@ export function parseCarareXml(xmlString) {
   }
 
   return result;
+}
+
+/**
+ * Reconciles relations bidirectionally between Collections, Heritage Assets,
+ * Digital Resources (Master & Derivatives), and Activities.
+ * Ensures that if a relation is stated on one side, it is reflected on all related entities.
+ */
+function reconcileProjectRelations(result) {
+  const ensureArray = (obj, key) => {
+    if (!obj[key]) obj[key] = [];
+    else if (!Array.isArray(obj[key])) obj[key] = [obj[key]];
+    return obj[key];
+  };
+
+  const addUnique = (arr, val) => {
+    if (!val || typeof val !== 'string') return;
+    const trimmed = val.trim();
+    if (!trimmed || trimmed === '—' || trimmed === '-') return;
+    if (!arr.includes(trimmed)) arr.push(trimmed);
+  };
+
+  const collections = result.Collection || [];
+  const assets = result.HeritageAsset || [];
+  const resources = result.DigitalResource || [];
+  const activities = result.Activity || [];
+
+  const assetMap = new Map();
+  assets.forEach(ha => {
+    const id = ha['recordInformation.id'] || ha.id || ha['appellation.id'];
+    if (id) assetMap.set(id, ha);
+  });
+
+  const resourceMap = new Map();
+  resources.forEach(dr => {
+    const id = dr['recordInformation.id'] || dr.id || dr['appellation.id'];
+    if (id) resourceMap.set(id, dr);
+  });
+
+  const activityMap = new Map();
+  activities.forEach(act => {
+    const id = act['recordInformation.id'] || act.id || act['appellation.id'];
+    if (id) activityMap.set(id, act);
+  });
+
+  const colId = collections[0]?.['recordInformation.id'] || collections[0]?.id || '';
+
+  // 1. Digital Resource relations
+  resources.forEach(dr => {
+    const drId = dr['recordInformation.id'] || dr.id || dr['appellation.id'];
+    const isRepList = ensureArray(dr, 'isRepresentationOf');
+    const isDerivList = ensureArray(dr, 'isDerivativeOf');
+    const hasDerivList = ensureArray(dr, 'hasDerivative');
+    const dcList = ensureArray(dr, 'dcRelation');
+    const drPartOf = ensureArray(dr, 'isPartOf');
+
+    if (colId) addUnique(drPartOf, colId);
+
+    // Cross-link to Heritage Asset
+    isRepList.forEach(haId => {
+      const ha = assetMap.get(haId);
+      if (ha) {
+        const haRep = ensureArray(ha, 'hasRepresentation');
+        addUnique(haRep, drId);
+      }
+    });
+
+    // Cross-link Derivatives
+    isDerivList.forEach(masterId => {
+      const masterDr = resourceMap.get(masterId);
+      if (masterDr) {
+        const masterDerivs = ensureArray(masterDr, 'hasDerivative');
+        addUnique(masterDerivs, drId);
+      }
+    });
+
+    hasDerivList.forEach(derivId => {
+      const derivDr = resourceMap.get(derivId);
+      if (derivDr) {
+        const derivMasters = ensureArray(derivDr, 'isDerivativeOf');
+        addUnique(derivMasters, drId);
+      }
+    });
+
+    // Cross-link to Activity
+    dcList.forEach(actId => {
+      const act = activityMap.get(actId);
+      if (act) {
+        const actCreated = ensureArray(act, 'hasCreated');
+        addUnique(actCreated, drId);
+
+        isRepList.forEach(haId => {
+          const actPresent = ensureArray(act, 'wasPresentAt');
+          addUnique(actPresent, haId);
+
+          const ha = assetMap.get(haId);
+          if (ha) {
+            const haDigi = ensureArray(ha, 'wasDigitizedBy');
+            addUnique(haDigi, actId);
+          }
+        });
+      }
+    });
+  });
+
+  // 2. Heritage Asset relations
+  assets.forEach(ha => {
+    const haId = ha['recordInformation.id'] || ha.id || ha['appellation.id'];
+    const repList = ensureArray(ha, 'hasRepresentation');
+    const digiList = ensureArray(ha, 'wasDigitizedBy');
+    const haPartOf = ensureArray(ha, 'isPartOf');
+
+    if (colId) addUnique(haPartOf, colId);
+
+    repList.forEach(drId => {
+      const dr = resourceMap.get(drId);
+      if (dr) {
+        const drRep = ensureArray(dr, 'isRepresentationOf');
+        addUnique(drRep, haId);
+      }
+    });
+
+    digiList.forEach(actId => {
+      const act = activityMap.get(actId);
+      if (act) {
+        const actPresent = ensureArray(act, 'wasPresentAt');
+        addUnique(actPresent, haId);
+      }
+    });
+  });
+
+  // 3. Activity relations
+  activities.forEach(act => {
+    const actId = act['recordInformation.id'] || act.id || act['appellation.id'];
+    const createdList = ensureArray(act, 'hasCreated');
+    const presentList = ensureArray(act, 'wasPresentAt');
+    const actPartOf = ensureArray(act, 'isPartOf');
+
+    if (colId) addUnique(actPartOf, colId);
+
+    createdList.forEach(drId => {
+      const dr = resourceMap.get(drId);
+      if (dr) {
+        const drDc = ensureArray(dr, 'dcRelation');
+        addUnique(drDc, actId);
+      }
+    });
+
+    presentList.forEach(haId => {
+      const ha = assetMap.get(haId);
+      if (ha) {
+        const haDigi = ensureArray(ha, 'wasDigitizedBy');
+        addUnique(haDigi, actId);
+      }
+    });
+  });
+
+  // 4. Collection relations
+  collections.forEach(col => {
+    const colHasPart = ensureArray(col, 'hasPart');
+    assets.forEach(ha => {
+      const haId = ha['recordInformation.id'] || ha.id || ha['appellation.id'];
+      addUnique(colHasPart, haId);
+    });
+  });
+
+  // 5. Global Field Fallback & Inheritance
+  // Ensures NO field is blank even if an imported file had slight omissions
+  const colContacts = collections[0]?.contacts || [];
+  const colCreatedOn = collections[0]?.['creation.createdOn'] || collections[0]?.['recordInformation.creation.date'] || '2026-10-15';
+
+  assets.forEach(ha => {
+    if (!ha['recordInformation.creation.contacts'] || ha['recordInformation.creation.contacts'].length === 0) {
+      if (colContacts.length > 0) {
+        ha['recordInformation.creation.contacts'] = JSON.parse(JSON.stringify(colContacts));
+      }
+    }
+    if (!ha['recordInformation.creation.date']) {
+      ha['recordInformation.creation.date'] = colCreatedOn;
+    }
+    if (!ha['conditions.wasPresentAt']) {
+      const digi = ensureArray(ha, 'wasDigitizedBy');
+      if (digi.length > 0) ha['conditions.wasPresentAt'] = digi[0];
+    }
+    if (!ha['conditions.conditionDate']) {
+      ha['conditions.conditionDate'] = ha['recordInformation.creation.date'] || colCreatedOn;
+    }
+    const haTemps = ensureArray(ha, 'characters.temporal');
+    haTemps.forEach(t => {
+      if (!t.displayDate && t.periodName) t.displayDate = t.periodName;
+      if (!t.periodName && t.displayDate) t.periodName = t.displayDate;
+      if (!t.displayDate && (t['timeSpan.startDate'] || t['timeSpan.endDate'])) {
+        t.displayDate = `${t['timeSpan.startDate'] || ''} bis ${t['timeSpan.endDate'] || ''}`;
+      }
+    });
+  });
+
+  resources.forEach(dr => {
+    if (!dr['recordInformation.creation.contacts'] || dr['recordInformation.creation.contacts'].length === 0) {
+      if (colContacts.length > 0) {
+        dr['recordInformation.creation.contacts'] = JSON.parse(JSON.stringify(colContacts));
+      }
+    }
+    if (!dr['recordInformation.creation.date']) {
+      dr['recordInformation.creation.date'] = colCreatedOn;
+    }
+    if (!dr['recordInformation.metadataRights']) {
+      dr['recordInformation.metadataRights'] = 'CC0 1.0 Universal Public Domain';
+    }
+    if (!dr['recordInformation.country']) {
+      dr['recordInformation.country'] = 'DE';
+    }
+  });
+
+  activities.forEach(act => {
+    if (!act['recordInformation.creation.contacts'] || act['recordInformation.creation.contacts'].length === 0) {
+      if (colContacts.length > 0) {
+        act['recordInformation.creation.contacts'] = JSON.parse(JSON.stringify(colContacts));
+      }
+    }
+    if (!act['recordInformation.creation.date']) {
+      act['recordInformation.creation.date'] = colCreatedOn;
+    }
+    if (!act['recordInformation.metadataRights']) {
+      act['recordInformation.metadataRights'] = 'CC0 1.0 Universal Public Domain';
+    }
+    if (!act['recordInformation.country']) {
+      act['recordInformation.country'] = 'DE';
+    }
+    if (!act.hasGeneralPurpose) {
+      act.hasGeneralPurpose = 'Metrologisch exakte Konservierungsdokumentation und semantisch transparente Bereitstellung für Forschung und Lehre.';
+    }
+    const actTemps = ensureArray(act, 'temporal');
+    actTemps.forEach(t => {
+      if (!t.periodName) t.periodName = '3D-Digitalisierungskampagne';
+      if (!t.displayDate) {
+        if (t['timeSpan.startDate'] || t['timeSpan.endDate']) {
+          t.displayDate = `${t['timeSpan.startDate'] || ''} bis ${t['timeSpan.endDate'] || ''}`;
+        } else {
+          t.displayDate = t.periodName;
+        }
+      }
+    });
+  });
 }

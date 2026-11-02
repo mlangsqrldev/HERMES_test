@@ -131,52 +131,79 @@
       gap: 1.25rem;
     }
 
-    .brand {
+    .brand-group {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 1.15rem;
       text-decoration: none;
-      color: var(--ink);
     }
 
-    .brand-logo-wrap {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      overflow: hidden;
-      box-shadow: 0 4px 14px var(--terracotta-glow);
-      border: 2px solid var(--terracotta);
-      background: #ffffff;
+    .brand-tool-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.85rem;
+      background-color: #0A0C0E;
+      border: 1px solid rgba(224, 122, 66, 0.42);
+      text-decoration: none;
       flex-shrink: 0;
-      transition: transform 0.25s ease;
+      transition: all 0.25s ease;
+      box-shadow: 0 2px 8px rgba(10, 12, 14, 0.25);
     }
 
-    .brand:hover .brand-logo-wrap {
-      transform: scale(1.05) rotate(2deg);
+    .brand-tool-badge:hover {
+      border-color: rgba(224, 122, 66, 0.85);
+      box-shadow: 0 4px 14px rgba(224, 122, 66, 0.35);
+      transform: translateY(-1px);
     }
 
-    .brand-logo-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .brand-tool-img {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+      border-radius: 6px;
+      flex-shrink: 0;
+      display: block;
     }
 
-    .brand-text h1 {
+    .brand-tool-svg {
+      height: 22px;
+      width: auto;
+      padding-right: 2px;
+      display: block;
+    }
+
+    .brand-title-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-left: 2px solid var(--border-medium);
+      padding-left: 1.1rem;
+    }
+
+    .brand-heading-text {
       font-family: var(--font-display);
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       font-weight: 800;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
+      letter-spacing: 0.05em;
+      line-height: 1.15;
       color: var(--terracotta-dark);
+      margin: 0;
     }
 
-    .brand-text span {
+    [data-theme="dark"] .brand-heading-text {
+      color: #f59e0b;
+    }
+
+    .brand-subheading-text {
       font-size: 0.72rem;
       color: var(--ink-dim);
       font-weight: 600;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
-      display: block;
+      line-height: 1.25;
+      margin-top: 2px;
     }
 
     .nav-links {
@@ -1216,6 +1243,7 @@
     }
 
     @media (max-width: 768px) {
+      .brand-title-block { display: none; }
       .hero-image-wrap { height: 240px; }
       .hero-title { font-size: 1.7rem; }
       .hero-subtitle { font-size: 0.95rem; }
@@ -1655,408 +1683,48 @@
     .code-box .xml-comment { color: #94a3b8; font-style: italic; }
 
   
-    /* ==========================================================================
-       SECTIONS 02 & 03: CONTROLLED VOCABULARIES & DIGITAL AUTHENTICITY PROFILE
-       ========================================================================== */
-    .arch-diagram-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 1.5rem;
-      margin: 1.5rem 0 2.5rem;
-      box-shadow: var(--shadow-sm);
-    }
-    
-    .arch-flow {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 1rem;
-      position: relative;
-      margin-top: 1.25rem;
-    }
-    
-    @media (max-width: 1024px) {
-      .arch-flow { grid-template-columns: 1fr; }
-    }
-    
-    .arch-node {
-      background: var(--bg-card);
-      border: 1.5px solid var(--border-medium);
-      border-radius: var(--radius-sm);
-      padding: 1rem 0.9rem;
-      text-align: center;
-      position: relative;
-      transition: all 0.25s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    
-    .arch-node:hover {
-      border-color: var(--terracotta);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-sm);
-    }
-    
-    .arch-node-badge {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 0.15rem 0.45rem;
-      border-radius: var(--radius-full);
-      background: var(--terracotta-light);
-      color: var(--terracotta-dark);
-      margin-bottom: 0.5rem;
-      display: inline-block;
-      align-self: center;
-    }
-    
-    .arch-node h4 {
-      font-family: var(--font-display);
-      font-size: 0.92rem;
-      color: var(--ink);
-      margin-bottom: 0.35rem;
-    }
-    
-    .arch-node p {
-      font-size: 0.78rem;
-      color: var(--ink-dim);
-      line-height: 1.4;
-    }
-    
-    .arch-arrow {
-      position: absolute;
-      right: -0.75rem;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 1.1rem;
-      color: var(--terracotta);
-      z-index: 2;
-    }
-    
-    @media (max-width: 1024px) {
-      .arch-arrow { display: none; }
-    }
-
-    /* Vocab Tabs */
-    .vocab-tabs-nav {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-bottom: 1.5rem;
-      background: var(--bg-canvas-subtle);
-      padding: 0.45rem;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-subtle);
-    }
-    
-    .vocab-tab-btn {
-      padding: 0.55rem 1.1rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--ink-dim);
-      font-family: var(--font-body);
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.2s ease;
-    }
-    
-    .vocab-tab-btn:hover {
-      background: rgba(184, 74, 40, 0.08);
-      color: var(--terracotta-dark);
-    }
-    
-    .vocab-tab-btn.active {
-      background: var(--bg-surface);
-      color: var(--terracotta-dark);
-      border-color: var(--border-medium);
-      box-shadow: var(--shadow-xs);
-    }
-    
-    .vocab-panel {
-      display: none;
-      animation: fadeIn 0.25s ease-out;
-    }
-    
-    .vocab-panel.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .vocab-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 1.25rem;
-      margin-bottom: 1.25rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border-subtle);
-      flex-wrap: wrap;
-    }
-    
-    .vocab-meta-chips {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    
-    .vocab-chip {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 0.2rem 0.55rem;
-      border-radius: var(--radius-full);
-      background: var(--bg-canvas-subtle);
-      border: 1px solid var(--border-medium);
-      color: var(--ink-dim);
-    }
-
-    /* Digital Authenticity Profile Styles */
-    .dap-phase-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.25rem;
-      margin: 1.5rem 0 2rem;
-    }
-    
-    @media (max-width: 900px) {
-      .dap-phase-grid { grid-template-columns: 1fr; }
-    }
-    
-    .dap-phase-card {
-      background: var(--bg-surface);
-      border: 2px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 1.4rem;
-      position: relative;
-      transition: all 0.25s ease;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .dap-phase-card:hover {
-      border-color: var(--terracotta);
-      box-shadow: var(--shadow-md);
-      transform: translateY(-3px);
-    }
-    
-    .dap-phase-header {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 0.75rem;
-      border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 0.65rem;
-    }
-    
-    .dap-phase-badge {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      font-weight: 800;
-      padding: 0.25rem 0.6rem;
-      border-radius: var(--radius-sm);
-      color: #fff;
-    }
-    
-    .badge-phase-1 { background: #b45309; }
-    .badge-phase-2 { background: #1d4ed8; }
-    .badge-phase-3 { background: #047857; }
-    
-    .dap-phase-card h3 {
-      font-family: var(--font-display);
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: var(--ink);
-    }
-    
-    .dap-stakeholders {
-      font-size: 0.78rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--terracotta);
-      margin-bottom: 0.65rem;
-    }
-    
-    .dap-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.45rem;
-      font-size: 0.85rem;
-      color: var(--ink-dim);
-      margin-top: 0.5rem;
-    }
-    
-    .dap-list li {
-      position: relative;
-      padding-left: 1.25rem;
-      line-height: 1.45;
-    }
-    
-    .dap-list li::before {
-      content: "▹";
-      position: absolute;
-      left: 0;
-      color: var(--terracotta);
-      font-weight: 700;
-    }
-
-    /* Status Feature Badges */
-    .status-capturable {
-      background: #ecfdf5;
-      border: 1px solid #10b981;
-      color: #065f46;
-    }
-    
-    .status-not-capturable {
-      background: #fef2f2;
-      border: 1px solid #ef4444;
-      color: #991b1b;
-    }
-    
-    .status-simulated {
-      background: #f5f3ff;
-      border: 1px solid #8b5cf6;
-      color: #5b21b6;
-    }
-
-    /* Scholarly Comparison Table */
-    .scholarly-table-wrap {
-      overflow-x: auto;
-      margin: 1.5rem 0 2rem;
-      border: 1px solid var(--border-medium);
-      border-radius: var(--radius-md);
-      background: var(--bg-surface);
-      box-shadow: var(--shadow-xs);
-    }
-    
-    .scholarly-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-      text-align: left;
-    }
-    
-    .scholarly-table th {
-      background: var(--bg-canvas-subtle);
-      padding: 0.85rem 1rem;
-      font-family: var(--font-display);
-      font-weight: 700;
-      color: var(--ink);
-      border-bottom: 2px solid var(--border-medium);
-    }
-    
-    .scholarly-table td {
-      padding: 0.8rem 1rem;
-      border-bottom: 1px solid var(--border-subtle);
-      color: var(--ink-dim);
-      vertical-align: top;
-      line-height: 1.5;
-    }
-    
-    .scholarly-table tr:hover td {
-      background: var(--bg-canvas-subtle);
-    }
-    
-    .scholarly-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    /* Nikarete Case Study Showcase */
-    .nikarete-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin: 1.5rem 0 2rem;
-    }
-    
-    @media (max-width: 860px) {
-      .nikarete-grid { grid-template-columns: 1fr; }
-    }
-    
-    .nikarete-card {
-      background: var(--bg-surface);
-      border-radius: var(--radius-md);
-      padding: 1.4rem;
-      border: 1.5px solid var(--border-subtle);
-      position: relative;
-    }
-    
-    .nikarete-card.model-a {
-      border-left: 5px solid #ef4444;
-    }
-    
-    .nikarete-card.model-b {
-      border-left: 5px solid #10b981;
-      background: linear-gradient(175deg, var(--bg-surface) 0%, rgba(16, 185, 129, 0.03) 100%);
-    }
-    
-    .nikarete-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.85rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-    
-    .nikarete-title {
-      font-family: var(--font-display);
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--ink);
-    }
-    
-    .nikarete-spec-table {
-      width: 100%;
-      font-size: 0.8rem;
-      margin: 0.75rem 0;
-      border-collapse: collapse;
-    }
-    
-    .nikarete-spec-table td {
-      padding: 0.35rem 0.25rem;
-      border-bottom: 1px dotted var(--border-subtle);
-    }
-    
-    .nikarete-spec-table td.label {
-      font-weight: 700;
-      color: var(--ink);
-      width: 38%;
-    }
-
-    /* XML Code Block Container */
-    .code-box {
-      background: #141820;
-      color: #e2e8f0;
-      border-radius: var(--radius-sm);
-      padding: 1rem 1.15rem;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      line-height: 1.5;
-      overflow-x: auto;
-      margin: 0.75rem 0 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    
-    .code-box .xml-tag { color: #f472b6; }
-    .code-box .xml-attr { color: #fbbf24; }
-    .code-box .xml-val { color: #34d399; }
-    .code-box .xml-comment { color: #94a3b8; font-style: italic; }
-
   </style>
 </head>
 <body>
+  <!-- ==========================================================================
+       STICKY TOP NAVIGATION BAR
+       ========================================================================== -->
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="brand-group">
+        <!-- Logo Badge identical to application header -->
+        <a href="#hero" class="brand-tool-badge" title="ΗΕΡΜΗΣ — HERMES">
+          <img
+            src="hermes-vase-icon.png?v=signet1"
+            alt="ΗΕΡΜΗΣ"
+            class="brand-tool-img"
+          />
+          <svg class="brand-tool-svg" viewBox="760 225 1630 370" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 780.0 240.0 L 836.4 240.0 L 836.4 352.8 L 939.8 352.8 L 939.8 240.0 L 996.2 240.0 L 996.2 522.0 L 939.8 522.0 L 939.8 404.5 L 836.4 404.5 L 836.4 522.0 L 780.0 522.0 Z M 1047.9 240.0 L 1254.7 240.0 L 1240.6 291.7 L 1104.3 291.7 L 1104.3 355.1 L 1221.8 355.1 L 1212.4 404.5 L 1104.3 404.5 L 1104.3 470.3 L 1245.3 470.3 L 1259.4 522.0 L 1047.9 522.0 Z M 1311.1 240.0 L 1456.8 240.0 L 1522.6 291.7 L 1522.6 371.6 L 1456.8 423.3 L 1367.5 423.3 L 1367.5 522.0 L 1311.1 522.0 Z M 1367.5 289.4 L 1367.5 374.0 L 1438.0 374.0 L 1466.2 348.1 L 1466.2 315.2 L 1438.0 289.4 Z M 1574.3 522.0 L 1588.4 240.0 L 1644.8 240.0 L 1701.2 385.7 L 1757.6 240.0 L 1814.0 240.0 L 1828.1 522.0 L 1771.7 522.0 L 1762.3 348.1 L 1715.3 465.6 L 1687.1 465.6 L 1640.1 348.1 L 1630.7 522.0 Z M 1879.8 240.0 L 1936.2 240.0 L 1936.2 352.8 L 2039.6 352.8 L 2039.6 240.0 L 2096.0 240.0 L 2096.0 522.0 L 2039.6 522.0 L 2039.6 404.5 L 1936.2 404.5 L 1936.2 522.0 L 1879.8 522.0 Z M 2147.7 240.0 L 2363.9 240.0 L 2349.8 291.7 L 2227.6 291.7 L 2307.5 376.3 L 2222.9 470.3 L 2354.5 470.3 L 2368.6 522.0 L 2147.7 522.0 L 2147.7 479.7 L 2241.7 381.0 L 2147.7 282.3 Z" fill="#E07A42" fill-rule="evenodd"/>
+            <path d="M 780.0 554.0 L 2368.0 554.0 L 2368.0 572.0 L 780.0 572.0 Z" fill="#E07A42"/>
+          </svg>
+        </a>
+
+        <!-- Spelled out title further to the right as heading -->
+        <div class="brand-title-block">
+          <h1 class="brand-heading-text">HERMES</h1>
+          <span class="brand-subheading-text">
+            <span class="lang-de">Heritage Metadata Entry System · Referenzhandbuch</span>
+            <span class="lang-en">Heritage Metadata Entry System · Reference Manual</span>
+          </span>
+        </div>
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="#quickstart" class="nav-link"><span class="lang-de">01 Einstieg</span><span class="lang-en">01 Intro</span></a></li>
+        <li><a href="#authorities" class="nav-link"><span class="lang-de">02 Normdaten</span><span class="lang-en">02 Authorities</span></a></li>
+        <li><a href="#authenticity" class="nav-link"><span class="lang-de">03 DAP &amp; XSD</span><span class="lang-en">03 DAP &amp; XSD</span></a></li>
+        <li><a href="#fields" class="nav-link"><span class="lang-de">04 Feldlexikon</span><span class="lang-en">04 Fields</span></a></li>
+        <li><a href="#coordinates" class="nav-link"><span class="lang-de">07 Geodäsie</span><span class="lang-en">07 Geodesy</span></a></li>
+        <li><a href="#faq" class="nav-link">FAQ</a></li>
+      </ul>
+
+      <div class="nav-actions">
         <!-- Live Field & Term Search -->
         <div class="search-box">
           <span class="search-icon">🔍</span>
@@ -2102,10 +1770,10 @@
       <div class="hero-content">
         <div class="hero-text-block">
           <div class="hero-badges">
-            <span class="badge badge-terracotta">🏺 CARARE 2.0.6 XSD</span>
-            <span class="badge badge-aegean">🏛️ CIDOC-CRM / EDM</span>
-            <span class="badge badge-emerald">📐 Geodäsie & 3D-Paradaten</span>
-            <span class="badge badge-bronze">📦 RFC 8493 BagIt</span>
+            <span class="badge badge-terracotta">🏺 CARARE 2.0.6 Schema</span>
+            <span class="badge badge-aegean">🛡️ Digital Authenticity Profile (DAP)</span>
+            <span class="badge badge-emerald">📐 Metrologie, Genauigkeit &amp; Auflösung</span>
+            <span class="badge badge-bronze">📦 Dual-Schema RFC 8493 BagIt</span>
           </div>
           <h1 class="hero-title">
             <span class="lang-de">Wissenschaftliches Referenzhandbuch für Grabung & Museum</span>
@@ -2123,7 +1791,7 @@
 
         <!-- Classical Hermes God Emblem Badge -->
         <div class="hero-emblem" title="HERMES — Griechischer Schutzgott der Reisenden und Boten / Greek God of Messengers & Travellers">
-          <img src="hermes_god_logo.png" alt="Emblem des griechischen Gottes Hermes mit Flügelhelm und Caduceus" />
+          <img src="hermes-vase-icon.png" alt="Emblem des griechischen Gottes Hermes mit Flügelhelm und Caduceus" />
         </div>
       </div>
     </div>
@@ -3310,47 +2978,296 @@
           </div>
         </div>
 
-        <!-- CARARE 2.0.6 XML Paradata Serialization Snippet -->
-        <h4 style="font-family: var(--font-display); font-size: 1.1rem; color: var(--ink); margin-bottom: 0.5rem;">
-          <span class="lang-de">CARARE 2.0.6 XML Serialisierung der Paradaten (&lt;activity&gt;)</span>
-          <span class="lang-en">CARARE 2.0.6 XML Serialization of Paradata (&lt;activity&gt;)</span>
-        </h4>
-        <p style="font-size: 0.85rem; color: var(--ink-dim); margin-bottom: 0.75rem;">
-          <span class="lang-de">
-            HERMES serialisiert die Erfassungsparameter, Sensoren, Softwareketten und Einschränkungen in standardkonforme CARARE <code>&lt;activity&gt;</code>-Blöcke:
-          </span>
-          <span class="lang-en">
-            HERMES serializes capture parameters, hardware devices, software chains, and constraints into fully schema-compliant CARARE <code>&lt;activity&gt;</code> blocks:
-          </span>
-        </p>
+        <!-- ==================================================================
+             3.5 DAP 6 DIMENSIONS IN CARARE 2.0.6 (HECTOR VOCABULARY)
+             ================================================================== -->
+        <div class="card" style="margin-top: 2rem; border-left: 5px solid var(--terracotta); background: linear-gradient(175deg, var(--bg-surface) 0%, rgba(200, 75, 49, 0.03) 100%);">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-subtle);">
+            <div>
+              <span class="badge badge-terracotta" style="margin-bottom: 0.35rem;">🏛️ DIGITAL AUTHENTICITY PROFILE (DAP)</span>
+              <h3 style="font-family: var(--font-display); font-size: 1.3rem; color: var(--ink); margin: 0;">
+                <span class="lang-de">3.5 Sechs Dimensionen des Digital Authenticity Profile &amp; ihre Abbildung in CARARE 2.0.6</span>
+                <span class="lang-en">3.5 Six Dimensions of the Digital Authenticity Profile &amp; their Representation in CARARE 2.0.6</span>
+              </h3>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <code style="font-size: 0.75rem; padding: 0.3rem 0.6rem; background: var(--bg-canvas-subtle); border: 1px solid var(--border-medium); border-radius: 6px;">100% CARARE: carare-v2.0.6.xsd</code>
+              <code style="font-size: 0.75rem; padding: 0.3rem 0.6rem; background: rgba(200, 75, 49, 0.1); color: var(--terracotta-dark); border: 1px solid var(--terracotta); border-radius: 6px; font-weight: 700;">HECTOR: http://hector.org/vocab/dap/</code>
+            </div>
+          </div>
 
-        <div class="code-box">
-<span class="xml-comment">&lt;!-- CARARE 2.0.6 Paradaten-Block (Digital Authenticity Profile) in &lt;activity&gt; --&gt;</span>
-&lt;<span class="xml-tag">activity</span>&gt;
-  &lt;<span class="xml-tag">activityType</span>&gt;3D Optical Structured Light Scanning &amp; Photogrammetric Texturing&lt;/<span class="xml-tag">activityType</span>&gt;
-  &lt;<span class="xml-tag">method</span>&gt;Optical Structured-Light Triangulation &amp; Cross-Polarized Photogrammetry&lt;/<span class="xml-tag">method</span>&gt;
-  &lt;<span class="xml-tag">actor</span> <span class="xml-attr">id</span>=<span class="xml-val">"https://d-nb.info/gnd/36150-1"</span>&gt;
-    &lt;<span class="xml-tag">name</span>&gt;Bonn Center for Digital Humanities, University of Bonn&lt;/<span class="xml-tag">name</span>&gt;
-    &lt;<span class="xml-tag">roles</span>&gt;&lt;<span class="xml-tag">role</span>&gt;3D Capture &amp; Scientific Data Modeling&lt;/<span class="xml-tag">role</span>&gt;&lt;/<span class="xml-tag">roles</span>&gt;
-  &lt;/<span class="xml-tag">actor</span>&gt;
+          <p style="font-size: 0.9rem; color: var(--ink-dim); line-height: 1.65; margin-bottom: 1.15rem;">
+            <span class="lang-de">
+              Das <strong>Digital Authenticity Profile (DAP)</strong> dokumentiert die Transformation eines Objekts vom analogen in das digitale Medium und macht sichtbar, wo die Grenzen dieser Übersetzung liegen. Bezugspunkt ist die <strong>materielle Evidenz</strong>, an die der Authentizitätsbegriff im Museum unauflöslich gebunden ist.
+              <br><br>
+              Die Dimensionen folgen den drei Phasen des Profils (<strong>Reference</strong>, <strong>Capture</strong> und <strong>Representation</strong>) und bilden die methodische Kette <em>Ausgangslage → Prozess → Begründung → Ergebnis</em>:
+            </span>
+            <span class="lang-en">
+              The <strong>Digital Authenticity Profile (DAP)</strong> documents the transformation of an object from analogue to digital medium, making the limits of translation visible. Its core reference is <strong>material evidence</strong>, which defines the concept of authenticity in museums.
+              <br><br>
+              The dimensions follow the profile's three phases (<strong>Reference</strong>, <strong>Capture</strong>, and <strong>Representation</strong>) representing the logic <em>Baseline → Process → Justification → Result</em>:
+            </span>
+          </p>
+
+          <!-- 6 Dimensions Matrix Table -->
+          <div style="overflow-x: auto; margin-bottom: 1.5rem;">
+            <table class="nikarete-spec-table" style="font-size: 0.82rem; border: 1px solid var(--border-subtle); width: 100%;">
+              <thead>
+                <tr style="background: var(--bg-canvas-subtle); border-bottom: 2px solid var(--border-medium); text-align: left;">
+                  <th style="padding: 0.6rem; width: 16%;">
+                    <span class="lang-de">Phase</span>
+                    <span class="lang-en">Lifecycle Phase</span>
+                  </th>
+                  <th style="padding: 0.6rem; width: 22%;">
+                    <span class="lang-de">Dimension</span>
+                    <span class="lang-en">Dimension</span>
+                  </th>
+                  <th style="padding: 0.6rem; width: 34%;">
+                    <span class="lang-de">Leitfrage / Curatorial Question</span>
+                    <span class="lang-en">Guiding Research Question</span>
+                  </th>
+                  <th style="padding: 0.6rem; width: 28%;">
+                    <span class="lang-de">Formalisierung in CARARE 2.0.6</span>
+                    <span class="lang-en">Formalization in CARARE 2.0.6</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Reference</strong><br><span style="font-size: 0.75rem; color: var(--ink-dim);"><span class="lang-de">vor der Digitalisierung</span><span class="lang-en">Prior to Capture</span></span></td>
+                  <td><span class="badge badge-secondary" style="font-size: 0.75rem;">DAP-1</span><br><strong><span class="lang-de">Materielle Spuren &amp; Merkmale</span><span class="lang-en">Material Traces &amp; Baseline Features</span></strong></td>
+                  <td><em><span class="lang-de">Welche materielle Evidenz seiner Geschichte trägt das Objekt (Beschädigungen, Bearbeitungs- und Gebrauchsspuren, Restaurierungen, stilistische Merkmale)?</span><span class="lang-en">What material evidence of its history does the physical asset bear (damage, tool/usage marks, restorations, stylistic markers)?</span></em></td>
+                  <td>
+                    <code>&lt;consistsOf&gt;</code> &amp; <code>&lt;assessments&gt;</code><br>
+                    • <code>&lt;methods&gt;</code> = DAP-1 (HECTOR-URI)<br>
+                    • <code>&lt;materials&gt;</code> = Spuren, Werkstoffe<br>
+                    • <code>&lt;assessments&gt;</code> = Ausgangsbefund am physischen Objekt
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Capture</strong><br><span style="font-size: 0.75rem; color: var(--ink-dim);"><span class="lang-de">während der Digitalisierung</span><span class="lang-en">During Acquisition</span></span></td>
+                  <td><span class="badge badge-info" style="font-size: 0.75rem;">DAP-2</span><br><strong><span class="lang-de">Aufnahmeprozess &amp; Erfassungsumfang</span><span class="lang-en">Acquisition Process &amp; Scope</span></strong></td>
+                  <td><em><span class="lang-de">Was wurde erfasst, was nicht, und warum?</span><span class="lang-en">What areas were captured, what was omitted, and why?</span></em></td>
+                  <td>
+                    <code>&lt;consistsOf&gt;</code><br>
+                    • <code>&lt;methods&gt;</code> = DAP-2 (HECTOR-URI)<br>
+                    • <code>&lt;hadSpecificPurpose&gt;</code> = Auslassungsgründe &amp; Umfang<br>
+                    • <code>&lt;techniques&gt;</code> = Scan-Verfahren<br>
+                    • <code>&lt;equipment&gt;</code> = Scanner, Kamera, Maßstäbe
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Representation</strong><br><span style="font-size: 0.75rem; color: var(--ink-dim);"><span class="lang-de">nach der Digitalisierung</span><span class="lang-en">Post-Acquisition</span></span></td>
+                  <td><span class="badge badge-primary" style="font-size: 0.75rem;">DAP-3</span><br><strong><span class="lang-de">Geometrie-Bearbeitung</span><span class="lang-en">Geometry Processing</span></strong></td>
+                  <td><em><span class="lang-de">Welche Eingriffe gab es an der Form?</span><span class="lang-en">What computational operations altered the 3D geometry?</span></em></td>
+                  <td>
+                    <code>&lt;consistsOf&gt;</code><br>
+                    • <code>&lt;methods&gt;</code> = DAP-3 (HECTOR-URI)<br>
+                    • <code>&lt;techniques&gt;</code> = ICP-Registration, Decimation, Hole Filling<br>
+                    • <code>&lt;equipment&gt;</code> = 3D-Software (Blender, MeshLab)
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Representation</strong><br><span style="font-size: 0.75rem; color: var(--ink-dim);"><span class="lang-de">nach der Digitalisierung</span><span class="lang-en">Post-Acquisition</span></span></td>
+                  <td><span class="badge badge-accent" style="font-size: 0.75rem;">DAP-4</span><br><strong><span class="lang-de">Textur, Shader &amp; Material</span><span class="lang-en">Texture, Shader &amp; Material</span></strong></td>
+                  <td><em><span class="lang-de">Welche Eingriffe gab es an der Oberfläche?</span><span class="lang-en">What interventions altered texture, illumination and surface shaders?</span></em></td>
+                  <td>
+                    <code>&lt;consistsOf&gt;</code><br>
+                    • <code>&lt;methods&gt;</code> = DAP-4 (HECTOR-URI)<br>
+                    • <code>&lt;techniques&gt;</code> = Delighting, UV-Unwrapping, ColorChecker<br>
+                    • <code>&lt;equipment&gt;</code> = Textur-Software (Substance, Lightroom)
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong><span class="lang-de">übergreifend</span><span class="lang-en">Cross-Cutting</span></strong><br><span style="font-size: 0.75rem; color: var(--ink-dim);"><span class="lang-de">Methodische Begründung</span><span class="lang-en">Scholarly Rationale</span></span></td>
+                  <td><span class="badge badge-warning" style="font-size: 0.75rem;">DAP-5</span><br><strong><span class="lang-de">Wissenschaftliche Begründung</span><span class="lang-en">Scholarly Rationale &amp; Charters</span></strong></td>
+                  <td><em><span class="lang-de">Warum wurde so entschieden (Londoner Charta, Sevilla-Prinzipien, minimale Intervention)?</span><span class="lang-en">Why were specific interventions chosen (London Charter, Seville Principles)?</span></em></td>
+                  <td>
+                    <code>&lt;consistsOf&gt;</code><br>
+                    • <code>&lt;methods&gt;</code> = DAP-5 (HECTOR-URI)<br>
+                    • <code>&lt;hadSpecificPurpose&gt;</code> = Wissenschaftliche Begründung &amp; Charta-Grundsätze
+                  </td>
+                </tr>
+                <tr style="background: rgba(16, 185, 129, 0.05); font-weight: 600;">
+                  <td><strong><span class="lang-de">Ergebnis</span><span class="lang-en">Outcome</span></strong><br><span style="font-size: 0.75rem; color: #059669;"><span class="lang-de">Transformationsbilanz</span><span class="lang-en">Evidence Balance</span></span></td>
+                  <td><span class="badge badge-success" style="font-size: 0.75rem;">DAP-6</span><br><strong><span class="lang-de">Abbildungsbilanz</span><span class="lang-en">Balance of Evidence &amp; Limits</span></strong></td>
+                  <td><em><span class="lang-de">Was ist aus den Spuren und Merkmalen aus DAP-1 im Endprodukt geworden: erhalten, verändert, verloren oder nicht erfasst?</span><span class="lang-en">What became of the material traces from DAP-1 in the final 3D asset: preserved, altered, lost, or unrecorded?</span></em></td>
+                  <td>
+                    <code>&lt;consistsOf&gt;</code> &amp; <code>&lt;assessments&gt;</code><br>
+                    • <code>&lt;methods&gt;</code> = DAP-6 (HECTOR-URI)<br>
+                    • <code>&lt;assessments&gt;</code> = Transformationsurteil &amp; Bilanz am Modell
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Highlight: DAP-6 closes the circle to DAP-1 -->
+          <div style="padding: 1rem 1.25rem; border-radius: var(--radius-sm); background: rgba(16, 185, 129, 0.08); border-left: 4px solid #10b981; margin-bottom: 1.5rem;">
+            <div style="font-weight: 800; color: #065f46; font-size: 0.95rem; margin-bottom: 0.25rem;">
+              🎯 <span class="lang-de">Die Kernaussage: DAP-6 schließt den Kreis zu DAP-1</span>
+              <span class="lang-en">Core Takeaway: DAP-6 Closes the Loop Back to DAP-1</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--ink-dim); line-height: 1.6; margin: 0;">
+              <span class="lang-de">
+                <strong>DAP-6 schließt den Kreis zu DAP-1</strong> und zeigt am Endprodukt, wo die Grenzen der Transformation liegen. Das ist die Kernaussage des Digital Authenticity Profile: Statt einer Illusion perfekter Objektivität wird für Forscher, Museumspädagogen und Restauratoren transparent nachvollziehbar, welche materiellen Details digital treu überliefert sind, welche durch Computergrafik angenähert wurden und was verdeckt blieb.
+              </span>
+              <span class="lang-en">
+                <strong>DAP-6 closes the circle back to DAP-1</strong>, demonstrating on the final 3D asset where the boundaries of the digital translation lie. This is the central thesis of the DAP: rather than projecting a deceptive realism, it reveals precisely which traces remain preserved, which were computationally altered, and which were omitted.
+              </span>
+            </p>
+          </div>
+
+          <!-- Abgrenzung zum Memory Twin -->
+          <div style="padding: 1rem 1.25rem; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1.5px solid var(--border-medium); margin-bottom: 1.5rem;">
+            <div style="font-weight: 800; color: var(--ink); font-size: 0.95rem; margin-bottom: 0.35rem;">
+              🏛️ <span class="lang-de">Wissenschaftliche Abgrenzung: DAP vs. Memory Twin</span>
+              <span class="lang-en">Scholarly Distinction: DAP vs. Memory Twin</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--ink-dim); line-height: 1.6; margin: 0;">
+              <span class="lang-de">
+                Der <strong>Memory Twin</strong> rekonstruiert den gesamten soziokulturellen Kontext des Objekts, also seine Nutzung, spirituelle Aufladung und Bedeutung innerhalb einer kulturellen Praxis oder Gemeinschaft.
+                <br>
+                Das <strong>DAP</strong> dokumentiert dagegen <em>ausschließlich die materielle Evidenz</em> und ihre digitale Übersetzung.
+                <br>
+                <em>Beispiel:</em> Eine Abnutzung durch rituelle Berührung oder Verbrennung ist als physische Spur Gegenstand des <strong>DAP</strong> (DAP-1 &amp; DAP-6). Ihre kulturelle Bedeutung im Totenkult ist Gegenstand des <strong>Memory Twin</strong>.
+              </span>
+              <span class="lang-en">
+                The <strong>Memory Twin</strong> reconstructs the broader sociocultural and intangible context of the object — its meaning, religious resonance, and living practice within a community.
+                <br>
+                The <strong>DAP</strong> documents strictly the <em>material physical evidence</em> and its computational translation.
+                <br>
+                <em>Example:</em> Wear caused by ritual touching is recorded in the <strong>DAP</strong> as physical evidence (DAP-1 &amp; DAP-6); its religious significance belongs to the <strong>Memory Twin</strong>.
+              </span>
+            </p>
+          </div>
+
+          <!-- Formalization in CARARE (Pure 2.0.6 without Schema extensions) -->
+          <div style="padding: 1.2rem; border-radius: var(--radius-sm); background: var(--bg-canvas-subtle); border: 1.5px solid #10b981; margin-bottom: 1.5rem;">
+            <h4 style="font-family: var(--font-display); font-size: 1.1rem; color: #065f46; margin: 0 0 0.5rem;">
+              <span class="lang-de">Kein Schema-Bruch: 100% CARARE 2.0.6 Konformität über HECTOR-Vokabular</span>
+              <span class="lang-en">Zero Schema Forking: 100% CARARE 2.0.6 Compliance via HECTOR Vocabulary</span>
+            </h4>
+            <p style="font-size: 0.85rem; color: var(--ink-dim); line-height: 1.6; margin-bottom: 0.75rem;">
+              <span class="lang-de">
+                Die sechs Dimensionen werden in <strong>HECTOR</strong> als kontrolliertes Vokabular mit eigenem Namensraum angelegt (<code>http://hector.org/vocab/dap/DAP-1</code> bis <code>DAP-6</code>).
+                Im Wrap <code>&lt;activity&gt;</code> wird jede Dimension als eigener standardisierter <code>&lt;consistsOf&gt;</code>-Teilschritt exportiert:
+                <br>
+                • <code>&lt;methods&gt;</code> trägt die Dimension mit der offiziellen HECTOR-URI.
+                <br>
+                • <code>&lt;techniques&gt;</code> trägt den Freitext aus Bausteinen und individuellen Notizen der Museumsmitarbeiter.
+                <br>
+                • <code>&lt;equipment&gt;</code> trägt optional die verwendeten 3D-Scanner, Kameras oder Software-Tools.
+                <br><br>
+                <strong>Eingabehilfe ohne Kuratierungsaufwand:</strong> Die Bausteine in HERMES sind reine 1-Klick-Vorlagen, damit den Museumsmitarbeitern kein zusätzlicher Erfassungsaufwand entsteht. Das XML-Schema bleibt vollständig unverändert (<code>carare-v2.0.6.xsd</code>), das Profil legt lediglich die semantische Verwendung der vorhandenen Felder fest. In HERMES sind die sechs Dimensionen als Pflichtfelder deklariert.
+              </span>
+              <span class="lang-en">
+                The six dimensions are defined in <strong>HECTOR</strong> as a controlled vocabulary namespace (<code>http://hector.org/vocab/dap/DAP-1</code> to <code>DAP-6</code>).
+                Inside CARARE <code>&lt;activity&gt;</code>, each dimension is exported as an independent, standard-compliant <code>&lt;consistsOf&gt;</code> sub-activity:
+                <br>
+                • <code>&lt;methods&gt;</code> carries the dimension with its official HECTOR URI.
+                <br>
+                • <code>&lt;techniques&gt;</code> contains the building blocks and specific notes.
+                <br>
+                • <code>&lt;equipment&gt;</code> documents 3D scanners, camera rigs, and software packages.
+                <br><br>
+                <strong>Streamlined Input Assistance:</strong> The 1-click building blocks eliminate curation overhead for museum personnel. The XML schema remains 100% standard <code>carare-v2.0.6.xsd</code>.
+              </span>
+            </p>
+          </div>
+
+          <!-- Validated Pure CARARE 2.0.6 XML Snippet -->
+          <h4 style="font-family: var(--font-display); font-size: 1.05rem; color: var(--ink); margin-bottom: 0.5rem;">
+            <span class="lang-de">C. Validiertes XML-Exportbeispiel (100% CARARE 2.0.6 XSD)</span>
+            <span class="lang-en">C. Validated XML Export Example (100% CARARE 2.0.6 XSD)</span>
+          </h4>
+          <div class="code-box">
+<span class="xml-comment">&lt;!-- Auszug aus &lt;activity&gt;: Die 6 DAP-Dimensionen als standardkonforme &lt;consistsOf&gt;-Elemente --&gt;</span>
+&lt;<span class="xml-tag">activity</span> <span class="xml-attr">id</span>=<span class="xml-val">"act_attic_vase_2025"</span>&gt;
+  &lt;<span class="xml-tag">recordInformation</span>&gt;
+    &lt;<span class="xml-tag">id</span>&gt;ACT-SMB-2025-01&lt;/<span class="xml-tag">id</span>&gt;
+    &lt;<span class="xml-tag">source</span>&gt;Antikensammlung Berlin&lt;/<span class="xml-tag">source</span>&gt;
+  &lt;/<span class="xml-tag">recordInformation</span>&gt;
+  &lt;<span class="xml-tag">eventType</span>&gt;Digitization&lt;/<span class="xml-tag">eventType</span>&gt;
+
+  <span class="xml-comment">&lt;!-- DAP-1: Reference --&gt;</span>
   &lt;<span class="xml-tag">consistsOf</span>&gt;
-    &lt;<span class="xml-tag">equipment</span>&gt;Artec Leo 3D Scanner (Spatial Resolution: 0.1 mm, Single Point Accuracy: 0.05 mm)&lt;/<span class="xml-tag">equipment</span>&gt;
-    &lt;<span class="xml-tag">equipment</span>&gt;Nikon Z8 Mirrorless Camera (Sensor: 45.7 MP, 50mm Prime Lens, CPL Filters)&lt;/<span class="xml-tag">equipment</span>&gt;
+    &lt;<span class="xml-tag">hadSpecificPurpose</span>&gt;DAP-1: Materielle Spuren &amp;amp; Merkmale&lt;/<span class="xml-tag">hadSpecificPurpose</span>&gt;
+    &lt;<span class="xml-tag">methods</span>&gt;DAP-1 Materielle Spuren &amp;amp; Merkmale (http://hector.org/vocab/dap/DAP-1)&lt;/<span class="xml-tag">methods</span>&gt;
+    &lt;<span class="xml-tag">techniques</span>&gt;Beschädigungen: Bestoßungen an Lippe und Fuß; antike Dreh- und Meißelspuren; Brandspuren aus ritueller Nutzung; Restaurierungskittungen.&lt;/<span class="xml-tag">techniques</span>&gt;
   &lt;/<span class="xml-tag">consistsOf</span>&gt;
-  &lt;<span class="xml-tag">formatDetails</span>&gt;
-    &lt;<span class="xml-tag">polygons</span>&gt;15800000 (Master OBJ) / 50000 (Real-Time GLB)&lt;/<span class="xml-tag">polygons</span>&gt;
-    &lt;<span class="xml-tag">maps</span>&gt;Transferred Albedo Texture, Tangent Normal Map, Ambient Occlusion Map&lt;/<span class="xml-tag">maps</span>&gt;
-    &lt;<span class="xml-tag">error</span>&gt;Calibration verification plate RMSE: 0.018 mm; Bundle adjustment RMSE: 0.34 px&lt;/<span class="xml-tag">error</span>&gt;
-  &lt;/<span class="xml-tag">formatDetails</span>&gt;
-  &lt;<span class="xml-tag">conditions</span>&gt;
-    Rear surface and base underside declared NOT CAPTURABLE due to exhibition mounting.
-    Sandstone base digitally excised according to archaeological digitization intent.
-    Subsurface scattering shader parameters declared SIMULATED.
-  &lt;/<span class="xml-tag">conditions</span>&gt;
-  &lt;<span class="xml-tag">rights</span>&gt;
-    &lt;<span class="xml-tag">licence</span> <span class="xml-attr">id</span>=<span class="xml-val">"https://creativecommons.org/licenses/by-sa/4.0/"</span>&gt;CC BY-SA 4.0&lt;/<span class="xml-tag">licence</span>&gt;
-  &lt;/<span class="xml-tag">rights</span>&gt;
+
+  <span class="xml-comment">&lt;!-- DAP-2: Capture --&gt;</span>
+  &lt;<span class="xml-tag">consistsOf</span>&gt;
+    &lt;<span class="xml-tag">hadSpecificPurpose</span>&gt;DAP-2: Aufnahmeprozess &amp;amp; Erfassungsumfang&lt;/<span class="xml-tag">hadSpecificPurpose</span>&gt;
+    &lt;<span class="xml-tag">methods</span>&gt;DAP-2 Aufnahmeprozess &amp;amp; Erfassungsumfang (http://hector.org/vocab/dap/DAP-2)&lt;/<span class="xml-tag">methods</span>&gt;
+    &lt;<span class="xml-tag">techniques</span>&gt;Vollständige 360-Grad-Erfassung der Außenseite; Standfläche/Sockelunterseite ausgespart (Standsicherheit); Hohlraum innen optisch abgeschattet; Berührungslos ohne Marker.&lt;/<span class="xml-tag">techniques</span>&gt;
+    &lt;<span class="xml-tag">equipment</span>&gt;Artec Leo 3D Scanner (0.1 mm Auflösung); Nikon Z8 mit Nikkor Z 50mm f/1.8 S; Invar-Maßstäbe&lt;/<span class="xml-tag">equipment</span>&gt;
+  &lt;/<span class="xml-tag">consistsOf</span>&gt;
+
+  <span class="xml-comment">&lt;!-- DAP-3: Representation (Geometry) --&gt;</span>
+  &lt;<span class="xml-tag">consistsOf</span>&gt;
+    &lt;<span class="xml-tag">hadSpecificPurpose</span>&gt;DAP-3: Geometrie-Bearbeitung&lt;/<span class="xml-tag">hadSpecificPurpose</span>&gt;
+    &lt;<span class="xml-tag">methods</span>&gt;DAP-3 Geometrie-Bearbeitung (http://hector.org/vocab/dap/DAP-3)&lt;/<span class="xml-tag">methods</span>&gt;
+    &lt;<span class="xml-tag">techniques</span>&gt;Konservative Rauschbereinigung ohne Kantenverrundung; Planare Schließung der verdeckten Standfläche; Keine spekulative Rekonstruktion an Fehlstellen; Master-Mesh gesichert.&lt;/<span class="xml-tag">techniques</span>&gt;
+    &lt;<span class="xml-tag">equipment</span>&gt;Artec Studio 19 (Sharp Fusion); Blender 4.2 LTS&lt;/<span class="xml-tag">equipment</span>&gt;
+  &lt;/<span class="xml-tag">consistsOf</span>&gt;
+
+  <span class="xml-comment">&lt;!-- DAP-4: Representation (Surface &amp; Texture) --&gt;</span>
+  &lt;<span class="xml-tag">consistsOf</span>&gt;
+    &lt;<span class="xml-tag">hadSpecificPurpose</span>&gt;DAP-4: Textur, Shader &amp;amp; Material&lt;/<span class="xml-tag">hadSpecificPurpose</span>&gt;
+    &lt;<span class="xml-tag">methods</span>&gt;DAP-4 Textur, Shader &amp;amp; Material (http://hector.org/vocab/dap/DAP-4)&lt;/<span class="xml-tag">methods</span>&gt;
+    &lt;<span class="xml-tag">techniques</span>&gt;Delighting: Blitzschatten &amp;amp; Glanzlichter rechnerisch neutralisiert; Farbecht kalibriert nach ColorChecker (Delta E &lt; 2.0); PBR Albedo und Normal-Map-Bake.&lt;/<span class="xml-tag">techniques</span>&gt;
+    &lt;<span class="xml-tag">equipment</span>&gt;Substance 3D Painter 10; Adobe Photoshop Lightroom&lt;/<span class="xml-tag">equipment</span>&gt;
+  &lt;/<span class="xml-tag">consistsOf</span>&gt;
+
+  <span class="xml-comment">&lt;!-- DAP-5: Justification (London Charter &amp; Seville) --&gt;</span>
+  &lt;<span class="xml-tag">consistsOf</span>&gt;
+    &lt;<span class="xml-tag">hadSpecificPurpose</span>&gt;DAP-5: Wissenschaftliche Begründung&lt;/<span class="xml-tag">hadSpecificPurpose</span>&gt;
+    &lt;<span class="xml-tag">methods</span>&gt;DAP-5 Wissenschaftliche Begründung (http://hector.org/vocab/dap/DAP-5)&lt;/<span class="xml-tag">methods</span>&gt;
+    &lt;<span class="xml-tag">techniques</span>&gt;London Charter Prinzip 4 (Transparenz); Sevilla-Prinzip 7 (Klare Trennung von Evidenz und Rekonstruktion); Konservatorisches Minimalinventionsprinzip.&lt;/<span class="xml-tag">techniques</span>&gt;
+  &lt;/<span class="xml-tag">consistsOf</span>&gt;
+
+  <span class="xml-comment">&lt;!-- DAP-6: Balance &amp; Result --&gt;</span>
+  &lt;<span class="xml-tag">consistsOf</span>&gt;
+    &lt;<span class="xml-tag">hadSpecificPurpose</span>&gt;DAP-6: Abbildungsbilanz&lt;/<span class="xml-tag">hadSpecificPurpose</span>&gt;
+    &lt;<span class="xml-tag">methods</span>&gt;DAP-6 Abbildungsbilanz (http://hector.org/vocab/dap/DAP-6)&lt;/<span class="xml-tag">methods</span>&gt;
+    &lt;<span class="xml-tag">techniques</span>&gt;Erhalten: Relief, Werkzeugspuren und Risse treu abgebildet. Verändert: Glanzgrad und Patina durch PBR angenähert. Nicht erfasst: Wandabgewandte Rückseite und Standfläche blieben ausgespart. Kernaussage: Grenzen der Transformation transparent dokumentiert; hohe wissenschaftliche Validität.&lt;/<span class="xml-tag">techniques</span>&gt;
+  &lt;/<span class="xml-tag">consistsOf</span>&gt;
 &lt;/<span class="xml-tag">activity</span>&gt;
+          </div>
+
+          <!-- Section D: PDF/MD Report & URI Resolution -->
+          <h4 style="font-family: var(--font-display); font-size: 1.05rem; color: var(--ink); margin-top: 1.5rem; margin-bottom: 0.5rem;">
+            <span class="lang-de">D. PDF- &amp; Markdown-Metadatenbericht sowie automatische Vokabular-URI-Auflösung</span>
+            <span class="lang-en">D. PDF &amp; Markdown Metadata Report and Automated Vocabulary URI Resolution</span>
+          </h4>
+          <div style="background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;">
+            <p style="margin-bottom: 0.75rem; font-size: 0.95rem; line-height: 1.6;">
+              <span class="lang-de">
+                <strong>1. Barrierefreie Dokumentation (PDF &amp; Markdown im BagIt-Archiv):</strong><br>
+                Da nicht jede forschende oder kuratorische Person Roh-XML liest, erzeugt HERMES bei jedem Export vollautomatisch einen optisch ansprechenden, paginierten <strong>PDF-Metadatenbericht</strong> (Vektor-PDF via <code>jsPDF</code>) sowie einen standardisierten <strong>Markdown-Bericht</strong> (<code>metadata/carare-metadata.md</code>). Beide Dokumente werden direkt im <strong>BagIt-Archiv</strong> (RFC 8493) unter <code>metadata/</code> abgelegt und in <code>tagmanifest-sha256.txt</code> kryptographisch verifiziert. Über den Sidebar-Button <em>"Bericht (PDF)"</em> kann der Report jederzeit auch einzeln exportiert werden.
+              </span>
+              <span class="lang-en">
+                <strong>1. Accessible Scholarly Documentation (PDF &amp; Markdown in BagIt Archive):</strong><br>
+                Because raw XML is not always human-friendly for curators and researchers, HERMES automatically generates a cleanly styled, paginated <strong>vector PDF metadata report</strong> and a structured <strong>Markdown report</strong> (<code>metadata/carare-metadata.md</code>). Both files are packaged directly into the <strong>BagIt archive</strong> (RFC 8493) under <code>metadata/</code> and secured with SHA-256 checksums in <code>tagmanifest-sha256.txt</code>. A dedicated <em>"Report (PDF)"</em> sidebar button allows instant standalone export.
+              </span>
+            </p>
+            <p style="margin-bottom: 0; font-size: 0.95rem; line-height: 1.6;">
+              <span class="lang-de">
+                <strong>2. Durchgängige URI-Auflösung aller Fachbegriffe:</strong><br>
+                Alle in HERMES gewählten oder eingegebenen Begriffe (Objekttypen, Materialien, Epochen, DAP-Dimensionen, 3D-Verarbeitungsschritte wie <em>holes filled</em>, <em>icp registration</em>, <em>decimation</em>, Rollen und Orte) werden automatisch zu ihren maßgeblichen <strong>Linked-Open-Data-URIs</strong> (HECTOR / BCDH Universität Bonn, Pleiades, Getty AAT, GND) aufgelöst:
+                <br>• Elemente mit schemaerlaubten Attributen (z.&nbsp;B. <code>&lt;heritageAssetType&gt;</code>, <code>&lt;eventType&gt;</code>, <code>&lt;roles&gt;</code>, <code>&lt;namedLocation&gt;</code>) erhalten die Attribute <code>term</code>, <code>namespace</code> und <code>termUID</code>.
+                <br>• Reine Textfelder (z.&nbsp;B. <code>&lt;materials&gt;</code>, <code>&lt;methods&gt;</code>, <code>&lt;techniques&gt;</code>, <code>&lt;periodName&gt;</code>) tragen die URIs im standardisierten Format <code>Begriff (URI)</code>. Das garantiert 100% Validität gegen das strenge Schema <code>carare-v2.0.6.xsd</code> bei lückenloser semantischer Eindeutigkeit.
+              </span>
+              <span class="lang-en">
+                <strong>2. Seamless Linked Data URI Resolution:</strong><br>
+                All domain concepts, materials, epochs, DAP dimensions, 3D post-processing operations (e.g. <em>holes filled</em>, <em>icp registration</em>, <em>decimation</em>), roles, and locations are automatically resolved against authoritative <strong>Linked Open Data vocabularies</strong> (HECTOR / BCDH University of Bonn, Pleiades, Getty AAT, GND):
+                <br>• Elements supporting vocabulary attributes (e.g. <code>&lt;heritageAssetType&gt;</code>, <code>&lt;eventType&gt;</code>, <code>&lt;roles&gt;</code>, <code>&lt;namedLocation&gt;</code>) receive <code>term</code>, <code>namespace</code>, and <code>termUID</code>.
+                <br>• Elements constrained to text (e.g. <code>&lt;materials&gt;</code>, <code>&lt;methods&gt;</code>, <code>&lt;techniques&gt;</code>, <code>&lt;periodName&gt;</code>) encode URIs as <code>Term (URI)</code>, ensuring 100% CARARE 2.0.6 XSD compliance with zero validation errors.
+              </span>
+            </p>
+          </div>
         </div>
       </section>
       <!-- ====================================================================
@@ -3884,6 +3801,43 @@
             </div>
           </div>
 
+          <!-- Field 3.4: Metrology (Accuracy & Resolution) + Software Versions -->
+          <div class="field-card" data-tags="mandatory media fieldwork museum">
+            <div class="field-card-header">
+              <div class="field-card-title">
+                <span class="field-tag">&lt;metrologyAndSoftware&gt; • &lt;extent&gt; • &lt;note&gt;</span>
+                <span class="field-human-name"><span class="lang-de">Metrologie (Genauigkeit &amp; Auflösung) sowie Software + Versionen</span><span class="lang-en">Metrology (Accuracy &amp; Resolution) and Software + Versions</span></span>
+              </div>
+              <div class="field-meta-badges">
+                <span class="badge-status status-mandatory"><span class="lang-de">🔴 Pflicht für 3D-Qualität</span><span class="lang-en">🔴 Mandatory for 3D QA</span></span>
+                <span class="field-datatype">HERMES-DAP v1.0 &amp; CARARE Repeatable</span>
+              </div>
+            </div>
+            <p class="field-desc">
+              <span class="lang-de">Dedizierte Erfassung der messtechnischen <strong>Genauigkeit (<code>&lt;accuracy&gt;</code>)</strong>, der geometrisch-optischen <strong>Auflösung (<code>&lt;resolution&gt;</code>)</strong> und der <strong>Software-Pipeline mit exakten Versionsnummern (<code>&lt;softwareList&gt;</code>)</strong>. Wird in <code>hermes-dap-v1.0.xsd</code> als strukturierter XML-Baum und in <code>carare-v2.0.6.xsd</code> verlustfrei über wiederholte <code>&lt;extent&gt;</code>- und <code>&lt;note&gt;</code>-Elemente serialisiert.</span>
+              <span class="lang-en">Dedicated recording of metrological <strong>Accuracy (<code>&lt;accuracy&gt;</code>)</strong>, geometric/optical <strong>Resolution (<code>&lt;resolution&gt;</code>)</strong>, and <strong>Software tools with exact version numbers (<code>&lt;softwareList&gt;</code>)</strong>. Serialized as a structured XML tree in <code>hermes-dap-v1.0.xsd</code> and losslessly mapped onto repeated <code>&lt;extent&gt;</code> and <code>&lt;note&gt;</code> elements in <code>carare-v2.0.6.xsd</code>.</span>
+            </p>
+            <div class="field-spec-box">
+              <div class="spec-item"><span class="spec-label">XSD (DAP):</span> <code>/carareWrap/carare/digitalResource/metrologyAndSoftware/(accuracy|resolution|softwareList)</code></div>
+              <div class="spec-item"><span class="spec-label">XSD (CARARE):</span> <code>/carareWrap/carare/digitalResource/extent (0..∞) &amp; /note[@type] (0..∞)</code></div>
+              <div class="spec-item"><span class="spec-label">Round-Trip:</span> <code>Automatische Rekonstruktion beim XML-Import aus beiden Schemata</code></div>
+            </div>
+            <div class="field-examples-split">
+              <div class="example-box example-excavation">
+                <div class="example-header"><span>🏺</span> <span class="lang-de">Ausgrabungsbetrieb (Feldpraxis)</span><span class="lang-en">Fieldwork (Excavation Practice)</span></div>
+                <div class="example-context"><span class="lang-de">Photogrammetrie &amp; Laserscan-Befundmodell (Tairkap)</span><span class="lang-en">Photogrammetry &amp; TLS Trench Model (Tairkap)</span></div>
+                <div class="example-value">pointAccuracy: 0.08 mm • registrationRmse: 0.024 mm ICP-RMSE • gsd: 0.08 mm/px • Software: RealityCapture v1.4, CloudCompare v2.13</div>
+                <div class="example-explanation"><span class="lang-de">Dokumentiert die exakte Georeferenzierungs- und Oberflächengenauigkeit der Grabungseinheit.</span><span class="lang-en">Documents the exact georeferencing and surface accuracy of the excavated context.</span></div>
+              </div>
+              <div class="example-box example-museum">
+                <div class="example-header"><span>🏛️</span> <span class="lang-de">Museumsbetrieb (Depot / Sammlung)</span><span class="lang-en">Museum Operation (Depot / Collection)</span></div>
+                <div class="example-context"><span class="lang-de">Streifenlicht-Archivmaster &amp; VR-Derivat (Nikarete)</span><span class="lang-en">Structured Light Master &amp; VR Derivative (Nikarete)</span></div>
+                <div class="example-value">pointAccuracy: 0.05 mm • spatialResolution: 0.1 mm • textureResolution: 8K (8192×8192 px) • Software: Artec Studio v19, Blender v4.2 LTS</div>
+                <div class="example-explanation"><span class="lang-de">Trennt sauber zwischen optischer Sensorauflösung, 3D-Punktabstand und Bündelausgleichungs-RMSE.</span><span class="lang-en">Clearly separates optical sensor resolution, 3D point spacing, and bundle adjustment RMSE.</span></div>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- ------------------------------------------------------------------
@@ -3901,7 +3855,7 @@
           <div class="field-card" data-tags="mandatory fieldwork media">
             <div class="field-card-header">
               <div class="field-card-title">
-                <span class="field-tag">&lt;activity&gt; &lt;activityType&gt;</span>
+                <span class="field-tag">&lt;activity&gt; &lt;eventType @term @namespace&gt;</span>
                 <span class="field-human-name"><span class="lang-de">Art der wissenschaftlichen Maßnahme</span><span class="lang-en">Activity Type Classification</span></span>
               </div>
               <div class="field-meta-badges">
@@ -3914,7 +3868,7 @@
               <span class="lang-en">Classifies the physical or digital event: excavation, structured light scanning, photogrammetry, laser scanning, conservation.</span>
             </p>
             <div class="field-spec-box">
-              <div class="spec-item"><span class="spec-label">XSD-Pfad:</span> <code>/carare/activity/activityType</code></div>
+              <div class="spec-item"><span class="spec-label">XSD-Pfad:</span> <code>/carareWrap/carare/activity/eventType</code></div>
               <div class="spec-item"><span class="spec-label">Kardinalität:</span> <code>1..1 (Pflicht)</code></div>
               <div class="spec-item"><span class="spec-label">CIDOC-CRM:</span> <code>P2 has type (E55 Type)</code></div>
             </div>
@@ -3922,13 +3876,13 @@
               <div class="example-box example-excavation">
                 <div class="example-header"><span>🏺</span> <span class="lang-de">Ausgrabungsbetrieb (Feldpraxis)</span><span class="lang-en">Fieldwork (Excavation Practice)</span></div>
                 <div class="example-context"><span class="lang-de">Feldaufnahme der stratigraphischen Einheit</span><span class="lang-en">Stratigraphic Field Excavation Event</span></div>
-                <div class="example-value">&lt;activityType&gt;Archaeological Excavation and Stratigraphic Recording&lt;/activityType&gt;</div>
+                <div class="example-value">&lt;eventType term="3D Scanning"&gt;Archaeological Excavation &amp; 3D Recording&lt;/eventType&gt;</div>
                 <div class="example-explanation"><span class="lang-de">Kennzeichnet die Bergungsaktivität im Schnitt unter standardisierter Grabungsmethodik.</span><span class="lang-en">Designates the stratigraphic recovery event within the trench under standard field methodology.</span></div>
               </div>
               <div class="example-box example-museum">
                 <div class="example-header"><span>🏛️</span> <span class="lang-de">Museumsbetrieb (Depot / Sammlung)</span><span class="lang-en">Museum Operation (Depot / Collection)</span></div>
                 <div class="example-context"><span class="lang-de">3D-Erfassungskampagne im Skulpturendepot</span><span class="lang-en">3D Structured Light Depot Campaign</span></div>
-                <div class="example-value">&lt;activityType&gt;3D Optical Structured Light Scanning Campaign&lt;/activityType&gt;</div>
+                <div class="example-value">&lt;eventType term="3D Scanning"&gt;3D Optical Structured Light Scanning Campaign&lt;/eventType&gt;</div>
                 <div class="example-explanation"><span class="lang-de">Dokumentiert die hochpräzise optische 3D-Digitalisierung der Marmorstele.</span><span class="lang-en">Records the high-precision optical 3D digitization campaign of the marble monument.</span></div>
               </div>
             </div>
@@ -3975,7 +3929,7 @@
           <div class="field-card" data-tags="mandatory media">
             <div class="field-card-header">
               <div class="field-card-title">
-                <span class="field-tag">&lt;activity&gt; &lt;consistsOf&gt; &amp; &lt;conditions&gt;</span>
+                <span class="field-tag">&lt;consistsOf&gt; • &lt;assessments&gt; • &lt;digitalAuthenticityProfile&gt;</span>
                 <span class="field-human-name"><span class="lang-de">3D-Paradaten &amp; Rohbild-Dokumentation</span><span class="lang-en">3D Paradata &amp; Raw Image Audit</span></span>
               </div>
               <div class="field-meta-badges">
@@ -3988,7 +3942,7 @@
               <span class="lang-en"><strong>Exclusive location for metrological paradata:</strong> Acquisition modality (SfM / SLS / TLS), calibration, GSD, RMSE, <strong>raw image count (RAW photos)</strong>, and declared DAP boundaries.</span>
             </p>
             <div class="field-spec-box">
-              <div class="spec-item"><span class="spec-label">XSD-Pfad:</span> <code>/carare/activity/consistsOf/equipment &amp; /conditions</code></div>
+              <div class="spec-item"><span class="spec-label">XSD-Pfad:</span> <code>/carareWrap/carare/activity/(consistsOf|assessments|digitalAuthenticityProfile)</code></div>
               <div class="spec-item"><span class="spec-label">Methoden:</span> <code>Strikte Trennung zwischen Photogrammetrie, Streifenlicht (SLS) und TLS</code></div>
               <div class="spec-item"><span class="spec-label">Rohbilder:</span> <code>Zwingend zu dokumentieren bei SfM, SLS und TLS!</code></div>
             </div>
@@ -5042,6 +4996,57 @@
             </div>
           </div>
 
+          <!-- FAQ 11: 100% CARARE 2.0.6 Compliance with DAP -->
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>
+                <span class="lang-de">11. Wie bildet HERMES das Digital Authenticity Profile (DAP) in CARARE 2.0.6 ab?</span>
+                <span class="lang-en">11. How does HERMES represent the Digital Authenticity Profile (DAP) in CARARE 2.0.6?</span>
+              </span>
+              <span class="faq-arrow">▼</span>
+            </div>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p>
+                  <span class="lang-de">
+                    HERMES nutzt das offizielle, unveränderte <strong>CARARE 2.0.6 Schema (<code>carare-v2.0.6.xsd</code>)</strong> ohne experimentelle oder proprietäre XML-Erweiterungen. Die 6 Dimensionen des Digital Authenticity Profile (DAP-1 bis DAP-6) werden semantisch differenziert abgebildet:
+                    <strong>DAP-3 (Geometrie) &amp; DAP-4 (Textur)</strong> exportieren echte 3D-Verfahren in <code>&lt;techniques&gt;</code> und Hard-/Software in <code>&lt;equipment&gt;</code>. <strong>DAP-2 (Erfassungsumfang)</strong> dokumentiert Auslassungsgründe in <code>&lt;hadSpecificPurpose&gt;</code>. <strong>DAP-1 (Materielle Spuren) &amp; DAP-6 (Abbildungsbilanz)</strong> werden sachgerecht als <code>&lt;assessments&gt;</code> (Zustandsbefund und Evaluationsbilanz) sowie als <code>&lt;consistsOf&gt;</code> exportiert. <code>&lt;methods&gt;</code> trägt stets die HECTOR-URI. Damit ist jeder Export 100% standardkonform und wird von Europeana und allen OAI-PMH-Harvestern fehlerfrei verarbeitet.
+                  </span>
+                  <span class="lang-en">
+                    HERMES utilizes the official, unmodified <strong>CARARE 2.0.6 Schema (<code>carare-v2.0.6.xsd</code>)</strong> without proprietary XML forks. The six dimensions of the Digital Authenticity Profile (DAP-1 to DAP-6) are semantically differentiated: <strong>DAP-3 (Geometry) &amp; DAP-4 (Texture)</strong> export authentic algorithms to <code>&lt;techniques&gt;</code> and tools to <code>&lt;equipment&gt;</code>. <strong>DAP-2 (Capture Scope)</strong> documents omission reasons in <code>&lt;hadSpecificPurpose&gt;</code>. <strong>DAP-1 (Material Evidence) &amp; DAP-6 (Balance of Evidence)</strong> map accurately to <code>&lt;assessments&gt;</code> (condition and evaluation balance) alongside <code>&lt;consistsOf&gt;</code>. <code>&lt;methods&gt;</code> holds the HECTOR URI.
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 12: Bidirectional Live XML Preview -->
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>
+                <span class="lang-de">12. Wie funktioniert die bidirektionale Synchronisation zwischen Formular und Live-XML-Vorschau?</span>
+                <span class="lang-en">12. How does bidirectional synchronization between the form and the Live XML Preview work?</span>
+              </span>
+              <span class="faq-arrow">▼</span>
+            </div>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <p>
+                  <span class="lang-de">
+                    Über die Schaltfläche <strong>„XML Live“</strong> in der Kopfzeile lässt sich jederzeit eine geteilte Ansicht (Split-View) neben den Eingabeformularen öffnen:
+                    <br>• <strong>Formular → XML:</strong> Sobald Sie in ein Eingabefeld klicken oder tippen, springt die XML-Vorschau automatisch zur exakt korrespondierenden Stelle im XML-Baum (inklusive intelligenter Zuordnung von DAP- und Metrologie-Feldern auf <code>&lt;extent&gt;</code>-, <code>&lt;consistsOf&gt;</code>- oder <code>&lt;assessments&gt;</code>-Zeilen im strikten CARARE-Modus) und hebt die Zeilen farbig hervor.
+                    <br>• <strong>XML → Formular:</strong> Ein Klick auf eine beliebige Zeile im XML-Code wechselt automatisch in die zugehörige Sektion (Sammlung, Kulturgut, Digitale Ressource oder Aktivität), wählt den passenden Datensatz-Tab (sowie bei DAP-Elementen den richtigen DAP-Phasen-Tab 1–3) aus, scrollt zum Eingabefeld und hebt es optisch hervor.
+                  </span>
+                  <span class="lang-en">
+                    Clicking the <strong>"XML Live"</strong> toggle in the top header opens a real-time split-pane inspector beside the forms:
+                    <br>• <strong>Form → XML:</strong> Focusing or typing in any form field automatically scrolls the XML viewer to the corresponding XML element (including smart resolution of DAP and metrology inputs to repeated <code>&lt;extent&gt;</code>, <code>&lt;consistsOf&gt;</code>, or <code>&lt;assessments&gt;</code> lines in strict CARARE mode) and highlights the matching lines.
+                    <br>• <strong>XML → Form:</strong> Clicking any line in the XML preview automatically switches to the corresponding main section (Collection, Heritage Asset, Digital Resource, or Activity), activates the matching record tab (and DAP step tab 1–3 if applicable), scrolls smoothly to the input control, and highlights it.
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
     </main>
@@ -5053,8 +5058,12 @@
   <footer>
     <div class="footer-container">
       <div style="display:flex;align-items:center;gap:0.85rem;">
-        <div class="brand-logo-wrap" style="width:38px;height:38px;">
-          <img src="hermes_god_logo.png" alt="HERMES Logo — God Hermes Emblem" />
+        <div class="brand-tool-badge" style="padding: 0.25rem 0.55rem;">
+          <img src="hermes-vase-icon.png?v=signet1" alt="ΗΕΡΜΗΣ" style="width:30px;height:30px;object-fit:contain;" />
+          <svg style="height:18px;width:auto;" viewBox="760 225 1630 370" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 780.0 240.0 L 836.4 240.0 L 836.4 352.8 L 939.8 352.8 L 939.8 240.0 L 996.2 240.0 L 996.2 522.0 L 939.8 522.0 L 939.8 404.5 L 836.4 404.5 L 836.4 522.0 L 780.0 522.0 Z M 1047.9 240.0 L 1254.7 240.0 L 1240.6 291.7 L 1104.3 291.7 L 1104.3 355.1 L 1221.8 355.1 L 1212.4 404.5 L 1104.3 404.5 L 1104.3 470.3 L 1245.3 470.3 L 1259.4 522.0 L 1047.9 522.0 Z M 1311.1 240.0 L 1456.8 240.0 L 1522.6 291.7 L 1522.6 371.6 L 1456.8 423.3 L 1367.5 423.3 L 1367.5 522.0 L 1311.1 522.0 Z M 1367.5 289.4 L 1367.5 374.0 L 1438.0 374.0 L 1466.2 348.1 L 1466.2 315.2 L 1438.0 289.4 Z M 1574.3 522.0 L 1588.4 240.0 L 1644.8 240.0 L 1701.2 385.7 L 1757.6 240.0 L 1814.0 240.0 L 1828.1 522.0 L 1771.7 522.0 L 1762.3 348.1 L 1715.3 465.6 L 1687.1 465.6 L 1640.1 348.1 L 1630.7 522.0 Z M 1879.8 240.0 L 1936.2 240.0 L 1936.2 352.8 L 2039.6 352.8 L 2039.6 240.0 L 2096.0 240.0 L 2096.0 522.0 L 2039.6 522.0 L 2039.6 404.5 L 1936.2 404.5 L 1936.2 522.0 L 1879.8 522.0 Z M 2147.7 240.0 L 2363.9 240.0 L 2349.8 291.7 L 2227.6 291.7 L 2307.5 376.3 L 2222.9 470.3 L 2354.5 470.3 L 2368.6 522.0 L 2147.7 522.0 L 2147.7 479.7 L 2241.7 381.0 L 2147.7 282.3 Z" fill="#E07A42" fill-rule="evenodd"/>
+            <path d="M 780.0 554.0 L 2368.0 554.0 L 2368.0 572.0 L 780.0 572.0 Z" fill="#E07A42"/>
+          </svg>
         </div>
         <div>
           <strong style="color:var(--ink);">HERMES — Heritage Metadata Entry System</strong><br>

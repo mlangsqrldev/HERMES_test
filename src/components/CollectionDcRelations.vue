@@ -384,36 +384,70 @@ const getTypeConfig = (typeKey) => {
   };
 };
 
-// Form data holds `props.form['dcRelation']`
+// Form data holds `props.form['dcRelation']`, `props.form['hasPart']`, `props.form['wasDigitizedBy']`, etc.
 const activeRelationsList = computed(() => {
+  const result = [];
+  
+  // 1. Dedicated hasPart array (CARARE 2.0.6)
+  const hasPartList = Array.isArray(props.form['hasPart']) ? props.form['hasPart'] : (props.form['hasPart'] ? [props.form['hasPart']] : []);
+  hasPartList.forEach(hp => {
+    if (hp) result.push({ type: 'hasPart', value: String(hp).trim() });
+  });
+
+  // 2. Dedicated wasDigitizedBy array (CARARE 2.0.6)
+  const digiList = Array.isArray(props.form['wasDigitizedBy']) ? props.form['wasDigitizedBy'] : (props.form['wasDigitizedBy'] ? [props.form['wasDigitizedBy']] : []);
+  digiList.forEach(wdb => {
+    if (wdb) result.push({ type: 'wasDigitizedBy', value: String(wdb).trim() });
+  });
+
+  // 3. Dedicated isPartOf array (CARARE 2.0.6)
+  const partList = Array.isArray(props.form['isPartOf']) ? props.form['isPartOf'] : (props.form['isPartOf'] ? [props.form['isPartOf']] : []);
+  partList.forEach(ip => {
+    if (ip) result.push({ type: 'isPartOf', value: String(ip).trim() });
+  });
+
+  // 4. dcRelation array (contains general relations or type:value strings)
   const raw = props.form['dcRelation'];
-  if (!raw) return [];
-  if (Array.isArray(raw)) {
-    return raw.map(entry => {
+  if (raw) {
+    const dcItems = Array.isArray(raw) ? raw : [raw];
+    dcItems.forEach(entry => {
       if (typeof entry === 'object' && entry !== null) {
-        return {
-          type: entry.type || entry['#type'] || 'dcRelation',
-          value: entry.value || entry._value || entry.id || ''
-        };
-      }
-      const str = String(entry).trim();
-      if (str.includes(':')) {
-        const parts = str.split(/:(.+)/);
-        const typeCandidate = parts[0].trim();
-        const isKnownType = RELATION_TYPES.some(r => r.key === typeCandidate);
-        if (isKnownType) {
-          return { type: typeCandidate, value: parts[1].trim() };
+        const val = entry.value || entry._value || entry.id || '';
+        const typ = entry.type || entry['#type'] || 'dcRelation';
+        if (val) result.push({ type: typ, value: String(val).trim() });
+      } else {
+        const str = String(entry).trim();
+        if (str.includes(':') && !str.startsWith('http://') && !str.startsWith('https://') && !str.startsWith('doi:')) {
+          const parts = str.split(/:(.+)/);
+          const typeCandidate = parts[0].trim();
+          const isKnownType = RELATION_TYPES.some(r => r.key === typeCandidate);
+          if (isKnownType) {
+            result.push({ type: typeCandidate, value: parts[1].trim() });
+            return;
+          }
         }
+        if (str) result.push({ type: 'dcRelation', value: str });
       }
-      return { type: 'dcRelation', value: str };
-    }).filter(r => Boolean(r.value));
-  } else if (typeof raw === 'string' && raw.trim()) {
-    return [{ type: 'dcRelation', value: raw.trim() }];
+    });
   }
-  return [];
+
+  // Deduplicate identical type + value
+  const seen = new Set();
+  return result.filter(item => {
+    const key = `${item.type}:::${item.value}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 });
 
 const syncToForm = (list) => {
+  // Sync dedicated CARARE arrays
+  props.form['hasPart'] = list.filter(i => i.type === 'hasPart').map(i => i.value);
+  props.form['wasDigitizedBy'] = list.filter(i => i.type === 'wasDigitizedBy').map(i => i.value);
+  props.form['isPartOf'] = list.filter(i => i.type === 'isPartOf').map(i => i.value);
+
+  // Sync dcRelation array
   props.form['dcRelation'] = list.map(item => {
     if (item.type === 'dcRelation') return item.value;
     return `${item.type}:${item.value}`;

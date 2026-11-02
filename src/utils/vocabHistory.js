@@ -78,6 +78,48 @@ const defaultSeeds = {
     { label: 'Archaik', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_c0199182', source: 'HECTOR' },
     { label: 'Klassische Periode', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_4a572b1e', source: 'HECTOR' },
     { label: 'Römische Kaiserzeit', uri: 'http://vocabs.bcdh.uni-bonn.de/hector_epochs/c_8b1d9bf5', source: 'HECTOR' }
+  ],
+  dap_dap_1: [
+    { label: 'Bestoßungen & Absplitterungen', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/chippings', source: 'HECTOR' },
+    { label: 'Rissbildung', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/cracks', source: 'HECTOR' },
+    { label: 'Antike Drehspuren', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/turning_marks', source: 'HECTOR' },
+    { label: 'Brandspuren / Ruß', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/fire_traces', source: 'HECTOR' },
+    { label: 'Historische Restaurierungskittung', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/restoration_fill', source: 'HECTOR' }
+  ],
+  dap_dap_2: [
+    { label: '360°-Rundumerfassung', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/360_capture', source: 'HECTOR' },
+    { label: 'Standfläche ausgespart', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/base_omitted', source: 'HECTOR' },
+    { label: 'Hohlraum abgeschattet', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/cavity_omitted', source: 'HECTOR' },
+    { label: 'Berührungslos (markerless)', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/markerless', source: 'HECTOR' },
+    { label: 'scale bar alignment', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/scale_bar_alignment', source: 'HECTOR' }
+  ],
+  dap_dap_3: [
+    { label: 'holes filled', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/holes_filled', source: 'HECTOR' },
+    { label: 'icp registration', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/icp_registration', source: 'HECTOR' },
+    { label: 'decimation', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/decimation', source: 'HECTOR' },
+    { label: 'noise removal', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/noise_removal', source: 'HECTOR' },
+    { label: 'point cloud alignment', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/point_cloud_alignment', source: 'HECTOR' }
+  ],
+  dap_dap_4: [
+    { label: 'delighting', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/delighting', source: 'HECTOR' },
+    { label: 'uv unwrapping', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/uv_unwrapping', source: 'HECTOR' },
+    { label: 'texture baking', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/texture_baking', source: 'HECTOR' },
+    { label: 'color checker calibration', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/color_calibration', source: 'HECTOR' },
+    { label: 'pbr roughness mapping', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/pbr_mapping', source: 'HECTOR' }
+  ],
+  dap_dap_5: [
+    { label: 'London Charter Principle 4', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/london_charter_4', source: 'HECTOR' },
+    { label: 'Seville Principles', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/seville_principles', source: 'HECTOR' },
+    { label: 'Keine spekulative Ergänzung', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/no_speculation', source: 'HECTOR' },
+    { label: 'Konservatorische Auflagen', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/conservation_rules', source: 'HECTOR' },
+    { label: 'Objektsicherheit (Standsicherheit)', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/object_safety', source: 'HECTOR' }
+  ],
+  dap_dap_6: [
+    { label: 'Materielle Spuren erhalten', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/traces_preserved', source: 'HECTOR' },
+    { label: 'Beschädigungen dokumentiert', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/damage_documented', source: 'HECTOR' },
+    { label: 'Hohlraum unvollständig', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/cavity_unrecorded', source: 'HECTOR' },
+    { label: 'Standfläche plan geschlossen', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/base_closed', source: 'HECTOR' },
+    { label: 'Originalgeometrie intakt', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/geometry_intact', source: 'HECTOR' }
   ]
 };
 

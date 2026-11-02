@@ -774,9 +774,19 @@
         "format#lang": "en",
         "formatDetails": "photogrammetric 3D-Mesh",
         "formatDetails#lang": "en",
-        "extent": "",
+        "extent": [
+          "300 MB | 2.5M faces, 1.25M vertices | 8K (8192×8192 px)",
+          "Accuracy (Point): 0.08 mm",
+          "Accuracy (Registration/RMSE): 0.35 px Reproj.-Error",
+          "Accuracy (Volumetric): 0.1 mm + 0.3 mm/m",
+          "Calibration: X-Rite ColorChecker Classic + Scale Bars",
+          "Resolution (3D Spatial): 0.15 mm",
+          "Resolution (GSD): 0.15 mm/px",
+          "Resolution (Texture): 8K (8192×8192 px)",
+          "Resolution (Sensor): 24.3 MP (6016×4016 px)"
+        ],
         "extent#term": "",
-        "extent#lang": "",
+        "extent#lang": "en",
         "extent#namespace": "",
         "extent#termUID": "",
         "publicationStatement": [],
@@ -805,6 +815,35 @@
         "dcRelation": [
           "http://vocab.getty.edu/page/aat/300053580",
           "http://vocab.getty.edu/page/aat/300266792"
+        ],
+        "accuracy": {
+          "pointAccuracy": "0.08 mm",
+          "registrationRmse": "0.35 px Reproj.-Error",
+          "volumetricAccuracy": "0.1 mm + 0.3 mm/m",
+          "calibrationMethod": "X-Rite ColorChecker Classic + Scale Bars"
+        },
+        "resolution": {
+          "spatialResolution": "0.15 mm",
+          "gsd": "0.15 mm/px",
+          "textureResolution": "8K (8192×8192 px)",
+          "sensorResolution": "24.3 MP"
+        },
+        "softwareList": [
+          {
+            "name": "Agisoft Metashape Professional",
+            "version": "1.8.4",
+            "role": "SfM Alignment, Dense Cloud & Mesh Reconstruction"
+          },
+          {
+            "name": "Adobe Substance 3D Designer",
+            "version": "11.3",
+            "role": "PBR Material Authoring & Texture Baking"
+          },
+          {
+            "name": "Blender",
+            "version": "3.6 LTS",
+            "role": "Retopology, UV Unwrapping & GLTF Export"
+          }
         ]
       }
     },
@@ -846,7 +885,17 @@
         "format#lang": "en",
         "formatDetails": "High-Poly Wavefront OBJ + Material MTL + PNG 16k Texture",
         "formatDetails#lang": "en",
-        "extent": "15.8M faces, 7.9M vertices, 16k texture",
+        "extent": [
+          "1.45 GB | 15.8M faces, 7.9M vertices | 16K (16384×16384 px)",
+          "Accuracy (Point): 0.05 mm",
+          "Accuracy (Registration/RMSE): 0.018 mm ICP-RMSE",
+          "Accuracy (Volumetric): 0.05 mm + 0.3 mm/m",
+          "Calibration: VDI/VDE 2634 & ColorChecker",
+          "Resolution (3D Spatial): 0.1 mm",
+          "Resolution (GSD): < 0.15 mm/px",
+          "Resolution (Texture): 16K (16384×16384 px)",
+          "Resolution (Sensor): 45.7 MP (8256×5504 px)"
+        ],
         "extent#term": "",
         "extent#lang": "en",
         "extent#namespace": "",
@@ -869,6 +918,35 @@
         ],
         "hasDerivative": [
           "DO_3816816_LP"
+        ],
+        "accuracy": {
+          "pointAccuracy": "0.05 mm",
+          "registrationRmse": "0.018 mm ICP-RMSE",
+          "volumetricAccuracy": "0.05 mm + 0.3 mm/m",
+          "calibrationMethod": "VDI/VDE 2634 & ColorChecker"
+        },
+        "resolution": {
+          "spatialResolution": "0.1 mm",
+          "gsd": "< 0.15 mm/px",
+          "textureResolution": "16K (16384×16384 px)",
+          "sensorResolution": "45.7 MP"
+        },
+        "softwareList": [
+          {
+            "name": "Artec Studio",
+            "version": "19.1",
+            "role": "Global Registration, Outlier Removal & Sharp Fusion"
+          },
+          {
+            "name": "Adobe Photoshop Lightroom Classic",
+            "version": "14.1",
+            "role": "RAW Color Calibration & Delighting"
+          },
+          {
+            "name": "Blender",
+            "version": "4.2 LTS",
+            "role": "Coordinate Alignment & High-Poly Master Export"
+          }
         ]
       }
     },
@@ -911,7 +989,12 @@
         "format#lang": "en",
         "formatDetails": "Low-Poly OBJ + PBR Maps (Normal, AO, Transferred Diffuse)",
         "formatDetails#lang": "en",
-        "extent": "Real-time VR-ready model",
+        "extent": [
+          "85 MB | 50,000 faces, 25,120 vertices | 4K (4096×4096 px)",
+          "Accuracy (Point): 0.05 mm (derived from High-Poly Master)",
+          "Resolution (3D Spatial): 1.2 mm (decimated real-time mesh)",
+          "Resolution (Texture): 4K (4096×4096 px)"
+        ],
         "created": "2025-03-06",
         "link": "https://id.smb.museum/object/699203/SK_740_Nikarete_LP.obj",
         "object": "https://id.smb.museum/object/699203/sk_740_nikarete_lp_uv_Transferred Texture from Mesh.jpg",
@@ -929,6 +1012,31 @@
         ],
         "isDerivativeOf": [
           "DO_3816816_HP"
+        ],
+        "extent#lang": "en",
+        "accuracy": {
+          "pointAccuracy": "0.05 mm",
+          "registrationRmse": "0.018 mm ICP-RMSE",
+          "volumetricAccuracy": "0.05 mm + 0.3 mm/m",
+          "calibrationMethod": "Baked from VDI/VDE 2634 Master Mesh"
+        },
+        "resolution": {
+          "spatialResolution": "1.2 mm (Low-Poly VR)",
+          "gsd": "0.25 mm/px",
+          "textureResolution": "4K (4096×4096 px)",
+          "sensorResolution": "45.7 MP"
+        },
+        "softwareList": [
+          {
+            "name": "Blender",
+            "version": "4.2 LTS",
+            "role": "Mesh Decimation, UV Unwrapping & Pedestal Removal"
+          },
+          {
+            "name": "Adobe Substance 3D Designer",
+            "version": "14.0",
+            "role": "Normal Map, Ambient Occlusion & Albedo Map Baking"
+          }
         ]
       }
     }
@@ -987,8 +1095,105 @@
         "spatial.locationSet.geopoliticalAreaType#lang": "en",
         "spatial.locationSet.geopoliticalAreaType#namespace": "",
         "spatial.locationSet.historicalName": [],
-        "consistsOf": [],
-        "assessments": "",
+        "consistsOf": [
+          {
+            "hadSpecificPurpose": "DAP-1: Materielle Spuren & Merkmale",
+            "startDate": "2021-03-10",
+            "endDate": "2021-03-12",
+            "methods": [
+              "DAP-1 Materielle Spuren & Merkmale (http://hector.org/vocab/dap/DAP-1)"
+            ],
+            "techniques": [
+              "Beschädigungen: Bestoßungen an Lippe und Fuß; Rissbildung am Gefäßkörper; antike Drehspuren; Brand- und Rußspuren ritueller Nutzung; moderne Restaurierungskittungen am Hals."
+            ],
+            "materials": [
+              "Wood",
+              "Polychrome gesso"
+            ],
+            "equipment": []
+          },
+          {
+            "hadSpecificPurpose": "DAP-2: Aufnahmeprozess & Erfassungsumfang",
+            "startDate": "2021-03-10",
+            "endDate": "2021-03-12",
+            "methods": [
+              "DAP-2 Aufnahmeprozess & Erfassungsumfang (http://hector.org/vocab/dap/DAP-2)"
+            ],
+            "techniques": [
+              "Vollständige 360°-Rundumerfassung der Sichtflächen; Standfläche/Sockelunterseite ausgespart (Standsicherheit); Hohlraum innen optisch abgeschattet; Berührungslose Erfassung ohne Marker auf Objekt; Streifenlichtscan (SLS) 0.05 mm."
+            ],
+            "materials": [],
+            "equipment": [
+              "Nikon D750 (24.3 MP FX CMOS, Nikkor 50mm f/1.8)",
+              "X-Rite ColorChecker",
+              "Invar-Maßstäbe"
+            ]
+          },
+          {
+            "hadSpecificPurpose": "DAP-3: Geometrie-Bearbeitung",
+            "startDate": "2021-03-15",
+            "endDate": "2021-06-30",
+            "methods": [
+              "DAP-3 Geometrie-Bearbeitung (http://hector.org/vocab/dap/DAP-3)"
+            ],
+            "techniques": [
+              "Konservative Rauschbereinigung ohne Kantenverrundung; Planare Schließung der verdeckten Standfläche; Keine spekulative Rekonstruktion an Fehlstellen; Dezimation / Retopologie für Web-3D (Low-Poly LOD); Master-Mesh (Archival Master) gesichert."
+            ],
+            "materials": [],
+            "equipment": [
+              "Agisoft Metashape Professional (v1.8.4)",
+              "Blender (v3.6 LTS)",
+              "MeshLab"
+            ]
+          },
+          {
+            "hadSpecificPurpose": "DAP-4: Textur, Shader & Material",
+            "startDate": "2021-03-15",
+            "endDate": "2021-06-30",
+            "methods": [
+              "DAP-4 Textur, Shader & Material (http://hector.org/vocab/dap/DAP-4)"
+            ],
+            "techniques": [
+              "Delighting: Blitzschatten & Glanzlichter rechnerisch neutralisiert; Farbecht kalibriert nach ColorChecker (Delta E < 2.0); PBR-Materialmaps: Albedo, Roughness und Normal Map; Normal-Map-Bake zur Detailübertragung auf Low-Poly."
+            ],
+            "materials": [],
+            "equipment": [
+              "Adobe Substance 3D Designer (v11.3)",
+              "Adobe Photoshop Lightroom"
+            ]
+          },
+          {
+            "hadSpecificPurpose": "DAP-5: Wissenschaftliche Begründung",
+            "startDate": "2021-03-10",
+            "endDate": "2021-06-30",
+            "methods": [
+              "DAP-5 Wissenschaftliche Begründung (http://hector.org/vocab/dap/DAP-5)"
+            ],
+            "techniques": [
+              "London Charter Prinzip 4: Transparenz aller Modellierungsentscheidungen; Sevilla-Prinzip 7: Klare visuelle Unterscheidung zwischen Evidenz und Rekonstruktion; Konservatorisches Minimalinventionsprinzip (keine historische Fiktion); Wissenschaftlicher Zweck: Digitale Schadenskartierung und Lesbarkeit."
+            ],
+            "materials": [],
+            "equipment": []
+          },
+          {
+            "hadSpecificPurpose": "DAP-6: Abbildungsbilanz",
+            "startDate": "2021-03-10",
+            "endDate": "2021-06-30",
+            "methods": [
+              "DAP-6 Abbildungsbilanz (http://hector.org/vocab/dap/DAP-6)"
+            ],
+            "techniques": [
+              "Erhalten: Relief, Werkzeugspuren und Risse treu abgebildet. Verändert: Glanzgrad und Patina durch PBR-Shader angenähert. Nicht erfasst: Wandabgewandte Rückseite und Standfläche blieben ausgespart. Kernaussage: Grenzen der Transformation transparent dokumentiert; hohe wissenschaftliche Validität."
+            ],
+            "materials": [],
+            "equipment": []
+          }
+        ],
+        "assessments": [
+          "[DAP 1. Referenz (Reference)] Zielsetzung: Photogrammetrische 3D-Dokumentation des Sarkophag-Ensembles der Tairkap | Erfassbar: Makro-Geometrie, Polychromie, Hieroglyphen | Nicht erfassbar (Grenzen): Innere Holzstruktur, verdeckte Auflageflächen.",
+          "[DAP 2. Datenerfassung (Capture)] Verfahren: Close-Range Photogrammetry (Nikon D750) | Genauigkeit: 0.08 mm (RMSE: 0.35 px) | Auflösung: 0.15 mm (GSD: 0.15 mm/px) | Kalibrierung: X-Rite ColorChecker Classic + Scale Bars.",
+          "[DAP 3. Modellierung (Representation)] Geometrie: SfM Dense Cloud & Mesh-Triangulation | Simulation: Gebackene PBR-Texturen (Normal, Roughness, Albedo) | Blackbox-Transparenz: Agisoft Metashape Depth-Map-Filtering deklariert."
+        ],
         "assessments#term": "",
         "assessments#namespace": "",
         "assessments#lang": "",
@@ -1004,7 +1209,79 @@
         "dcRelation": [
           "http://vocab.getty.edu/page/aat/300266792",
           "https://creativecommons.org/licenses/by-sa/4.0/"
-        ]
+        ],
+        "digitalAuthenticityProfile": {
+          "dapReference": {
+            "digitizationIntent": "Vollständige 3D-Dokumentation und virtuelle Zusammenführung des Sargensembles der Tairkap (ÄM 3–6).",
+            "targetParadigm": "Archival Master + WebGL / GLTF Präsentationsmodell",
+            "conservatorialConstraints": "Berührungslose Aufnahme unter konservatorisch kontrollierter Beleuchtung ohne UV-Anteil.",
+            "capturableProperties": [
+              "Makro-Geometrie & Proportionen",
+              "Diffuse Oberflächenfarbe (Albedo / Polychromie)",
+              "Inschriften & Epigraphik"
+            ],
+            "notCapturableBoundaries": [
+              "Unterseite / Standfläche (nicht bewegbar)",
+              "Innere Materialstruktur / Hohlräume"
+            ]
+          },
+          "dapCapture": {
+            "acquisitionModality": "Close-Range Photogrammetry (SfM)",
+            "calibrationAndLighting": "X-Rite ColorChecker Classic, Maßstäbe, kreuzpolarisierte LED-Panels",
+            "startDate": "2021-03-10",
+            "endDate": "2021-03-12",
+            "accuracy": {
+              "pointAccuracy": "0.08 mm",
+              "registrationRmse": "0.35 px Reproj.-Error",
+              "volumetricAccuracy": "0.1 mm + 0.3 mm/m",
+              "calibrationMethod": "X-Rite ColorChecker Classic + Scale Bars"
+            },
+            "resolution": {
+              "spatialResolution": "0.15 mm",
+              "gsd": "0.15 mm/px",
+              "textureResolution": "8K (8192×8192 px)",
+              "sensorResolution": "24.3 MP"
+            },
+            "hardwareDevices": [
+              {
+                "name": "Nikon D750",
+                "type": "FX DSLR Camera",
+                "specs": "24.3 MP Full-Frame CMOS (6016×4016 px), 14-bit NEF RAW"
+              }
+            ]
+          },
+          "dapRepresentation": {
+            "startDate": "2021-03-15",
+            "endDate": "2021-06-30",
+            "softwarePipeline": [
+              {
+                "name": "Agisoft Metashape Professional",
+                "version": "1.8.4",
+                "role": "SfM Alignment, Dense Cloud & Mesh Reconstruction",
+                "blackboxDeclared": true
+              },
+              {
+                "name": "Adobe Substance 3D Designer",
+                "version": "11.3",
+                "role": "PBR Material Authoring & Texture Baking",
+                "blackboxDeclared": false
+              },
+              {
+                "name": "Blender",
+                "version": "3.6 LTS",
+                "role": "Retopology, UV Unwrapping & GLTF Export",
+                "blackboxDeclared": false
+              }
+            ],
+            "geometryProcessing": "SfM-Bündelblockausgleichung, dichte Punktwolke, Mesh-Triangulation und Low-Poly-Retopologie.",
+            "intentionalAlterations": "Keine inhaltlichen Änderungen an der Objektgeometrie.",
+            "simulatedProperties": [
+              "Gebackene Normal-Maps (simulierte Mikrogeometrie auf Low-Poly)",
+              "Ambient Occlusion (AO) Schattierungskarten"
+            ],
+            "blackboxTransparency": "Tatsächliche Depth-Map-Gewichtung in Agisoft Metashape 1.8.4 als proprietärer Algorithmus (Blackbox) dokumentiert."
+          }
+        }
       }
     },
     {
@@ -1062,52 +1339,195 @@
         "spatial.locationSet.historicalName": [],
         "consistsOf": [
           {
-            "hadSpecificPurpose": "Datenerfassung (Capture) – Streifenlicht-Scanning & Makro-Photogrammetrie",
-            "startDate": "2025-01-30",
-            "endDate": "2025-01-30",
+            "hadSpecificPurpose": "DAP-1: Materielle Spuren & Merkmale",
+            "startDate": "2021-03-10",
+            "endDate": "2021-03-12",
             "methods": [
-              "Structured-light 3D scanning",
-              "Close-range photogrammetry"
+              "DAP-1 Materielle Spuren & Merkmale (http://hector.org/vocab/dap/DAP-1)"
             ],
             "techniques": [
-              "Freihand-Erfassung im Ausstellungsraum (keine Stative/Kabel erlaubt). Grenzen: Rückseite wandseitig und Unterseite aus konservatorischen Gründen nicht erfasst (Limit)."
+              "Beschädigungen: Bestoßungen an Lippe und Fuß; Rissbildung am Gefäßkörper; antike Drehspuren; Brand- und Rußspuren ritueller Nutzung; moderne Restaurierungskittungen am Hals."
             ],
             "materials": [
-              "Pentelischer Marmor",
-              "Sandstein"
+              "Wood",
+              "Polychrome gesso"
             ],
+            "equipment": []
+          },
+          {
+            "hadSpecificPurpose": "DAP-2: Aufnahmeprozess & Erfassungsumfang",
+            "startDate": "2021-03-10",
+            "endDate": "2021-03-12",
+            "methods": [
+              "DAP-2 Aufnahmeprozess & Erfassungsumfang (http://hector.org/vocab/dap/DAP-2)"
+            ],
+            "techniques": [
+              "Vollständige 360°-Rundumerfassung der Sichtflächen; Standfläche/Sockelunterseite ausgespart (Standsicherheit); Hohlraum innen optisch abgeschattet; Berührungslose Erfassung ohne Marker auf Objekt; Streifenlichtscan (SLS) 0.05 mm."
+            ],
+            "materials": [],
             "equipment": [
-              "Artec Leo (structured-light 3D scanner, 0.1 mm resolution)",
-              "Nikon Z8 (digital camera, 16k textures)"
+              "Nikon D750 (24.3 MP FX CMOS, Nikkor 50mm f/1.8)",
+              "X-Rite ColorChecker",
+              "Invar-Maßstäbe"
             ]
           },
           {
-            "hadSpecificPurpose": "Modellierung (Representation) – Master-Mesh & VR-Echtzeitderivat",
-            "startDate": "2025-02-01",
-            "endDate": "2025-04-19",
+            "hadSpecificPurpose": "DAP-3: Geometrie-Bearbeitung",
+            "startDate": "2021-03-15",
+            "endDate": "2021-06-30",
             "methods": [
-              "High-poly scan fusion",
-              "Mesh decimation",
-              "PBR texture baking"
+              "DAP-3 Geometrie-Bearbeitung (http://hector.org/vocab/dap/DAP-3)"
             ],
             "techniques": [
-              "Sandsteinsockel für didaktische VR-Nutzung entfernt (Entscheidung). Marmor-Transluzenz mittels Subsurface Scattering simuliert (Simulation). Normal- und AO-Maps aus High-Poly-Master gebacken. Mesh-Fusion und Oberflächenschließung via Artec Studio 19 (deklarierte Blackbox)."
+              "Konservative Rauschbereinigung ohne Kantenverrundung; Planare Schließung der verdeckten Standfläche; Keine spekulative Rekonstruktion an Fehlstellen; Dezimation / Retopologie für Web-3D (Low-Poly LOD); Master-Mesh (Archival Master) gesichert."
             ],
-            "materials": [
-              "Pentelischer Marmor"
-            ],
+            "materials": [],
             "equipment": [
-              "Artec Studio 19",
-              "Blender 4.2",
-              "Substance Designer 14",
-              "Adobe Photoshop Lightroom 14.1"
+              "Agisoft Metashape Professional (v1.8.4)",
+              "Blender (v3.6 LTS)",
+              "MeshLab"
             ]
+          },
+          {
+            "hadSpecificPurpose": "DAP-4: Textur, Shader & Material",
+            "startDate": "2021-03-15",
+            "endDate": "2021-06-30",
+            "methods": [
+              "DAP-4 Textur, Shader & Material (http://hector.org/vocab/dap/DAP-4)"
+            ],
+            "techniques": [
+              "Delighting: Blitzschatten & Glanzlichter rechnerisch neutralisiert; Farbecht kalibriert nach ColorChecker (Delta E < 2.0); PBR-Materialmaps: Albedo, Roughness und Normal Map; Normal-Map-Bake zur Detailübertragung auf Low-Poly."
+            ],
+            "materials": [],
+            "equipment": [
+              "Adobe Substance 3D Designer (v11.3)",
+              "Adobe Photoshop Lightroom"
+            ]
+          },
+          {
+            "hadSpecificPurpose": "DAP-5: Wissenschaftliche Begründung",
+            "startDate": "2021-03-10",
+            "endDate": "2021-06-30",
+            "methods": [
+              "DAP-5 Wissenschaftliche Begründung (http://hector.org/vocab/dap/DAP-5)"
+            ],
+            "techniques": [
+              "London Charter Prinzip 4: Transparenz aller Modellierungsentscheidungen; Sevilla-Prinzip 7: Klare visuelle Unterscheidung zwischen Evidenz und Rekonstruktion; Konservatorisches Minimalinventionsprinzip (keine historische Fiktion); Wissenschaftlicher Zweck: Digitale Schadenskartierung und Lesbarkeit."
+            ],
+            "materials": [],
+            "equipment": []
+          },
+          {
+            "hadSpecificPurpose": "DAP-6: Abbildungsbilanz",
+            "startDate": "2021-03-10",
+            "endDate": "2021-06-30",
+            "methods": [
+              "DAP-6 Abbildungsbilanz (http://hector.org/vocab/dap/DAP-6)"
+            ],
+            "techniques": [
+              "Erhalten: Relief, Werkzeugspuren und Risse treu abgebildet. Verändert: Glanzgrad und Patina durch PBR-Shader angenähert. Nicht erfasst: Wandabgewandte Rückseite und Standfläche blieben ausgespart. Kernaussage: Grenzen der Transformation transparent dokumentiert; hohe wissenschaftliche Validität."
+            ],
+            "materials": [],
+            "equipment": []
           }
         ],
         "hasCreated": [
           "DO_3816816_HP",
           "DO_3816816_LP"
-        ]
+        ],
+        "assessments": [
+          "[DAP 1. Referenz (Reference)] Zielsetzung: Wissenschaftliches Archiv-Master & VR-Lernumgebung Kerameikos | Erfassbar: Makro- & Mikrogeometrie, Meißelspuren, Inschrift | Nicht erfassbar (Grenzen): Wandseitige Rückseite & Unterseite im Sockel | Konservatorische Vorgaben: Berührungslose Freihand-Erfassung im Ausstellungsraum ohne Stative.",
+          "[DAP 2. Datenerfassung (Capture)] Verfahren: Streifenlicht-3D-Scan (Artec Leo) + Makro-Photogrammetrie (Nikon Z8) | Genauigkeit: 0.05 mm (RMSE: 0.018 mm ICP-RMSE) | Auflösung: 0.1 mm (GSD: < 0.15 mm/px) | Kalibrierung: VDI/VDE 2634 & X-Rite ColorChecker.",
+          "[DAP 3. Modellierung (Representation)] Geometrie: High-Poly Fusion (15.8M Faces) & Low-Poly Retopologie | Bewusste Änderungen: Moderner Sandsteinsockel im VR-Derivat entfernt | Simulation: Subsurface Scattering (Marmor-Transluzenz) & gebackene Normal/AO-Maps | Blackbox-Transparenz: Artec Studio 19 Sharp-Fusion und Hole-Filling deklariert."
+        ],
+        "digitalAuthenticityProfile": {
+          "dapReference": {
+            "digitizationIntent": "Erstellung eines hochauflösenden wissenschaftlichen 3D-Archivmasters (SK 740) sowie eines echtzeitfähigen VR-Derivats für die virtuelle Lernumgebung Kerameikos.",
+            "targetParadigm": "Hybrid: Archival Master (High-Poly) + Real-Time VR Derivative (Low-Poly PBR)",
+            "conservatorialConstraints": "Berührungslose Freihand-Erfassung im Ausstellungsraum der Antikensammlung Berlin; keine Stative oder Beleuchtungs-Kabel zulässig.",
+            "capturableProperties": [
+              "Makro-Geometrie & Proportionen",
+              "Mikro-Oberflächenrelief & Werkzeugspuren",
+              "Inschriften & Epigraphik",
+              "Diffuse Oberflächenfarbe (Albedo / Polychromie)"
+            ],
+            "notCapturableBoundaries": [
+              "Verdeckte Rückseite / Wandmontage",
+              "Unterseite / Standfläche (nicht bewegbar)",
+              "Innere Materialstruktur / Hohlräume",
+              "Ursprünglicher antiker Originalzustand (verlorene Teile)"
+            ]
+          },
+          "dapCapture": {
+            "acquisitionModality": "Hybrid: Streifenlichtscanning (SLS) + Makro-Photogrammetrie (SfM)",
+            "calibrationAndLighting": "VDI/VDE 2634 Kalibrierstandard, X-Rite ColorChecker Classic, kreuzpolarisiertes Ringlicht",
+            "startDate": "2025-01-30",
+            "endDate": "2025-01-30",
+            "accuracy": {
+              "pointAccuracy": "0.05 mm",
+              "registrationRmse": "0.018 mm ICP-RMSE",
+              "volumetricAccuracy": "0.05 mm + 0.3 mm/m",
+              "calibrationMethod": "VDI/VDE 2634 & ColorChecker"
+            },
+            "resolution": {
+              "spatialResolution": "0.1 mm",
+              "gsd": "< 0.15 mm/px",
+              "textureResolution": "16K (16384×16384 px)",
+              "sensorResolution": "45.7 MP"
+            },
+            "hardwareDevices": [
+              {
+                "name": "Artec Leo",
+                "type": "Structured-Light 3D Scanner (SLS)",
+                "specs": "0.1 mm 3D resolution, 0.05 mm point accuracy, VCSEL light source"
+              },
+              {
+                "name": "Nikon Z8 + NIKKOR Z MC 105mm f/2.8 VR S",
+                "type": "Full-Frame Mirrorless Digital Camera",
+                "specs": "45.7 MP stacked CMOS sensor (8256×5504 px), 14-bit NEF RAW"
+              }
+            ]
+          },
+          "dapRepresentation": {
+            "startDate": "2025-02-01",
+            "endDate": "2025-04-19",
+            "softwarePipeline": [
+              {
+                "name": "Artec Studio",
+                "version": "19.1",
+                "role": "Global Registration, Outlier Removal & Sharp Fusion",
+                "blackboxDeclared": true
+              },
+              {
+                "name": "Blender",
+                "version": "4.2 LTS",
+                "role": "Mesh Decimation, Retopology & Pedestal Removal",
+                "blackboxDeclared": false
+              },
+              {
+                "name": "Adobe Substance 3D Designer",
+                "version": "14.0",
+                "role": "Normal Map, Ambient Occlusion & Albedo Map Baking",
+                "blackboxDeclared": false
+              },
+              {
+                "name": "Adobe Photoshop Lightroom Classic",
+                "version": "14.1",
+                "role": "RAW Color Calibration & Delighting",
+                "blackboxDeclared": false
+              }
+            ],
+            "geometryProcessing": "Globale Feinregistrierung (ICP), Ausreißerbereinigung und Sharp-Fusion auf 15,8 Mio. Polygone (Master); quadratische Dezimation auf 50.000 Polygone für das VR-Derivat.",
+            "intentionalAlterations": "Moderner musealer Sandsteinsockel wurde im Low-Poly VR-Derivat digital entfernt, um die antike Stelenarchitektur im Kerameikos-Kontext darzustellen.",
+            "simulatedProperties": [
+              "Gebackene Normal-Maps (simulierte Mikrogeometrie auf Low-Poly)",
+              "Ambient Occlusion (AO) Schattierungskarten",
+              "Subsurface Scattering (simulierte Marmor-Transluzenz)",
+              "Algorithmisches Hole-Filling an nicht einsehbaren Stellen"
+            ],
+            "blackboxTransparency": "Mesh-Fusion (Sharp Fusion) und lokales Schließen von Hinterschneidungen erfolgten über proprietäre Algorithmen in Artec Studio 19.1 (als Blackbox deklariert)."
+          }
+        }
       }
     }
   ]

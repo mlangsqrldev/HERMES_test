@@ -431,7 +431,7 @@
         </div>
 
         <!-- Technical 3D Metadata & Photogrammetry RAW Panel (CARARE 2.0.6 / HECTOR) -->
-        <DigitalResource3DMetadata
+        <DigitalResource3DMetadata :form="form"
           v-model:formats="form['format']"
           v-model:formatDetails="form['formatDetails']"
           v-model:extent="form['extent']"
@@ -484,17 +484,36 @@
                   </button>
                   </div>
              </div>
-             <button type="button" class="btn btn-sm btn-primary" @click.prevent="openDrawer('publicationStatement')">{{ currentLocale === 'de' ? getLabel('publicationStatement', 'publicationStatement') + ' ' + t('add') : t('add') + ' ' + getLabel('publicationStatement', 'publicationStatement') }}</button>
+             <div class="flex items-center gap-1.5 flex-wrap">
+               <button type="button" class="btn btn-sm btn-outline btn-accent gap-1" @click.prevent="openOrgPicker('publicationStatement')" :title="currentLocale === 'de' ? 'Herausgeber aus Organisations-Pool wählen' : 'Pick publisher from organization pool'">
+                 🏛️ {{ currentLocale === 'de' ? 'Aus Orga-Pool' : 'From Org Pool' }}
+               </button>
+               <button type="button" class="btn btn-sm btn-outline btn-secondary gap-1" @click.prevent="openPersonPicker('publicationStatement')" :title="currentLocale === 'de' ? 'Herausgeber aus Personen-Pool wählen' : 'Pick publisher from persons pool'">
+                 👤 {{ currentLocale === 'de' ? 'Aus Personen-Pool' : 'From Person Pool' }}
+               </button>
+               <button type="button" class="btn btn-sm btn-primary" @click.prevent="openDrawer('publicationStatement')">
+                 + {{ currentLocale === 'de' ? getLabel('publicationStatement', 'publicationStatement') + ' ' + t('add') : t('add') + ' ' + getLabel('publicationStatement', 'publicationStatement') }}
+               </button>
+             </div>
           </div>
           
           <div class="overflow-x-auto">
              <table class="table table-xs w-full table-zebra">
-                <thead class="bg-base-200"><tr><th class="w-24">{{ t('actions') }}</th></tr></thead>
+                <thead class="bg-base-200">
+                  <tr>
+                    <th>{{ getLabel('publicationStatement.publisher', 'publisher') }}</th>
+                    <th>{{ getLabel('publicationStatement.place', 'place') }}</th>
+                    <th>{{ getLabel('publicationStatement.date', 'date') }}</th>
+                    <th class="w-24 text-right">{{ t('actions') }}</th>
+                  </tr>
+                </thead>
                 <tbody>
                    <tr v-for="(subItem, subIdx) in form['publicationStatement']" :key="subIdx">
-                      
-                      <td>
-                          <div class="flex gap-1">
+                      <td class="font-medium">{{ subItem.publisher || '-' }}</td>
+                      <td>{{ subItem.place || '-' }}</td>
+                      <td class="font-mono text-xs">{{ subItem.date || '-' }}</td>
+                      <td class="text-right">
+                          <div class="flex gap-1 justify-end">
                             <button type="button" class="btn btn-xs btn-ghost text-info" @click.prevent="openDrawer('publicationStatement', subIdx)">{{ t('edit') }}</button>
                             <button type="button" class="btn btn-xs btn-ghost text-error" @click.prevent="removeDrawerItem('publicationStatement', subIdx)">{{ t('del') }}</button>
                           </div>
@@ -637,14 +656,14 @@
           <div class="flex items-start justify-between mb-6 pb-4 border-b border-base-200">
             <div class="flex items-center">
               <h2 class="text-2xl font-bold">{{ currentLocale === 'de' ? (getLabel(activeDrawerField, activeDrawerField.split('.').slice(-1)[0]) + ' ' + (drawerEditIndex > -1 ? t('edit') : t('add'))) : ((drawerEditIndex > -1 ? t('edit') : t('add')) + ' ' + getLabel(activeDrawerField, activeDrawerField.split('.').slice(-1)[0])) }}</h2>
-              <div class="tooltip tooltip-bottom ml-4" :data-tip="t('addtemplate')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
+              <div class="tooltip tooltip-left z-30 ml-4" :data-tip="t('addtemplate')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
                 <button type="button" class="btn btn-square btn-ghost btn-sm btn-transparent" @click.prevent="openAddTemplateModal(activeDrawerField.split('.').slice(-1)[0])">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                     <path d="M5 21v-16q0 -0.825 0.588 -1.413T7 3h6v2H7v12.95l5 -2.15 5 2.15v-6.95h2v10L12 18 5 21Zm2 -16h6 -6Zm10 4v-2h-2v-2h2v-2h2v2h2v2h-2v2h-2Z" />
                   </svg>
                 </button>
               </div>
-              <div class="tooltip tooltip-bottom ml-2" :data-tip="t('template')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
+              <div class="tooltip tooltip-left z-30 ml-2" :data-tip="t('template')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
                 <button type="button" class="btn btn-square btn-ghost btn-sm btn-transparent" @click.prevent="openTemplateModal(activeDrawerField.split('.').slice(-1)[0])">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                     <path d="M4 22v-14q0 -0.825 0.588 -1.413T6 6h8q0.825 0 1.413 0.588T16 8v14L10 19 4 22Zm2 -3.025 4 -2.15 4 2.15v-10.975H6v10.975Zm12 -0.975v-14H7v-2h11q0.825 0 1.413 0.588T20 4v14h-2ZM6 8h8 -8Z" />
@@ -1515,23 +1534,31 @@
       <div v-if="activeDrawerField === 'publicationStatement'">
         <div class="grid grid-cols-1 gap-x-6">
         <div class="form-control w-full mb-4">
-        <div class="flex flex-row items-center">
-          <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('publicationStatement.publisher', 'publisher') }}</span><span class="text-accent font-black">*</span></label>
-          
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('publicationStatement.publisher', 'Organisation publishing or making this digital resource available online.', 'doc')" v-if="getLabel('publicationStatement.publisher', 'Organisation publishing or making this digital resource available online.', 'doc')">
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
+        <div class="flex flex-row items-center justify-between">
+          <div class="flex items-center gap-1">
+            <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('publicationStatement.publisher', 'publisher') }}</span><span class="text-accent font-black">*</span></label>
+            <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('publicationStatement.publisher', 'Organisation publishing or making this digital resource available online.', 'doc')" v-if="getLabel('publicationStatement.publisher', 'Organisation publishing or making this digital resource available online.', 'doc')">
+              <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
+                <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
+                            fill="currentColor"
+                            stroke-width="2.5"
+                            stroke="currentColor"
+                            class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
               </button>
-              </div>
-              </div>
-                        <input type="text"     required v-model="drawerForm['publisher']" class="input input-bordered w-full validator " :placeholder="getLabel('publicationStatement.publisher', 'e.g. University of Bonn, Bonn Center for Digital Humanities', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
-          
+            </div>
           </div>
+          <div class="flex items-center gap-1">
+            <button type="button" class="btn btn-2xs btn-outline btn-accent gap-0.5" @click.prevent="openOrgPicker('publicationStatement')">
+              🏛️ {{ currentLocale === 'de' ? 'Orga-Pool' : 'Org Pool' }}
+            </button>
+            <button type="button" class="btn btn-2xs btn-outline btn-secondary gap-0.5" @click.prevent="openPersonPicker('publicationStatement')">
+              👤 {{ currentLocale === 'de' ? 'Personen-Pool' : 'Person Pool' }}
+            </button>
+          </div>
+        </div>
+        <input type="text" required v-model="drawerForm['publisher']" class="input input-bordered w-full validator " :placeholder="getLabel('publicationStatement.publisher', 'e.g. University of Bonn, Bonn Center for Digital Humanities', 'plac')" />
+        <div class="validator-hint">{{t('validationHint')}}</div>        
+        </div>
         <div class="form-control w-full mb-4">
         <div class="flex flex-row items-center">
           <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('publicationStatement.place', 'place') }}</span><span class="text-accent font-black">*</span></label>
@@ -1687,11 +1714,13 @@
   />
   <OrganizationPickerModal
     :isOpen="isOrgPickerOpen"
+    mode="pick"
+    :current-locale="currentLocale"
     :currentItems="orgPickerTarget === 'actors' ? form['actors'] : []"
     @close="isOrgPickerOpen = false"
     @select="handleOrgSelected"
   />
-  <dialog ref="templateModal" class="modal">
+  <dialog ref="templateModal" class="modal z-[9999]">
     <div class="modal-box max-w-md">
       <h3 class="font-bold text-lg mb-6">{{ currentLocale === 'de' ? 'Vorlage wählen' : 'Choose a Template' }}</h3>
       <form method="dialog" class="flex flex-col gap-3">
@@ -1724,7 +1753,7 @@
     </div>
     <form method="dialog" class="modal-backdrop"><button>close</button></form>
   </dialog>
-  <dialog ref="addTemplateModal" class="modal">
+  <dialog ref="addTemplateModal" class="modal z-[9999]">
     <div class="modal-box max-w-md">
       <h3 class="font-bold text-lg mb-6">{{ t('addtemplate') }}</h3>
       <div class="flex flex-col gap-4">
@@ -1738,7 +1767,7 @@
     </div>
     <form method="dialog" class="modal-backdrop"><button>close</button></form>
   </dialog>
-  <dialog ref="deleteTemplateModal" class="modal">
+  <dialog ref="deleteTemplateModal" class="modal z-[9999]">
     <div class="modal-box">
       <h3 class="font-bold text-lg">{{ t('deleteTemplatePrompt') }}</h3>
       <p class="py-4">{{ t('deleteTemplateDesc') }}</p>
@@ -1822,6 +1851,18 @@ const handleOrgSelected = (org) => {
     }
   } else if (orgPickerTarget.value === 'source') {
     form['recordInformation.source'] = org.name;
+  } else if (orgPickerTarget.value === 'publicationStatement') {
+    if (activeDrawerField.value === 'publicationStatement' && isDrawerOpen.value) {
+      drawerForm['publisher'] = org.name;
+      if (org.city) drawerForm['place'] = org.city;
+    } else {
+      if (!form['publicationStatement']) form['publicationStatement'] = [];
+      form['publicationStatement'].push({
+        publisher: org.name,
+        place: org.city || '',
+        date: new Date().toISOString().substring(0, 10)
+      });
+    }
   }
   isOrgPickerOpen.value = false;
 };
@@ -2794,7 +2835,7 @@ const form = reactive({ 'recordInformation.id': '',
   'isDerivativeOf': [],
   'hasDerivative': [],
   'createdDerivative': [],
-  'dcRelation': [] });
+  'dcRelation': [], 'accuracy': null, 'resolution': null, 'softwareList': [], 'extentList': [] });
 
 // Language Selection Helpers
 const toggleLang = (fieldPath, code, isDrawer = false) => {
@@ -3044,6 +3085,21 @@ const handlePersonsSelected = (selectedList) => {
         });
       }
     });
+  } else if (personPickerMode.value === 'publicationStatement') {
+    if (selectedList && selectedList.length > 0) {
+      const p = selectedList[0];
+      const pubVal = p.organization ? `${p.organization} (${p.name})` : p.name;
+      if (activeDrawerField.value === 'publicationStatement' && isDrawerOpen.value) {
+        drawerForm['publisher'] = pubVal;
+      } else {
+        if (!form['publicationStatement']) form['publicationStatement'] = [];
+        form['publicationStatement'].push({
+          publisher: pubVal,
+          place: '',
+          date: new Date().toISOString().substring(0, 10)
+        });
+      }
+    }
   }
 };
 
@@ -3077,7 +3133,7 @@ const applyGlobalRights = () => {
   form['rights.copyrightCreditLine'] = globalRights.copyrightCreditLine || '';
   form['rights.accessRights'] = globalRights.accessRights || '';
   form['rights.reproductionRights'] = globalRights.reproductionRights || '';
-  form['rights.licence'] = resolveLicenceUri(globalRights.licence, currentLocale.value) || '';
+  form['rights.licence'] = resolveLicenceUri(globalRights.licence, currentLocale.value) || ''; form['accuracy'] = null; form['resolution'] = null; form['softwareList'] = []; form['extentList'] = [];
 };
 
 const saveDrawer = () => {
@@ -3166,10 +3222,19 @@ const resetForm = () => {
   form['rights.copyrightCreditLine'] = globalRights.copyrightCreditLine || '';
   form['rights.accessRights'] = globalRights.accessRights || '';
   form['rights.reproductionRights'] = globalRights.reproductionRights || '';
-  form['rights.licence'] = resolveLicenceUri(globalRights.licence, currentLocale.value) || '';
+  form['rights.licence'] = resolveLicenceUri(globalRights.licence, currentLocale.value) || ''; form['accuracy'] = null; form['resolution'] = null; form['softwareList'] = []; form['extentList'] = [];
   isEditing.value = false;
   editIndex.value = null;
   Object.keys(preferredLanguages).forEach(k => delete preferredLanguages[k]);
 };
-defineExpose({ items, form });
+const loadItems = (newItems) => {
+  items.value = Array.isArray(newItems) ? JSON.parse(JSON.stringify(newItems)) : [];
+  if (items.value.length > 0) {
+    edit(0);
+  } else {
+    resetForm();
+  }
+};
+
+defineExpose({ items, form, isEditing, editIndex, save, edit, loadItems, resetForm });
 </script>

@@ -112,11 +112,11 @@ export const getLicenceShortCode = (val) => {
 };
 
 const defaultRights = {
-  metadataRights: 'CC0 1.0 Universal',
-  copyrightCreditLine: 'Staatliche Museen zu Berlin, Ägyptisches Museum und Papyrussammlung / BCDH Universität Bonn',
-  accessRights: 'Open access',
-  licence: 'https://creativecommons.org/licenses/by/4.0/deed.de',
-  reproductionRights: 'Freie Nutzung für Wissenschaft und Forschung unter Nennung der Quelle'
+  metadataRights: '',
+  copyrightCreditLine: '',
+  accessRights: '',
+  licence: '',
+  reproductionRights: ''
 };
 
 const savedRights = (() => {
@@ -124,6 +124,11 @@ const savedRights = (() => {
     const raw = localStorage.getItem('hermes_global_rights');
     if (raw) {
       const parsed = JSON.parse(raw);
+      // Clean legacy mock defaults so restart is truly blank
+      if (parsed.copyrightCreditLine && parsed.copyrightCreditLine.includes('Staatliche Museen zu Berlin')) {
+        localStorage.removeItem('hermes_global_rights');
+        return { ...defaultRights };
+      }
       if (parsed.licence) {
         parsed.licence = resolveLicenceUri(parsed.licence, 'de');
       }
@@ -140,6 +145,19 @@ export const globalRights = reactive({ ...savedRights });
 export const saveGlobalRights = (rightsObj) => {
   Object.assign(globalRights, rightsObj);
   localStorage.setItem('hermes_global_rights', JSON.stringify(globalRights));
+};
+
+export const resetGlobalRights = () => {
+  Object.assign(globalRights, {
+    metadataRights: '',
+    copyrightCreditLine: '',
+    accessRights: '',
+    licence: '',
+    reproductionRights: ''
+  });
+  try {
+    localStorage.removeItem('hermes_global_rights');
+  } catch (e) {}
 };
 
 // 3. Date / Year Normalization Helper
@@ -1315,3 +1333,174 @@ export const applyCampaignToActivity = (activity, overwrite = false) => {
 };
 
 
+
+// ============================================================================
+// CURATED SOFTWARE POOL & EQUIPMENT / DEVICES POOL
+// ============================================================================
+
+export const DEFAULT_CURATED_SOFTWARE = [
+  { id: 'sw_1', name: 'Agisoft Metashape Professional', version: '2.1', category: 'Photogrammetrie & SfM', role: 'SfM Alignment & Dense Cloud', description: 'Photogrammetrische 3D-Rekonstruktion und dichte Punktwolken' },
+  { id: 'sw_2', name: 'Blender', version: '4.2 LTS', category: '3D-Modellierung & Retopologie', role: 'Mesh Decimation, Retopology & UV Unwrapping', description: 'Open-Source 3D-Creation Suite' },
+  { id: 'sw_3', name: 'Artec Studio', version: '19 Professional', category: 'Streifenlicht-Scanning (SLS)', role: 'Scan Registration & Sharp Mesh Fusion', description: '3D-Scanning und Post-Processing Suite' },
+  { id: 'sw_4', name: 'RealityCapture', version: '1.4', category: 'Photogrammetrie & Laserscan', role: 'High-speed Photogrammetry & Laser Alignment', description: 'All-in-One Photogrammetrie und LiDAR-Fusion' },
+  { id: 'sw_5', name: 'MeshLab', version: '2023.12', category: 'Mesh-Processing', role: 'Poisson Surface Reconstruction & Repair', description: 'Open-Source Werkzeug für 3D-Dreiecksnetze' },
+  { id: 'sw_6', name: 'Adobe Substance 3D Painter', version: '10.0', category: 'Textur & PBR', role: 'PBR Material Authoring & Texture Painting', description: 'Industriestandard für 3D-Texturierung' },
+  { id: 'sw_7', name: 'Adobe Substance 3D Designer', version: '14.0', category: 'Textur-Baking', role: 'Normal, AO & Roughness Map Baking', description: 'Parametrische Texturen und High-to-Low Poly Baking' },
+  { id: 'sw_8', name: 'Adobe Photoshop Lightroom', version: '14.1', category: 'Farbkalibrierung', role: 'RAW Color Calibration (ColorChecker) & Delighting', description: 'Digitale Bildverarbeitung und Weißabgleich' },
+  { id: 'sw_9', name: 'CloudCompare', version: '2.13', category: 'Punktwolken-Analyse', role: 'Point Cloud Comparison & ICP Alignment', description: '3D-Punktwolken- und Netzvergleich' },
+  { id: 'sw_10', name: 'Meshroom (AliceVision)', version: '2023.3', category: 'Photogrammetrie & SfM', role: 'Open-Source Photogrammetric Pipeline', description: 'Open-Source SfM Pipeline basierend auf AliceVision' },
+  { id: 'sw_11', name: 'Zeiss GOM Inspect', version: '2023', category: 'Metrologie & Inspektion', role: '3D Metrology Inspection & Soll-Ist-Vergleich', description: 'Optische 3D-Messtechnik und Bauteilprüfung' },
+  { id: 'sw_12', name: 'Leica Cyclone FIELD 3D', version: '2024', category: 'Laserscanning (TLS)', role: 'Laser Scan In-Field Pre-Registration', description: 'Terrestrische Laserscan-Erfassung' },
+  { id: 'sw_13', name: 'FARO SCENE', version: '2024', category: 'Laserscanning (TLS)', role: 'Terrestrial Laser Scan Processing & Registration', description: 'Laserscanner-Punktwolkenregistrierung' },
+  { id: 'sw_14', name: 'Geomagic Wrap', version: '2021', category: 'Surfacing & CAD', role: 'Exact Surface Fitting & Non-Manifold Repair', description: '3D-Scandaten in exakte NURBS/CAD-Flächen überführen' },
+  { id: 'sw_15', name: 'Instant Meshes', version: '1.0', category: 'Retopologie', role: 'Interactive Quad-Dominant Remeshing', description: 'Schnelles, automatisiertes Quad-Remeshing' },
+  { id: 'sw_16', name: 'Pixologic ZBrush', version: '2024', category: 'Digitales Sculpting', role: 'High-Poly Sculpting & Decimation Master', description: 'Digitales Sculpting und Mikrotopographie' },
+  { id: 'sw_17', name: 'QGIS', version: '3.34 LTR', category: 'GIS & Georeferenzierung', role: 'Spatial Georeferencing & Orthophoto Mapping', description: 'Geoinformationssystem für Fundstellenkoordinaten' }
+];
+
+const savedSoftwareRaw = (() => {
+  try {
+    const raw = localStorage.getItem('hermes_saved_software');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {}
+  return [...DEFAULT_CURATED_SOFTWARE];
+})();
+
+export const savedSoftware = ref(savedSoftwareRaw);
+
+const syncSoftwareToStorage = () => {
+  try {
+    localStorage.setItem('hermes_saved_software', JSON.stringify(savedSoftware.value));
+  } catch (e) {}
+};
+
+export const addOrUpdateSoftware = (sw) => {
+  if (!sw || !sw.name) return;
+  const lowerName = sw.name.trim().toLowerCase();
+  const existingIdx = savedSoftware.value.findIndex(s => (s.name || '').trim().toLowerCase() === lowerName);
+  const entry = {
+    id: sw.id || `sw_${Date.now()}`,
+    name: sw.name.trim(),
+    version: (sw.version || '').trim(),
+    category: (sw.category || '').trim(),
+    role: (sw.role || '').trim(),
+    description: (sw.description || '').trim()
+  };
+  if (existingIdx > -1) {
+    savedSoftware.value[existingIdx] = { ...savedSoftware.value[existingIdx], ...entry };
+  } else {
+    savedSoftware.value.unshift(entry);
+  }
+  syncSoftwareToStorage();
+};
+
+export const removeSavedSoftware = (index) => {
+  savedSoftware.value.splice(index, 1);
+  syncSoftwareToStorage();
+};
+
+export const updateSavedSoftware = (index, sw) => {
+  if (!sw || !sw.name) return;
+  savedSoftware.value[index] = { ...savedSoftware.value[index], ...sw };
+  syncSoftwareToStorage();
+};
+
+export const resetSoftwareToDefaults = () => {
+  savedSoftware.value = [...DEFAULT_CURATED_SOFTWARE];
+  syncSoftwareToStorage();
+};
+
+export const clearAllSoftware = () => {
+  savedSoftware.value = [];
+  syncSoftwareToStorage();
+};
+
+
+// ----------------------------------------------------------------------------
+// EQUIPMENT & DEVICES POOL (Hardware, Scanners, Cameras, Targets)
+// ----------------------------------------------------------------------------
+
+export const DEFAULT_CURATED_EQUIPMENT = [
+  { id: 'eq_1', name: 'Artec Leo', type: '3D-Scanner (SLS / VCSEL)', specs: '0.1 mm 3D-Auflösung, 0.05 mm Punktgenauigkeit, kabellos', manufacturer: 'Artec 3D' },
+  { id: 'eq_2', name: 'Artec Space Spider', type: '3D-Scanner (SLS / Blaues LED)', specs: '0.05 mm Genauigkeit, 0.1 mm Auflösung für Mikrostrukturen', manufacturer: 'Artec 3D' },
+  { id: 'eq_3', name: 'Nikon Z8', type: 'Spiegellose Vollformatkamera', specs: '45.7 MP Full-Frame CMOS, 14-Bit NEF RAW', manufacturer: 'Nikon' },
+  { id: 'eq_4', name: 'Nikkor Z 50mm f/1.8 S', type: 'Objektiv', specs: '50mm Festbrennweite, verzeichnungsarm, Z-Mount', manufacturer: 'Nikon' },
+  { id: 'eq_5', name: 'Nikon D750', type: 'Vollformat-DSLR', specs: '24.3 MP FX CMOS, 14-Bit NEF RAW', manufacturer: 'Nikon' },
+  { id: 'eq_6', name: 'AF-S NIKKOR 50mm f/1.8G', type: 'Objektiv', specs: '50mm Festbrennweite, F-Mount', manufacturer: 'Nikon' },
+  { id: 'eq_7', name: 'Sony Alpha 7R V', type: 'Spiegellose Vollformatkamera', specs: '61.0 MP Exmor R CMOS, BIONZ XR, Sensor-Shift', manufacturer: 'Sony' },
+  { id: 'eq_8', name: 'Sony FE 50mm f/1.2 GM', type: 'Objektiv', specs: '50mm G-Master Festbrennweite, E-Mount', manufacturer: 'Sony' },
+  { id: 'eq_9', name: 'Sony Alpha 7 IV', type: 'Spiegellose Vollformatkamera', specs: '33.0 MP Exmor R CMOS, E-Mount', manufacturer: 'Sony' },
+  { id: 'eq_10', name: 'Canon EOS R5', type: 'Spiegellose Vollformatkamera', specs: '45.0 MP Full-Frame CMOS, RF-Mount', manufacturer: 'Canon' },
+  { id: 'eq_11', name: 'Canon RF 50mm f/1.2L USM', type: 'Objektiv', specs: '50mm L-Serie Festbrennweite, RF-Mount', manufacturer: 'Canon' },
+  { id: 'eq_12', name: 'GOM ATOS Q', type: '3D-Scanner (SLS / Blue Light)', specs: 'Industrieller Streifenlichtscanner, Blue Light Equalizer, VDI 2634', manufacturer: 'Carl Zeiss / GOM' },
+  { id: 'eq_13', name: 'Shining 3D EinScan Pro HD', type: '3D-Scanner (SLS)', specs: 'Multifunktionaler Handheld-Scanner, 0.045 mm Genauigkeit', manufacturer: 'Shining 3D' },
+  { id: 'eq_14', name: 'Leica BLK360 G2', type: 'Terrestrischer Laserscanner (TLS)', specs: 'Kompakter Bildgebungslaser-Scanner, sphärische HDR-Kamera', manufacturer: 'Leica Geosystems' },
+  { id: 'eq_15', name: 'Leica RTC360', type: 'Terrestrischer Laserscanner (TLS)', specs: 'High-Speed 3D-Laserscanner, VIS-Technologie, 2 Mio. Pkt/Sek.', manufacturer: 'Leica Geosystems' },
+  { id: 'eq_16', name: 'FARO Focus Premium', type: 'Terrestrischer Laserscanner (TLS)', specs: 'Phasenvergleich-Laserscanner bis 350 m, Kalibrierzertifikat', manufacturer: 'FARO Technologies' },
+  { id: 'eq_17', name: 'Calibrite ColorChecker Passport Photo 2', type: 'Farbkalibrier-Target', specs: '24-Patch Standardfarbfelder, 18% Neutralgrau, Weißabgleich', manufacturer: 'Calibrite / X-Rite' },
+  { id: 'eq_18', name: 'Invar-Maßstäbe (Calibrated Scale Bars)', type: 'Längenmaßstab / Referenz', specs: 'DKD-kalibrierte Invar-Maßstäbe (thermisch inert) per VDI/VDE 2634', manufacturer: 'VDI/VDE zertifiziert' },
+  { id: 'eq_19', name: 'Kaiser Nanodigital Kreuzpolarisations-Ringblitz', type: 'Beleuchtung', specs: 'Zirkulare Kreuzpolarisation zur reflexfreien Texturerfassung', manufacturer: 'Kaiser Fototechnik' },
+  { id: 'eq_20', name: 'Drehteller elektrisch (Turntable)', type: 'Drehteller', specs: 'Automatisierter 360-Grad Drehteller mit programmierbarem Schrittwinkel', manufacturer: 'Studio Equipment' }
+];
+
+const savedEquipmentRaw = (() => {
+  try {
+    const raw = localStorage.getItem('hermes_saved_equipment');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {}
+  return [...DEFAULT_CURATED_EQUIPMENT];
+})();
+
+export const savedEquipment = ref(savedEquipmentRaw);
+
+const syncEquipmentToStorage = () => {
+  try {
+    localStorage.setItem('hermes_saved_equipment', JSON.stringify(savedEquipment.value));
+  } catch (e) {}
+};
+
+export const addOrUpdateEquipment = (eq) => {
+  if (!eq || !eq.name) return;
+  const lowerName = eq.name.trim().toLowerCase();
+  const existingIdx = savedEquipment.value.findIndex(e => (e.name || '').trim().toLowerCase() === lowerName);
+  const entry = {
+    id: eq.id || `eq_${Date.now()}`,
+    name: eq.name.trim(),
+    type: (eq.type || '').trim(),
+    specs: (eq.specs || '').trim(),
+    manufacturer: (eq.manufacturer || '').trim()
+  };
+  if (existingIdx > -1) {
+    savedEquipment.value[existingIdx] = { ...savedEquipment.value[existingIdx], ...entry };
+  } else {
+    savedEquipment.value.unshift(entry);
+  }
+  syncEquipmentToStorage();
+};
+
+export const removeSavedEquipment = (index) => {
+  savedEquipment.value.splice(index, 1);
+  syncEquipmentToStorage();
+};
+
+export const updateSavedEquipment = (index, eq) => {
+  if (!eq || !eq.name) return;
+  savedEquipment.value[index] = { ...savedEquipment.value[index], ...eq };
+  syncEquipmentToStorage();
+};
+
+export const resetEquipmentToDefaults = () => {
+  savedEquipment.value = [...DEFAULT_CURATED_EQUIPMENT];
+  syncEquipmentToStorage();
+};
+
+export const clearAllEquipment = () => {
+  savedEquipment.value = [];
+  syncEquipmentToStorage();
+};

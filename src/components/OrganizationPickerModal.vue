@@ -201,7 +201,8 @@
         <div
           v-for="(org, idx) in filteredOrganizations"
           :key="org.id || idx"
-          class="p-3.5 rounded-xl border border-base-200 bg-base-100 hover:border-primary/40 hover:bg-base-200/40 transition-all flex flex-wrap items-center justify-between gap-3 shadow-xs"
+          class="p-3.5 rounded-xl border border-base-200 bg-base-100 hover:border-primary/60 hover:bg-base-200/50 transition-all flex flex-wrap items-center justify-between gap-3 shadow-xs cursor-pointer group"
+          @click="selectOrganization(org)"
         >
           <!-- Left: Org Info -->
           <div class="flex items-start gap-3 flex-1 min-w-[280px]">
@@ -260,10 +261,10 @@
             </button>
 
             <button
-              v-if="mode === 'pick'"
               type="button"
-              class="btn btn-sm btn-primary gap-1 shadow-xs ml-1"
-              @click="selectOrganization(org)"
+              class="btn btn-sm btn-primary gap-1 shadow-xs ml-1 font-bold hover:scale-105 transition-transform"
+              @click.stop="selectOrganization(org)"
+              :title="locale === 'de' ? 'Diese Organisation auswählen und übernehmen' : 'Select this organization'"
             >
               <span>✓</span>
               {{ locale === 'de' ? 'Auswählen' : 'Select' }}
@@ -309,7 +310,7 @@ const props = defineProps({
   },
   mode: {
     type: String,
-    default: 'manage' // 'manage' or 'pick'
+    default: 'pick' // 'manage' or 'pick'
   },
   currentLocale: {
     type: String,

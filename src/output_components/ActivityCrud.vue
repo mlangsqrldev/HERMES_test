@@ -11,6 +11,14 @@
              <div>
                <h4 class="font-bold text-lg capitalize text-base-content/60">{{ t('saved') }} {{ getLabel('activity', 'activity') }}</h4>
              </div>
+             <button
+               type="button"
+               class="btn btn-sm btn-primary gap-1 shadow-xs font-semibold"
+               @click="startNewRecord"
+             >
+               <span>+</span>
+               <span>{{ currentLocale === 'de' ? 'Neue Aktivität anlegen' : 'Add New Activity' }}</span>
+             </button>
           </div>
           <div class="overflow-x-auto">
              <table class="table table-xs w-full table-zebra">
@@ -48,8 +56,8 @@
                       <td class="font-mono font-bold">{{ Array.isArray(item['recordInformation.id']) ? item['recordInformation.id'].join(', ') : (item['recordInformation.id'] || '-') }}</td>
                       <td class="font-medium">{{ Array.isArray(item['appellation.name']) ? (item['appellation.name'][0]?._value || item['appellation.name'][0] || '-') : (item['appellation.name']?._value || item['appellation.name'] || '-') }}</td>
                       <td>
-                        <span v-if="item['activityType']" class="badge badge-xs badge-neutral">
-                          {{ item['activityType'] }}
+                        <span v-if="item['activityType'] || item['eventType']" class="badge badge-xs badge-neutral">
+                          {{ item['activityType'] || item['eventType'] }}
                         </span>
                         <span v-else class="opacity-40">-</span>
                       </td>
@@ -68,8 +76,13 @@
           </div>
         </div>
 
-        <div class="bg-base-200 p-6 rounded-box shadow-sm mb-10">
-          <h3 class="text-xl font-bold mb-4 capitalize">{{ isEditing ? t('edit') : t('add') }} {{ getLabel('activity', 'activity') }}</h3>
+        <div ref="formContainerRef" class="bg-base-200 p-6 rounded-box shadow-sm mb-10 transition-all" :class="{ 'ring-2 ring-primary/60': isEditing }">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold capitalize">{{ isEditing ? t('edit') : t('add') }} {{ getLabel('activity', 'activity') }}</h3>
+            <span v-if="isEditing" class="badge badge-primary gap-1 font-semibold">
+              ✏️ {{ currentLocale === 'de' ? 'Datensatz in Bearbeitung' : 'Editing record' }}
+            </span>
+          </div>
           <form @submit.prevent="save" @invalid.capture="handleInvalid">
             <div class="grid grid-cols-1 gap-x-6">
               
@@ -385,7 +398,7 @@
 
         <!-- 3D Paradata Assistant for Activity (Hole filling, limitations, shaders, London Charter) -->
         <div class="col-span-full mt-3">
-          <ActivityParadata
+          <ActivityParadata :form="form"
             v-model:description="form['description']"
             :current-locale="currentLocale"
           />
@@ -413,34 +426,66 @@
           
         </div>
 
-        <!-- 3D Methods, Equipment & Techniques (Activity consistsOf Assistant) -->
+        <!-- Additional / Manual CARARE consistsOf Steps (Collapsible) -->
         <div class="col-span-full mb-6">
-          <ActivityConsistsOf3D
-            :consists-of-list="form['consistsOf']"
-            :current-locale="currentLocale"
-            @add-step="handleAddConsistsOfStep"
-            @edit-step="handleEditConsistsOfStep"
-            @remove-step="handleRemoveConsistsOfStep"
-          />
+          <details class="collapse collapse-arrow bg-base-100 border border-base-300 rounded-2xl shadow-xs">
+            <summary class="collapse-title text-xs font-bold uppercase tracking-wider text-base-content/70 flex items-center gap-2 cursor-pointer">
+              <span>📋</span>
+              <span>{{ currentLocale === 'de' ? 'Weitere / Manuelle CARARE-Teilschritte (consistsOf) verwalten' : 'Manage Additional / Manual CARARE Sub-Activities (consistsOf)' }}</span>
+            </summary>
+            <div class="collapse-content pt-2">
+              <ActivityConsistsOf3D
+                :consists-of-list="form['consistsOf']"
+                :current-locale="currentLocale"
+                @add-step="handleAddConsistsOfStep"
+                @edit-step="handleEditConsistsOfStep"
+                @remove-step="handleRemoveConsistsOfStep"
+              />
+            </div>
+          </details>
         </div>
         <div class="form-control w-full mb-4">
-        <div class="flex flex-row items-center">
-          <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('eventType', 'eventType') }}</span><span class="text-accent font-black">*</span></label>
-          
-          <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('eventType', 'General classification of the type of event or activity which took place, e.g. survey, archaeological excavation, digitization, rebuilding. Not repeating – an event has exactly one type.', 'doc')" v-if="getLabel('eventType', 'General classification of the type of event or activity which took place, e.g. survey, archaeological excavation, digitization, rebuilding. Not repeating – an event has exactly one type.', 'doc')">
-                <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
-              <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
+        <div class="flex flex-row items-center justify-between mb-1">
+          <div class="flex items-center gap-1">
+            <label class="label p-0"><span class="label-text font-bold capitalize">{{ getLabel('eventType', 'eventType') }}</span><span class="text-accent font-black">*</span></label>
+            <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('eventType', 'General classification of the type of event or activity which took place, e.g. survey, archaeological excavation, digitization, rebuilding. Not repeating – an event has exactly one type.', 'doc')" v-if="getLabel('eventType', 'General classification of the type of event or activity which took place, e.g. survey, archaeological excavation, digitization, rebuilding. Not repeating – an event has exactly one type.', 'doc')">
+              <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
+                <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" 
+                            fill="currentColor"
+                            stroke-width="2.5"
+                            stroke="currentColor"
+                            class="size-[1.2em] primary-content"><path  d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
               </button>
-              </div>
-              </div>
-                        <input type="text"     required v-model="form['eventType']" class="input input-bordered w-full validator " :placeholder="getLabel('eventType', 'e.g. Digitization', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
-          
+            </div>
           </div>
+          <span class="text-[11px] text-base-content/60 font-mono">{{ form['eventType#termUID'] || 'HECTOR Vocab' }}</span>
+        </div>
+
+        <!-- Quick Select Chips for Activity Types -->
+        <div class="flex items-center gap-1.5 flex-wrap mb-2">
+          <button
+            v-for="actPreset in [
+              { label: '3D-Digitalisierung', en: '3D Digitisation', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/event_3d_digitisation' },
+              { label: 'Streifenlicht-Scanning', en: 'Structured Light Scanning', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/event_sls_scan' },
+              { label: 'Photogrammetrie', en: 'Photogrammetry', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/event_photogrammetry' },
+              { label: 'Laserscanning (TLS)', en: 'Laser Scanning', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/event_tls_scan' },
+              { label: 'Restaurierung', en: 'Restoration', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/event_restoration' },
+              { label: 'Ausgrabung', en: 'Excavation', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/event_excavation' },
+              { label: 'Survey', en: 'Survey', uri: 'http://vocabs.bcdh.uni-bonn.de/hector/event_survey' }
+            ]"
+            :key="actPreset.label"
+            type="button"
+            class="btn btn-2xs"
+            :class="(form['eventType'] === actPreset.label || form['eventType'] === actPreset.en) ? 'btn-primary font-bold shadow-2xs' : 'btn-outline border-base-300 font-normal'"
+            @click="setActivityType(actPreset)"
+          >
+            {{ currentLocale === 'de' ? actPreset.label : actPreset.en }}
+          </button>
+        </div>
+
+        <input type="text" required v-model="form['eventType']" @input="onActivityTypeInput" class="input input-bordered w-full font-medium" :placeholder="getLabel('eventType', 'z.B. 3D-Digitalisierung, Photogrammetrie, Streifenlicht-Scanning', 'plac')" />
+        <div class="validator-hint">{{t('validationHint')}}</div>        
+        </div>
         <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
           <div class="flex flex-wrap justify-between items-center mb-4 pb-2 border-b border-base-200 gap-2">
              <div class="flex flex-row items-center">
@@ -536,10 +581,19 @@
           
           <div class="overflow-x-auto">
              <table class="table table-xs w-full table-zebra">
-                <thead class="bg-base-200"><tr><th class="w-24">{{ t('actions') }}</th></tr></thead>
+                <thead class="bg-base-200">
+                  <tr>
+                    <th>{{ getLabel('temporal.periodName', 'periodName') }}</th>
+                    <th>{{ getLabel('temporal.timeSpan.startDate', 'startDate') }}</th>
+                    <th>{{ getLabel('temporal.timeSpan.endDate', 'endDate') }}</th>
+                    <th class="w-24">{{ t('actions') }}</th>
+                  </tr>
+                </thead>
                 <tbody>
                    <tr v-for="(subItem, subIdx) in form['temporal']" :key="subIdx">
-                      
+                      <td class="font-medium">{{ subItem['periodName'] || subItem['displayDate'] || '—' }}</td>
+                      <td class="font-mono text-xs">{{ subItem['timeSpan.startDate'] || subItem['startDate'] || '—' }}</td>
+                      <td class="font-mono text-xs">{{ subItem['timeSpan.endDate'] || subItem['endDate'] || '—' }}</td>
                       <td>
                           <div class="flex gap-1">
                             <button type="button" class="btn btn-xs btn-ghost text-info" @click.prevent="openDrawer('temporal', subIdx)">{{ t('edit') }}</button>
@@ -548,7 +602,7 @@
                       </td>
                    </tr>
                    <tr v-if="!form['temporal'] || form['temporal'].length === 0">
-                      <td colspan="10" class="text-center text-base-content/40 py-4 italic">{{ t('noItems') }}</td>
+                      <td colspan="4" class="text-center text-base-content/40 py-4 italic">{{ t('noItems') }}</td>
                    </tr>
                 </tbody>
              </table>
@@ -700,14 +754,14 @@
           <div class="flex items-start justify-between mb-6 pb-4 border-b border-base-200">
             <div class="flex items-center">
               <h2 class="text-2xl font-bold">{{ currentLocale === 'de' ? (getLabel(activeDrawerField, activeDrawerField.split('.').slice(-1)[0]) + ' ' + (drawerEditIndex > -1 ? t('edit') : t('add'))) : ((drawerEditIndex > -1 ? t('edit') : t('add')) + ' ' + getLabel(activeDrawerField, activeDrawerField.split('.').slice(-1)[0])) }}</h2>
-              <div class="tooltip tooltip-bottom ml-4" :data-tip="t('addtemplate')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
+              <div class="tooltip tooltip-left z-30 ml-4" :data-tip="t('addtemplate')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
                 <button type="button" class="btn btn-square btn-ghost btn-sm btn-transparent" @click.prevent="openAddTemplateModal(activeDrawerField.split('.').slice(-1)[0])">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                     <path d="M5 21v-16q0 -0.825 0.588 -1.413T7 3h6v2H7v12.95l5 -2.15 5 2.15v-6.95h2v10L12 18 5 21Zm2 -16h6 -6Zm10 4v-2h-2v-2h2v-2h2v2h2v2h-2v2h-2Z" />
                   </svg>
                 </button>
               </div>
-              <div class="tooltip tooltip-bottom ml-2" :data-tip="t('template')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
+              <div class="tooltip tooltip-left z-30 ml-2" :data-tip="t('template')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
                 <button type="button" class="btn btn-square btn-ghost btn-sm btn-transparent" @click.prevent="openTemplateModal(activeDrawerField.split('.').slice(-1)[0])">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                     <path d="M4 22v-14q0 -0.825 0.588 -1.413T6 6h8q0.825 0 1.413 0.588T16 8v14L10 19 4 22Zm2 -3.025 4 -2.15 4 2.15v-10.975H6v10.975Zm12 -0.975v-14H7v-2h11q0.825 0 1.413 0.588T20 4v14h-2ZM6 8h8 -8Z" />
@@ -1265,17 +1319,35 @@
             <div @click.stop.prevent class="tooltip tooltip-accent tooltip-right" :data-tip="getLabel('consistsOf.equipment', 'The equipment used during this activity – hardware and/or software, listed individually.', 'doc')" v-if="getLabel('consistsOf.equipment', 'The equipment used during this activity – hardware and/or software, listed individually.', 'doc')">
                   <button type="button" class="btn btn-circle w-6 h-6 p-1 cursor-help">
                 <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 512" fill="currentColor" stroke-width="2.5" stroke="currentColor" class="size-[1.2em] primary-content"><path d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"/></svg>
-                </button>
+                  </button>
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <button
+                type="button"
+                class="btn btn-xs btn-outline btn-accent gap-1 font-bold shadow-2xs"
+                @click.prevent="isEquipmentPickerOpen = true"
+                :title="currentLocale === 'de' ? 'Gerät aus zentralem Pool wählen' : 'Pick equipment from central pool'"
+              >
+                📷 {{ currentLocale === 'de' ? 'Geräte-Pool' : 'Equipment' }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-xs btn-outline btn-info gap-1 font-bold shadow-2xs"
+                @click.prevent="isSoftwarePickerOpen = true"
+                :title="currentLocale === 'de' ? 'Software aus zentralem Pool wählen' : 'Pick software from central pool'"
+              >
+                💻 {{ currentLocale === 'de' ? 'Software-Pool' : 'Software' }}
+              </button>
+              <LanguageBadgePicker v-model="drawerForm['equipment#lang']" />
             </div>
           </div>
-          <LanguageBadgePicker v-model="drawerForm['equipment#lang']" />
+          <input type="text" required v-model="drawerForm['equipment']" class="input input-bordered w-full validator text-xs" :placeholder="getLabel('consistsOf.equipment', 'e.g. Artec Leo 3D scanner; Nikon Z8 camera with 24-70mm f/2.8 lens and colour reference card; software: Artec Studio 19, Blender 4.2, Substance Designer 14, Adobe Photoshop Lightroom 14.1', 'plac')" />
+          <div class="validator-hint">{{t('validationHint')}}</div>        
         </div>
-                        <input type="text"     required v-model="drawerForm['equipment']" class="input input-bordered w-full validator " :placeholder="getLabel('consistsOf.equipment', 'e.g. Artec Leo 3D scanner; Nikon Z8 camera with 24-70mm f/2.8 lens and colour reference card; software: Artec Studio 19, Blender 4.2, Substance Designer 14, Adobe Photoshop Lightroom 14.1', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
-          
-          </div></div>
       </div>
-      <div v-if="activeDrawerField === 'occurredAt'">
+    </div>
+    <div v-if="activeDrawerField === 'occurredAt'">
         
           <div class="form-control w-full">
              <label class="label"><span class="label-text font-bold capitalize">{{ getLabel('occurredAt', 'occurredAt') }}</span><span class="text-warning font-black">~</span></label>
@@ -1369,7 +1441,21 @@
     @close="isOrgPickerOpen = false"
     @select="handleOrgSelected"
   />
-  <dialog ref="templateModal" class="modal">
+  <EquipmentPickerModal
+    :isOpen="isEquipmentPickerOpen"
+    mode="select"
+    :locale="currentLocale"
+    @close="isEquipmentPickerOpen = false"
+    @select="handleEquipmentSelected"
+  />
+  <SoftwarePickerModal
+    :isOpen="isSoftwarePickerOpen"
+    mode="select"
+    :locale="currentLocale"
+    @close="isSoftwarePickerOpen = false"
+    @select="handleSoftwareSelected"
+  />
+  <dialog ref="templateModal" class="modal z-[9999]">
     <div class="modal-box max-w-md">
       <h3 class="font-bold text-lg mb-6">{{ currentLocale === 'de' ? 'Vorlage wählen' : 'Choose a Template' }}</h3>
       <form method="dialog" class="flex flex-col gap-3">
@@ -1402,7 +1488,7 @@
     </div>
     <form method="dialog" class="modal-backdrop"><button>close</button></form>
   </dialog>
-  <dialog ref="addTemplateModal" class="modal">
+  <dialog ref="addTemplateModal" class="modal z-[9999]">
     <div class="modal-box max-w-md">
       <h3 class="font-bold text-lg mb-6">{{ t('addtemplate') }}</h3>
       <div class="flex flex-col gap-4">
@@ -1416,7 +1502,7 @@
     </div>
     <form method="dialog" class="modal-backdrop"><button>close</button></form>
   </dialog>
-  <dialog ref="deleteTemplateModal" class="modal">
+  <dialog ref="deleteTemplateModal" class="modal z-[9999]">
     <div class="modal-box">
       <h3 class="font-bold text-lg">{{ t('deleteTemplatePrompt') }}</h3>
       <p class="py-4">{{ t('deleteTemplateDesc') }}</p>
@@ -1437,6 +1523,8 @@ import { load } from '@tauri-apps/plugin-store';
 import SkosmosAutocomplete from '../components/SkosmosAutocomplete.vue';
 import PersonPickerModal from '../components/PersonPickerModal.vue';
 import OrganizationPickerModal from '../components/OrganizationPickerModal.vue';
+import EquipmentPickerModal from '../components/EquipmentPickerModal.vue';
+import SoftwarePickerModal from '../components/SoftwarePickerModal.vue';
 import ActivityDcRelations from '../components/ActivityDcRelations.vue';
 import ActivityParadata from '../components/ActivityParadata.vue';
 import ActivityConsistsOf3D from '../components/ActivityConsistsOf3D.vue';
@@ -2785,7 +2873,7 @@ const form = reactive({ 'recordInformation.id': '',
   'hasPart': [],
   'isPartOf': [],
   'hasCreated': [],
-  'dcRelation': [] });
+  'dcRelation': [], 'digitalAuthenticityProfile': null, 'accuracy': null, 'resolution': null, 'softwareList': [], 'assessmentsList': [] });
 
 const syncToActivityRegistry = () => {
   const all = [...(items.value || [])];
@@ -3181,6 +3269,22 @@ const setSpatialFromCollection = () => {
 
 const isPersonPickerOpen = ref(false);
 const personPickerMode = ref('actors');
+const isEquipmentPickerOpen = ref(false);
+const isSoftwarePickerOpen = ref(false);
+
+const handleEquipmentSelected = (eq) => {
+  if (!eq) return;
+  const label = `${eq.name}${eq.manufacturer ? ` (${eq.manufacturer})` : ''}`;
+  const curr = (drawerForm['equipment'] || '').trim();
+  drawerForm['equipment'] = curr ? `${curr}; ${label}` : label;
+};
+
+const handleSoftwareSelected = (sw) => {
+  if (!sw) return;
+  const label = `${sw.name}${sw.version ? ` v${sw.version}` : ''}${sw.role ? ` (${sw.role})` : ''}`;
+  const curr = (drawerForm['equipment'] || '').trim();
+  drawerForm['equipment'] = curr ? `${curr}; ${label}` : label;
+};
 
 const openPersonPicker = (mode = 'actors') => {
   personPickerMode.value = mode;
@@ -3292,6 +3396,11 @@ const save = () => {
       if (item && item['timeSpan.endDate']) item['timeSpan.endDate'] = normalizeYearDate(item['timeSpan.endDate']);
     });
   }
+
+  // Synchronize eventType and activityType
+  if (form['eventType'] && !form['activityType']) form['activityType'] = form['eventType'];
+  if (form['activityType'] && !form['eventType']) form['eventType'] = form['activityType'];
+
   if (isEditing.value) {
     items.value[editIndex.value] = JSON.parse(JSON.stringify(form));
   } else {
@@ -3306,10 +3415,37 @@ const save = () => {
   }, 3000);
 };
 
+const formContainerRef = ref(null);
+
+const setActivityType = (preset) => {
+  const label = currentLocale.value === 'de' ? preset.label : preset.en;
+  form['eventType'] = label;
+  form['activityType'] = label;
+  form['eventType#term'] = label;
+  form['eventType#termUID'] = preset.uri;
+  form['eventType#namespace'] = 'http://vocabs.bcdh.uni-bonn.de/hector/';
+  form['eventType#lang'] = defaultMetadataLanguage.value || 'de';
+};
+
+const onActivityTypeInput = () => {
+  form['activityType'] = form['eventType'];
+};
+
+const startNewRecord = () => {
+  resetForm(true);
+  isEditing.value = false;
+  editIndex.value = null;
+  setTimeout(() => {
+    formContainerRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+};
+
 const edit = (index) => {
   isEditing.value = true;
   editIndex.value = index;
   Object.assign(form, JSON.parse(JSON.stringify(items.value[index])));
+  if (form['eventType'] && !form['activityType']) form['activityType'] = form['eventType'];
+  if (form['activityType'] && !form['eventType']) form['eventType'] = form['activityType'];
   // Populate preferred languages
   Object.keys(form).forEach(k => {
     if (k.endsWith('language') && Array.isArray(form[k])) {
@@ -3317,6 +3453,9 @@ const edit = (index) => {
     }
   });
   formSnapshot.value = JSON.stringify(form);
+  setTimeout(() => {
+    formContainerRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
 };
 
 const remove = (index) => {
@@ -3338,7 +3477,7 @@ const resetForm = (force = false) => {
     }
   });
   form['recordInformation.language'] = [defLang];
-  form['recordInformation.metadataRights'] = globalRights.metadataRights || '';
+  form['recordInformation.metadataRights'] = globalRights.metadataRights || ''; form['digitalAuthenticityProfile'] = null; form['accuracy'] = null; form['resolution'] = null; form['softwareList'] = []; form['assessmentsList'] = [];
   isEditing.value = false;
   editIndex.value = null;
   Object.keys(preferredLanguages).forEach(k => delete preferredLanguages[k]);
@@ -3350,10 +3489,28 @@ const getActivityValidationStatus = (item) => {
   if (!item) return { status: 'error', icon: '🔴', label: currentLocale.value === 'de' ? 'Fehler' : 'Error', details: [] };
   const details = [];
   const id = String(item['recordInformation.id'] || '').trim();
-  const actType = String(item['activityType'] || '').trim();
+  const actType = String(item['activityType'] || item['eventType'] || '').trim();
 
   if (!id) details.push(currentLocale.value === 'de' ? 'ID fehlt' : 'Missing ID');
   if (!actType) details.push(currentLocale.value === 'de' ? 'Aktivitätstyp fehlt' : 'Missing Activity Type');
+
+  // DAP 6-Dimensionen Pflichtprüfung (CARARE consistsOf mit HECTOR-URI DAP-1 bis DAP-6)
+  const consistsOfList = Array.isArray(item['consistsOf']) ? item['consistsOf'] : [];
+  const missingDapDims = [];
+  for (let d = 1; d <= 6; d++) {
+    const found = consistsOfList.some(co => {
+      const m = String(co.methods || '');
+      const p = String(co.hadSpecificPurpose || '');
+      const t = String(co.techniques || '');
+      return (m.includes('DAP-' + d) || p.includes('DAP-' + d)) && t.trim().length > 0;
+    });
+    if (!found) {
+      missingDapDims.push('DAP-' + d);
+    }
+  }
+  if (missingDapDims.length > 0) {
+    details.push(currentLocale.value === 'de' ? ('DAP-Pflichtdimensionen: ' + missingDapDims.join(', ')) : ('Missing DAP: ' + missingDapDims.join(', ')));
+  }
 
   if (details.length > 0) {
     return {
@@ -3365,11 +3522,24 @@ const getActivityValidationStatus = (item) => {
   }
 
   const missingRec = [];
-  if (!item['actors'] || (Array.isArray(item['actors']) && item['actors'].length === 0)) {
+  const hasActors = Array.isArray(item['actors'])
+    ? item['actors'].length > 0
+    : Boolean(item['actors']);
+  if (!hasActors) {
     missingRec.push(currentLocale.value === 'de' ? 'Akteure' : 'Actors');
   }
-  const dateVal = item['event.date.date'] || item['event.date.dateRangeQualifier'] || '';
-  if (!dateVal) {
+
+  const hasDate = Boolean(
+    (Array.isArray(item['temporal']) && item['temporal'].length > 0 &&
+      item['temporal'].some(t => t && (t['timeSpan.startDate'] || t['timeSpan.endDate'] || t['startDate'] || t['endDate'] || t['periodName'] || t['displayDate']))) ||
+    item['recordInformation.creation.date'] ||
+    item['timeSpan.startDate'] ||
+    item['startDate'] ||
+    item['date'] ||
+    item['event.date.date'] ||
+    (Array.isArray(item['consistsOf']) && item['consistsOf'].some(co => co && (co.startDate || co.endDate)))
+  );
+  if (!hasDate) {
     missingRec.push(currentLocale.value === 'de' ? 'Datum / Zeitraum' : 'Date / Period');
   }
 
@@ -3414,5 +3584,14 @@ onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeydown);
 });
 
-defineExpose({ items, form, save, resetForm, isFormDirty, validationStats, getActivityValidationStatus });
+const loadItems = (newItems) => {
+  items.value = Array.isArray(newItems) ? JSON.parse(JSON.stringify(newItems)) : [];
+  if (items.value.length > 0) {
+    edit(0);
+  } else {
+    resetForm(true);
+  }
+};
+
+defineExpose({ items, form, isEditing, editIndex, save, edit, loadItems, resetForm, isFormDirty, validationStats, getActivityValidationStatus });
 </script>

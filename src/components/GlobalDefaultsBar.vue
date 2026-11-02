@@ -77,6 +77,30 @@
           <span class="badge badge-xs badge-accent font-semibold">{{ savedCollections.length }}</span>
         </button>
 
+        <!-- Software Pool -->
+        <button
+          type="button"
+          class="btn btn-xs gap-1.5 btn-outline border-base-300 hover:border-info hover:bg-info/10 shadow-xs"
+          @click="isSoftwareModalOpen = true"
+          :title="currentLocale === 'de' ? 'Zentralen Software- & Pipeline-Pool öffnen und verwalten' : 'Open and manage central software & pipeline pool'"
+        >
+          <span class="text-sm">💻</span>
+          <span class="font-bold text-xs">{{ currentLocale === 'de' ? 'Software' : 'Software' }}</span>
+          <span class="badge badge-xs badge-info font-semibold">{{ savedSoftware.length }}</span>
+        </button>
+
+        <!-- Equipment / Geräte Pool -->
+        <button
+          type="button"
+          class="btn btn-xs gap-1.5 btn-outline border-base-300 hover:border-accent hover:bg-accent/10 shadow-xs"
+          @click="isEquipmentModalOpen = true"
+          :title="currentLocale === 'de' ? 'Zentralen Geräte- und Hardware-Pool (3D-Scanner, Kameras, Targets) verwalten' : 'Open and manage central equipment & hardware pool'"
+        >
+          <span class="text-sm">📷</span>
+          <span class="font-bold text-xs">{{ currentLocale === 'de' ? 'Geräte' : 'Equipment' }}</span>
+          <span class="badge badge-xs badge-accent font-semibold">{{ savedEquipment.length }}</span>
+        </button>
+
         <!-- Master Campaign Presets (Kampagnen-Klammer) -->
         <button
           type="button"
@@ -149,6 +173,22 @@
       :currentLocale="currentLocale"
       @close="isCollectionModalOpen = false"
       @select="handleCollectionSelect"
+    />
+
+    <!-- Software Pool Modal -->
+    <SoftwarePickerModal
+      :isOpen="isSoftwareModalOpen"
+      mode="manage"
+      :locale="currentLocale"
+      @close="isSoftwareModalOpen = false"
+    />
+
+    <!-- Equipment Pool Modal -->
+    <EquipmentPickerModal
+      :isOpen="isEquipmentModalOpen"
+      mode="manage"
+      :locale="currentLocale"
+      @close="isEquipmentModalOpen = false"
     />
 
     <!-- Master Campaign Preset Modal -->
@@ -387,6 +427,8 @@ import {
   savedPersons, 
   savedOrganizations, 
   savedCollections,
+  savedSoftware,
+  savedEquipment,
   campaignPreset,
   CC_LICENCES, 
   getLicenceShortCode, 
@@ -396,6 +438,8 @@ import PersonPickerModal from './PersonPickerModal.vue';
 import OrganizationPickerModal from './OrganizationPickerModal.vue';
 import CollectionPickerModal from './CollectionPickerModal.vue';
 import CampaignPresetModal from './CampaignPresetModal.vue';
+import SoftwarePickerModal from './SoftwarePickerModal.vue';
+import EquipmentPickerModal from './EquipmentPickerModal.vue';
 import ApiSettingsModal from './ApiSettingsModal.vue';
 import FlagIcon from './FlagIcon.vue';
 
@@ -413,6 +457,8 @@ const isPersonModalOpen = ref(false);
 const isOrgModalOpen = ref(false);
 const isCollectionModalOpen = ref(false);
 const isCampaignModalOpen = ref(false);
+const isSoftwareModalOpen = ref(false);
+const isEquipmentModalOpen = ref(false);
 const isApiSettingsOpen = ref(false);
 const appliedToast = ref('');
 

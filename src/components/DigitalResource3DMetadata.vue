@@ -116,12 +116,20 @@
             </ul>
           </div>
           <!-- Presets -->
-          <div class="flex flex-wrap gap-1 mt-1.5">
+          <div class="flex flex-wrap items-center gap-1.5 mt-2">
+            <button
+              type="button"
+              class="btn btn-xs btn-outline btn-accent gap-1 font-bold shadow-2xs"
+              @click="isEquipmentPickerOpen = true"
+              :title="currentLocale === 'de' ? 'Kamera oder Gerät aus dem zentralen Pool auswählen' : 'Pick camera or equipment from central pool'"
+            >
+              📷 {{ currentLocale === 'de' ? 'Aus Geräte-Pool' : 'From Equipment Pool' }}
+            </button>
             <button
               v-for="cam in HECTOR_CAMERAS"
               :key="cam.name"
               type="button"
-              class="badge badge-ghost badge-xs hover:badge-secondary cursor-pointer"
+              class="preset-chip"
               @click="applyCamera(cam)"
             >
               {{ cam.name }}
@@ -141,17 +149,17 @@
             v-model="photoSensor"
             @input="onFieldChanged"
             class="input input-sm input-bordered w-full font-mono text-xs"
-            :placeholder="currentLocale === 'de' ? 'z.B. 45.7 MP (8256×5504 px)' : 'e.g. 45.7 MP (8256×5504 px)'"
+            :placeholder="currentLocale === 'de' ? 'z.B. 45.7 MP' : 'e.g. 45.7 MP'"
           />
-          <div class="flex flex-wrap gap-1 mt-1.5">
+          <div class="flex flex-wrap gap-1.5 mt-2">
             <button
               v-for="res in SENSOR_PRESETS"
               :key="res"
               type="button"
-              class="badge badge-ghost badge-xs hover:badge-secondary cursor-pointer"
+              class="preset-chip font-mono"
               @click="photoSensor = res; onFieldChanged()"
             >
-              {{ res.split(' ')[0] }}
+              {{ res }}
             </button>
           </div>
         </div>
@@ -170,12 +178,12 @@
             class="input input-sm input-bordered w-full text-xs font-medium"
             :placeholder="currentLocale === 'de' ? 'z.B. NIKKOR Z 50mm f/1.8 S' : 'e.g. NIKKOR Z 50mm f/1.8 S'"
           />
-          <div class="flex flex-wrap gap-1 mt-1.5">
+          <div class="flex flex-wrap gap-1.5 mt-2">
             <button
               v-for="lens in LENS_PRESETS"
               :key="lens"
               type="button"
-              class="badge badge-ghost badge-xs hover:badge-secondary cursor-pointer"
+              class="preset-chip"
               @click="photoLens = lens; onFieldChanged()"
             >
               {{ lens.split(' ')[0] + ' ' + (lens.split(' ')[1] || '') }}
@@ -185,49 +193,49 @@
       </div>
 
       <!-- Photogrammetrie Rohbilder-Dokumentation -->
-      <div class="p-3 bg-base-100 rounded-lg border border-secondary/20">
-        <div class="font-semibold text-xs text-base-content/80 flex items-center gap-1.5 mb-2">
+      <div class="p-3.5 bg-base-100 rounded-xl border border-secondary/20">
+        <div class="font-semibold text-xs text-base-content/80 flex items-center gap-1.5 mb-2.5">
           <span>📸</span>
           <span>{{ currentLocale === 'de' ? 'Photogrammetrie-Rohbilder & Kalibrierung (RAW Datensatz)' : 'Photogrammetry RAW Image Set & Calibration' }}</span>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <label class="label py-0.5"><span class="label-text text-[11px] font-medium">{{ currentLocale === 'de' ? 'Rohbild-Format:' : 'RAW Image Format:' }}</span></label>
+            <label class="label py-0.5"><span class="label-text text-xs font-medium">{{ currentLocale === 'de' ? 'Rohbild-Format:' : 'RAW Image Format:' }}</span></label>
             <input
               type="text"
               v-model="photoRawFormat"
               @input="onFieldChanged"
-              class="input input-xs input-bordered w-full font-mono text-xs"
+              class="input input-sm input-bordered w-full font-mono text-xs"
               placeholder="e.g. Nikon NEF / Adobe DNG"
             />
           </div>
           <div>
-            <label class="label py-0.5"><span class="label-text text-[11px] font-medium">{{ currentLocale === 'de' ? 'Anzahl Rohaufnahmen:' : 'RAW Image Count:' }}</span></label>
+            <label class="label py-0.5"><span class="label-text text-xs font-medium">{{ currentLocale === 'de' ? 'Anzahl Rohaufnahmen:' : 'RAW Image Count:' }}</span></label>
             <input
               type="text"
               v-model="photoImageCount"
               @input="onFieldChanged"
-              class="input input-xs input-bordered w-full font-mono text-xs"
+              class="input input-sm input-bordered w-full font-mono text-xs"
               placeholder="e.g. 245 Aufnahmen"
             />
           </div>
           <div>
-            <label class="label py-0.5"><span class="label-text text-[11px] font-medium">{{ currentLocale === 'de' ? 'Farbkalibrierung:' : 'Color Calibration:' }}</span></label>
+            <label class="label py-0.5"><span class="label-text text-xs font-medium">{{ currentLocale === 'de' ? 'Farbkalibrierung:' : 'Color Calibration:' }}</span></label>
             <input
               type="text"
               v-model="photoColorTarget"
               @input="onFieldChanged"
-              class="input input-xs input-bordered w-full text-xs"
+              class="input input-sm input-bordered w-full text-xs"
               placeholder="e.g. X-Rite ColorChecker Classic"
             />
           </div>
           <div>
-            <label class="label py-0.5"><span class="label-text text-[11px] font-medium">{{ currentLocale === 'de' ? 'Bodenauflösung (GSD):' : 'GSD Resolution:' }}</span></label>
+            <label class="label py-0.5"><span class="label-text text-xs font-medium">{{ currentLocale === 'de' ? 'Bodenauflösung (GSD):' : 'GSD Resolution:' }}</span></label>
             <input
               type="text"
               v-model="photoGsd"
               @input="onFieldChanged"
-              class="input input-xs input-bordered w-full font-mono text-xs"
+              class="input input-sm input-bordered w-full font-mono text-xs"
               placeholder="e.g. 0.15 mm/px"
             />
           </div>
@@ -286,12 +294,20 @@
             </ul>
           </div>
           <!-- Presets -->
-          <div class="flex flex-wrap gap-1 mt-1.5">
+          <div class="flex flex-wrap items-center gap-1.5 mt-2">
+            <button
+              type="button"
+              class="btn btn-xs btn-outline btn-accent gap-1 font-bold shadow-2xs"
+              @click="isEquipmentPickerOpen = true"
+              :title="currentLocale === 'de' ? 'SLS-Scanner aus dem zentralen Pool auswählen' : 'Pick SLS scanner from central pool'"
+            >
+              💡 {{ currentLocale === 'de' ? 'Aus Geräte-Pool' : 'From Equipment Pool' }}
+            </button>
             <button
               v-for="s in HECTOR_SLS_SCANNERS"
               :key="s.name"
               type="button"
-              class="badge badge-ghost badge-xs hover:badge-primary cursor-pointer"
+              class="preset-chip"
               @click="applySlsScanner(s)"
             >
               {{ s.name }}
@@ -313,12 +329,12 @@
             class="input input-sm input-bordered w-full text-xs font-medium"
             :placeholder="currentLocale === 'de' ? 'z.B. 180×140 mm (Nahbereich) oder 300 mm' : 'e.g. 180×140 mm'"
           />
-          <div class="flex flex-wrap gap-1 mt-1.5">
+          <div class="flex flex-wrap gap-1.5 mt-2">
             <button
               v-for="fov in ['90×70 mm (Makro)', '180×140 mm', '300×200 mm', '500 mm']"
               :key="fov"
               type="button"
-              class="badge badge-ghost badge-xs hover:badge-primary cursor-pointer"
+              class="preset-chip font-mono"
               @click="slsFov = fov; onFieldChanged()"
             >
               {{ fov.split(' ')[0] }}
@@ -340,12 +356,12 @@
             class="input input-sm input-bordered w-full font-mono text-xs"
             placeholder="e.g. 0.05 mm"
           />
-          <div class="flex flex-wrap gap-1 mt-1.5">
+          <div class="flex flex-wrap gap-1.5 mt-2">
             <button
               v-for="acc in ['0.02 mm', '0.05 mm', '0.1 mm', '0.2 mm']"
               :key="acc"
               type="button"
-              class="badge badge-ghost badge-xs hover:badge-primary cursor-pointer"
+              class="preset-chip font-mono"
               @click="slsAccuracy = acc; onFieldChanged()"
             >
               {{ acc }}
@@ -453,12 +469,20 @@
             </ul>
           </div>
           <!-- Presets -->
-          <div class="flex flex-wrap gap-1 mt-1.5">
+          <div class="flex flex-wrap items-center gap-1.5 mt-2">
+            <button
+              type="button"
+              class="btn btn-xs btn-outline btn-accent gap-1 font-bold shadow-2xs"
+              @click="isEquipmentPickerOpen = true"
+              :title="currentLocale === 'de' ? 'TLS-Scanner aus dem zentralen Pool auswählen' : 'Pick TLS scanner from central pool'"
+            >
+              💡 {{ currentLocale === 'de' ? 'Aus Geräte-Pool' : 'From Equipment Pool' }}
+            </button>
             <button
               v-for="s in HECTOR_TLS_SCANNERS"
               :key="s.name"
               type="button"
-              class="badge badge-ghost badge-xs hover:badge-accent cursor-pointer"
+              class="preset-chip"
               @click="applyTlsScanner(s)"
             >
               {{ s.name }}
@@ -480,12 +504,12 @@
             class="input input-sm input-bordered w-full font-mono text-xs"
             placeholder="e.g. 14 Standpunkte"
           />
-          <div class="flex flex-wrap gap-1 mt-1.5">
+          <div class="flex flex-wrap gap-1.5 mt-2">
             <button
               v-for="pos in ['6 Stationen', '14 Stationen', '28 Stationen', '45 Stationen']"
               :key="pos"
               type="button"
-              class="badge badge-ghost badge-xs hover:badge-accent cursor-pointer"
+              class="preset-chip font-mono"
               @click="tlsPositions = pos; onFieldChanged()"
             >
               {{ pos.split(' ')[0] }}
@@ -507,12 +531,12 @@
             class="input input-sm input-bordered w-full font-mono text-xs"
             placeholder="e.g. 1.0 mm @ 10m"
           />
-          <div class="flex flex-wrap gap-1 mt-1.5">
+          <div class="flex flex-wrap gap-1.5 mt-2">
             <button
               v-for="acc in ['1.0 mm @ 10m', '1.5 mm @ 10m', '2.0 mm @ 25m']"
               :key="acc"
               type="button"
-              class="badge badge-ghost badge-xs hover:badge-accent cursor-pointer"
+              class="preset-chip font-mono"
               @click="tlsAccuracy = acc; onFieldChanged()"
             >
               {{ acc.split(' ')[0] }}
@@ -696,12 +720,12 @@
             class="input input-sm input-bordered w-full font-mono text-xs"
             placeholder="e.g. 15.8 Mio. Faces"
           />
-          <div class="flex flex-wrap gap-1 mt-1.5">
+          <div class="flex flex-wrap gap-1.5 mt-2">
             <button
               v-for="p in ['50.000 Faces (Web)', '500.000 Faces', '2.5 Mio. Faces', '15.8 Mio. Faces']"
               :key="p"
               type="button"
-              class="badge badge-ghost badge-xs hover:badge-primary cursor-pointer"
+              class="preset-chip font-mono"
               @click="polygonCount = p; onFieldChanged()"
             >
               {{ p.split(' ')[0] }}
@@ -746,8 +770,8 @@
       </div>
 
       <!-- Texturen & PBR (nur bei Mesh) -->
-      <div v-if="assetType === 'mesh'" class="pt-2 border-t border-base-200">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div v-if="assetType === 'mesh'" class="pt-3 border-t border-base-300">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="label py-0.5"><span class="label-text text-xs font-semibold">{{ currentLocale === 'de' ? 'Texturauflösung:' : 'Texture Resolution:' }}</span></label>
             <div class="flex flex-wrap gap-1.5">
@@ -769,8 +793,8 @@
               <label
                 v-for="map in PBR_MAPS"
                 :key="map.code"
-                class="badge badge-sm gap-1 cursor-pointer transition-all py-2"
-                :class="selectedMaps.includes(map.code) ? 'badge-primary font-semibold' : 'badge-ghost border-base-300'"
+                class="preset-chip"
+                :class="selectedMaps.includes(map.code) ? 'ring-2 ring-primary bg-primary/15 font-bold text-primary' : ''"
               >
                 <input
                   type="checkbox"
@@ -789,14 +813,460 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- SECTION 5: SOFTWARE (VERARBEITUNG / REGISTRIERUNG)           -->
+    <!-- SECTION 4B: METROLOGIE — GENAUIGKEIT & AUFLÖSUNG (DAP/SCHEMA) -->
     <!-- ============================================================ -->
-    <div class="p-4 bg-base-200/40 rounded-xl border border-base-200 mb-5">
-      <div class="font-bold text-xs uppercase tracking-wider text-base-content/70 flex items-center gap-1.5 mb-2">
-        <span>⚙️</span>
-        <span>{{ currentLocale === 'de' ? '4. Verarbeitungs- & Rekonstruktions-Software' : '4. Processing & Reconstruction Software' }}</span>
+    <div class="p-5 bg-info/5 rounded-2xl border border-info/25 mb-5">
+      <div class="flex flex-wrap items-start justify-between gap-3 mb-4 pb-3 border-b border-info/20">
+        <div class="space-y-1">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="font-bold text-sm uppercase tracking-wider text-info flex items-center gap-1.5">
+              <span>📏</span>
+              <span>{{ currentLocale === 'de' ? '4. Metrologie: Genauigkeit & Auflösung' : '4. Metrology: Accuracy & Resolution' }}</span>
+            </span>
+            <span class="px-2 py-0.5 rounded-md bg-info/15 text-info font-mono text-[11px] font-semibold">
+              HERMES-DAP &amp; CARARE &lt;extent&gt;
+            </span>
+          </div>
+          <p class="text-xs text-base-content/70 leading-relaxed max-w-3xl">
+            {{ currentLocale === 'de'
+              ? 'Dedizierte Felder für messtechnische Genauigkeit und räumliche/optische Auflösung. Werden im HERMES-DAP XML als <accuracy> und <resolution> sowie im 100% CARARE-konformen XML als wiederholte <extent>- und <note>-Elemente ausgegeben.'
+              : 'Dedicated fields for metrological accuracy and spatial/optical resolution. Exported as <accuracy> and <resolution> in Extended HERMES-DAP XML, and as repeated <extent> and <note> elements in 100% CARARE-compliant XML.' }}
+          </p>
+        </div>
       </div>
 
+      <!-- Unterbereich A: Genauigkeit (Accuracy) -->
+      <div class="mb-6" data-xml-tag="accuracy">
+        <div class="text-xs font-bold text-base-content/85 mb-3 flex flex-wrap items-center gap-2">
+          <span class="px-2 py-0.5 rounded bg-info text-info-content font-mono text-[11px]">A</span>
+          <span class="text-sm">{{ currentLocale === 'de' ? 'Genauigkeit – Messtechnische Präzision & Kalibrierung' : 'Accuracy – Metrological Precision & Calibration' }}</span>
+          <code class="text-[11px] font-mono px-2 py-0.5 rounded bg-base-200 text-info">&lt;accuracy&gt;</code>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- 3D-Punktgenauigkeit -->
+          <div class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between" data-xml-tag="pointAccuracy">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <span class="text-xs font-bold text-base-content leading-snug">
+                  {{ currentLocale === 'de' ? '3D-Punktgenauigkeit' : '3D Point Accuracy' }}
+                </span>
+                <code class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-info/10 text-info shrink-0">&lt;pointAccuracy&gt;</code>
+              </div>
+              <p class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed">
+                {{ currentLocale === 'de'
+                  ? 'Maximale Einzelpunkt-Abweichung des Sensors im Messvolumen (z.B. nach VDI/VDE 2634).'
+                  : 'Maximum single-point deviation of the sensor within the measuring volume (e.g. per VDI/VDE 2634).' }}
+              </p>
+            </div>
+            <div>
+              <input
+                type="text"
+                v-model="accuracyPoint"
+                @input="onFieldChanged"
+                class="input input-sm input-bordered w-full font-mono text-xs"
+                placeholder="z.B. 0.05 mm"
+              />
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                <button
+                  v-for="preset in ['0.02 mm', '0.05 mm', '0.1 mm', '1.0 mm @ 10m']"
+                  :key="preset"
+                  type="button"
+                  class="preset-chip font-mono"
+                  @click="accuracyPoint = preset; slsAccuracy = preset; onFieldChanged()"
+                >
+                  {{ preset }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Registrierungsfehler / RMSE -->
+          <div class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between" data-xml-tag="registrationRmse">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <span class="text-xs font-bold text-base-content leading-snug">
+                  {{ currentLocale === 'de' ? 'Registrierungsfehler / RMSE' : 'Registration Error / RMSE' }}
+                </span>
+                <code class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-info/10 text-info shrink-0">&lt;registrationRmse&gt;</code>
+              </div>
+              <p class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed">
+                {{ currentLocale === 'de'
+                  ? 'Root-Mean-Square-Error der globalen Scan-Registrierung (ICP) bzw. Bündelblockausgleichung.'
+                  : 'Root-Mean-Square Error of global scan registration (ICP) or bundle adjustment reprojection error.' }}
+              </p>
+            </div>
+            <div>
+              <input
+                type="text"
+                v-model="accuracyRmse"
+                @input="onFieldChanged"
+                class="input input-sm input-bordered w-full font-mono text-xs"
+                placeholder="z.B. 0.018 mm ICP-RMSE (0.32 px)"
+              />
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                <button
+                  v-for="preset in ['0.02 mm ICP-RMSE', '0.35 px Reproj.-Error', '0.05 mm RMSE', '1.2 mm Cloud-to-Cloud']"
+                  :key="preset"
+                  type="button"
+                  class="preset-chip font-mono"
+                  @click="accuracyRmse = preset; onFieldChanged()"
+                >
+                  {{ preset }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Volumetrische Genauigkeit -->
+          <div class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between" data-xml-tag="volumetricAccuracy">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <span class="text-xs font-bold text-base-content leading-snug">
+                  {{ currentLocale === 'de' ? 'Volumetrische Genauigkeit' : 'Volumetric Accuracy' }}
+                </span>
+                <code class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-info/10 text-info shrink-0">&lt;volumetricAccuracy&gt;</code>
+              </div>
+              <p class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed">
+                {{ currentLocale === 'de'
+                  ? 'Längenmessabweichung über die Gesamtausdehnung des Objekts (z.B. mm pro Meter Objektlänge).'
+                  : 'Length measurement error across total object extent (e.g. mm per meter of object length).' }}
+              </p>
+            </div>
+            <div>
+              <input
+                type="text"
+                v-model="accuracyVolumetric"
+                @input="onFieldChanged"
+                class="input input-sm input-bordered w-full font-mono text-xs"
+                placeholder="z.B. 0.05 mm + 0.3 mm/m"
+              />
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                <button
+                  v-for="preset in ['0.05 mm + 0.3 mm/m', '0.1 mm + 0.3 mm/m', '± 0.15 mm auf 1.2 m']"
+                  :key="preset"
+                  type="button"
+                  class="preset-chip font-mono"
+                  @click="accuracyVolumetric = preset; onFieldChanged()"
+                >
+                  {{ preset }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kalibrierungsmethode & Norm -->
+          <div class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between" data-xml-tag="calibrationMethod">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <span class="text-xs font-bold text-base-content leading-snug">
+                  {{ currentLocale === 'de' ? 'Kalibrierung & Referenzstandard' : 'Calibration & Reference Standard' }}
+                </span>
+                <code class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-info/10 text-info shrink-0">&lt;calibrationMethod&gt;</code>
+              </div>
+              <p class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed">
+                {{ currentLocale === 'de'
+                  ? 'Verwendete Prüfplaketten, Maßstäbe, Kalibrierstandards (VDI/VDE 2634) und Farbtargets.'
+                  : 'Calibration plates, scale bars, metrological standards (VDI/VDE 2634), and color targets used.' }}
+              </p>
+            </div>
+            <div>
+              <input
+                type="text"
+                v-model="accuracyCalibration"
+                @input="onFieldChanged"
+                class="input input-sm input-bordered w-full text-xs"
+                placeholder="z.B. VDI/VDE 2634, Invar-Maßstab, ColorChecker"
+              />
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                <button
+                  v-for="preset in ['VDI/VDE 2634 + ColorChecker', 'Invar-Maßstab + Kalibrierplatte', 'Werkskalibrierung + Target']"
+                  :key="preset"
+                  type="button"
+                  class="preset-chip"
+                  @click="accuracyCalibration = preset; onFieldChanged()"
+                >
+                  {{ preset }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unterbereich B: Auflösung (Resolution) -->
+      <div data-xml-tag="resolution">
+        <div class="text-xs font-bold text-base-content/85 mb-3 flex flex-wrap items-center gap-2">
+          <span class="px-2 py-0.5 rounded bg-secondary text-secondary-content font-mono text-[11px]">B</span>
+          <span class="text-sm">{{ currentLocale === 'de' ? 'Auflösung – Geometrische & Optische Abtastdichte' : 'Resolution – Geometric & Optical Sampling Density' }}</span>
+          <code class="text-[11px] font-mono px-2 py-0.5 rounded bg-base-200 text-secondary">&lt;resolution&gt;</code>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Räumliche 3D-Auflösung (Punktabstand) -->
+          <div class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between" data-xml-tag="spatialResolution">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <span class="text-xs font-bold text-base-content leading-snug">
+                  {{ currentLocale === 'de' ? 'Räumliche 3D-Auflösung (Punktabstand)' : '3D Spatial Resolution (Point Spacing)' }}
+                </span>
+                <code class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-secondary/10 text-secondary shrink-0">&lt;spatialResolution&gt;</code>
+              </div>
+              <p class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed">
+                {{ currentLocale === 'de'
+                  ? 'Kleinster aufgelöster 3D-Punktabstand (Point Spacing) bzw. Kantenlänge des Polygonnetzes.'
+                  : 'Smallest resolved 3D point spacing or triangle edge length on the mesh surface.' }}
+              </p>
+            </div>
+            <div>
+              <input
+                type="text"
+                v-model="resolutionSpatial"
+                @input="onFieldChanged"
+                class="input input-sm input-bordered w-full font-mono text-xs"
+                placeholder="z.B. 0.1 mm Punktabstand"
+              />
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                <button
+                  v-for="preset in ['0.05 mm', '0.1 mm', '0.25 mm', '1.5 mm @ 10m']"
+                  :key="preset"
+                  type="button"
+                  class="preset-chip font-mono"
+                  @click="resolutionSpatial = preset; onFieldChanged()"
+                >
+                  {{ preset }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ground Sampling Distance (GSD) -->
+          <div class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between" data-xml-tag="gsd">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <span class="text-xs font-bold text-base-content leading-snug">
+                  {{ currentLocale === 'de' ? 'Objekt-Pixelauflösung (GSD)' : 'Ground Sampling Distance (GSD)' }}
+                </span>
+                <code class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-secondary/10 text-secondary shrink-0">&lt;gsd&gt;</code>
+              </div>
+              <p class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed">
+                {{ currentLocale === 'de'
+                  ? 'Physische Größe eines projizierten Kamerapixels auf der Objektoberfläche in mm/px.'
+                  : 'Physical footprint of a single camera pixel projected onto the object surface in mm/px.' }}
+              </p>
+            </div>
+            <div>
+              <input
+                type="text"
+                v-model="photoGsd"
+                @input="onFieldChanged"
+                class="input input-sm input-bordered w-full font-mono text-xs"
+                placeholder="z.B. 0.12 mm/px"
+              />
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                <button
+                  v-for="preset in ['0.05 mm/px', '0.12 mm/px', '< 0.15 mm/px', '0.30 mm/px']"
+                  :key="preset"
+                  type="button"
+                  class="preset-chip font-mono"
+                  @click="photoGsd = preset; onFieldChanged()"
+                >
+                  {{ preset }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- UV-Texturauflösung -->
+          <div class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between" data-xml-tag="textureResolution">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <span class="text-xs font-bold text-base-content leading-snug">
+                  {{ currentLocale === 'de' ? 'UV-Texturauflösung' : 'UV Texture Resolution' }}
+                </span>
+                <code class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-secondary/10 text-secondary shrink-0">&lt;textureResolution&gt;</code>
+              </div>
+              <p class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed">
+                {{ currentLocale === 'de'
+                  ? 'Abmessungen der gebackenen Textur-Atlanten (Albedo, Normal, Roughness, AO) in Pixeln.'
+                  : 'Dimensions of baked UV texture atlases (Albedo, Normal, Roughness, AO) in pixels.' }}
+              </p>
+            </div>
+            <div>
+              <input
+                type="text"
+                v-model="textureResolution"
+                @input="onFieldChanged"
+                class="input input-sm input-bordered w-full font-mono text-xs"
+                placeholder="z.B. 8192×8192 px (8K)"
+              />
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                <button
+                  v-for="res in TEXTURE_RESOLUTIONS"
+                  :key="res.label"
+                  type="button"
+                  class="preset-chip font-mono"
+                  @click="textureResolution = res.val; onFieldChanged()"
+                >
+                  {{ res.label }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Optische Sensorauflösung -->
+          <div class="bg-base-100 p-4 rounded-xl border border-base-300 shadow-2xs flex flex-col justify-between" data-xml-tag="sensorResolution">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-1">
+                <span class="text-xs font-bold text-base-content leading-snug">
+                  {{ currentLocale === 'de' ? 'Optische Sensorauflösung' : 'Optical Sensor Resolution' }}
+                </span>
+                <code class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-secondary/10 text-secondary shrink-0">&lt;sensorResolution&gt;</code>
+              </div>
+              <p class="text-[11px] text-base-content/60 mb-2.5 leading-relaxed">
+                {{ currentLocale === 'de'
+                  ? 'Native Auflösung des bildgebenden Kamerasensors bzw. der Streifenlicht-Messkamera.'
+                  : 'Native resolution of the imaging camera sensor or structured-light measurement camera.' }}
+              </p>
+            </div>
+            <div>
+              <input
+                type="text"
+                v-model="photoSensor"
+                @input="onFieldChanged"
+                class="input input-sm input-bordered w-full font-mono text-xs"
+                placeholder="z.B. 45.7 MP"
+              />
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                <button
+                  v-for="res in SENSOR_PRESETS"
+                  :key="res"
+                  type="button"
+                  class="preset-chip font-mono"
+                  @click="photoSensor = res; onFieldChanged()"
+                >
+                  {{ res }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 5: SOFTWARE & VERSIONEN (WIEDERHOLBARE STRUKTUR)     -->
+    <!-- ============================================================ -->
+    <div class="p-5 bg-base-200/40 rounded-2xl border border-base-300 mb-5" data-xml-tag="softwareList">
+      <div class="flex flex-wrap items-start justify-between gap-3 mb-4 pb-3 border-b border-base-300">
+        <div class="space-y-1">
+          <div class="font-bold text-sm uppercase tracking-wider text-base-content/85 flex flex-wrap items-center gap-2">
+            <span>⚙️</span>
+            <span>{{ currentLocale === 'de' ? '5. Eingesetzte Software & Versionen' : '5. Software & Versions Used' }}</span>
+            <code class="text-[11px] font-mono px-2 py-0.5 rounded bg-base-300 text-base-content/80">&lt;softwareList&gt; / &lt;note&gt;</code>
+          </div>
+          <p class="text-xs text-base-content/65 leading-relaxed max-w-3xl">
+            {{ currentLocale === 'de'
+              ? 'Jede Software wird mit exakter Versionsnummer und Prozess-Rolle erfasst. Im HERMES-DAP XML als strukturierte <software>-Elemente, im CARARE 2.0.6 XML als separate wiederholte <note>- bzw. <equipment>-Elemente.'
+              : 'Each software tool is recorded with its exact version number and pipeline role. Exported as structured <software> tags in HERMES-DAP XML and repeated <note>/<equipment> elements in CARARE 2.0.6 XML.' }}
+          </p>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap shrink-0">
+          <button
+            type="button"
+            class="btn btn-sm btn-outline btn-info gap-1.5 font-bold shadow-2xs"
+            @click="isSoftwarePickerOpen = true"
+            :title="currentLocale === 'de' ? 'Software aus dem zentralen Pool auswählen' : 'Pick software from central pool'"
+          >
+            <span>💻 {{ currentLocale === 'de' ? 'Aus Software-Pool wählen' : 'Pick from Software Pool' }}</span>
+          </button>
+          <button type="button" class="btn btn-sm btn-primary gap-1.5" @click="addStructuredSoftware()">
+            <span>+ {{ currentLocale === 'de' ? 'Software hinzufügen' : 'Add Software' }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 1-Klick Vorlagen für Software + Version + Rolle -->
+      <div class="mb-4">
+        <span class="text-xs font-semibold text-base-content/70 block mb-2">
+          {{ currentLocale === 'de' ? 'Schnellauswahl (Software + Version + Rolle):' : 'Quick Presets (Software + Version + Role):' }}
+        </span>
+        <div class="flex flex-wrap gap-2">
+          <button
+            v-for="preset in STRUCTURED_SOFTWARE_PRESETS"
+            :key="preset.name + preset.version"
+            type="button"
+            class="preset-chip"
+            @click="addStructuredSoftwarePreset(preset)"
+          >
+            <span class="font-bold text-base-content">+ {{ preset.name }}</span>
+            <span class="font-mono text-[11px] px-1.5 py-0.2 rounded bg-primary/15 text-primary font-semibold">v{{ preset.version }}</span>
+            <span class="text-[11px] opacity-70">({{ currentLocale === 'de' ? preset.roleDe : preset.roleEn }})</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Kompakte Software-Liste -->
+      <div v-if="softwareList.length > 0" class="overflow-x-auto border border-base-300 rounded-xl bg-base-100 mb-4 shadow-2xs">
+        <table class="table table-xs w-full">
+          <thead class="bg-base-200/70 text-base-content/75 uppercase text-[10px] tracking-wider font-bold">
+            <tr>
+              <th class="w-4/12 py-2 px-3">{{ currentLocale === 'de' ? 'Software-Name' : 'Software Name' }}</th>
+              <th class="w-2/12 py-2 px-2">{{ currentLocale === 'de' ? 'Version' : 'Version' }}</th>
+              <th class="w-5/12 py-2 px-2">{{ currentLocale === 'de' ? 'Verarbeitungs-Rolle / Workflow-Schritt' : 'Processing Role / Pipeline Step' }}</th>
+              <th class="w-1/12 py-2 px-2 text-center"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-base-200">
+            <tr
+              v-for="(sw, idx) in softwareList"
+              :key="idx"
+              data-xml-tag="software"
+              class="hover:bg-base-200/40 transition-colors"
+            >
+              <td class="py-1.5 px-3">
+                <input
+                  type="text"
+                  v-model="sw.name"
+                  @input="syncSoftwareListToLegacy"
+                  class="input input-xs input-bordered w-full font-semibold text-xs"
+                  :placeholder="currentLocale === 'de' ? 'z.B. Blender / Artec Studio' : 'e.g. Blender / Artec Studio'"
+                />
+              </td>
+              <td class="py-1.5 px-2">
+                <input
+                  type="text"
+                  v-model="sw.version"
+                  @input="syncSoftwareListToLegacy"
+                  class="input input-xs input-bordered w-full font-mono text-xs"
+                  placeholder="z.B. 4.2 LTS"
+                />
+              </td>
+              <td class="py-1.5 px-2">
+                <input
+                  type="text"
+                  v-model="sw.role"
+                  @input="syncSoftwareListToLegacy"
+                  class="input input-xs input-bordered w-full text-xs"
+                  :placeholder="currentLocale === 'de' ? 'z.B. Mesh-Dezimation, PBR-Baking...' : 'e.g. Mesh decimation, PBR baking...'"
+                />
+              </td>
+              <td class="py-1.5 px-2 text-center">
+                <button
+                  type="button"
+                  class="btn btn-xs btn-ghost text-error hover:bg-error/10 px-2"
+                  @click="removeStructuredSoftware(idx)"
+                  :title="currentLocale === 'de' ? 'Eintrag entfernen' : 'Remove entry'"
+                >
+                  ✕
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- HECTOR Vokabular-Suche für weitere Software -->
       <div class="relative">
         <input
           type="text"
@@ -804,7 +1274,7 @@
           @focus="showSoftwareDropdown = true"
           @input="onSoftwareInput"
           class="input input-sm input-bordered w-full text-xs font-medium"
-          :placeholder="currentLocale === 'de' ? 'HECTOR durchsuchen (z.B. RealityCapture, Artec Studio, FARO SCENE, Blender)...' : 'Search HECTOR (e.g. RealityCapture)...'"
+          :placeholder="currentLocale === 'de' ? 'Optional: HECTOR Vokabular durchsuchen (z.B. RealityCapture, Artec Studio, FARO SCENE, Blender)...' : 'Optional: Search HECTOR vocabulary (e.g. RealityCapture)...'"
         />
         <!-- Software Dropdown -->
         <div
@@ -827,76 +1297,65 @@
             </li>
           </ul>
         </div>
-        <!-- Software Presets -->
-        <div class="flex flex-wrap gap-1 mt-1.5">
-          <button
-            v-for="sw in SOFTWARE_PRESETS"
-            :key="sw"
-            type="button"
-            class="badge badge-ghost badge-xs hover:badge-primary cursor-pointer"
-            @click="addSoftwarePreset(sw)"
-          >
-            {{ sw }}
-          </button>
-        </div>
       </div>
     </div>
 
     <!-- ============================================================ -->
-    <!-- SECTION 6: DATEIGRÖSSE & CARARE <extent>                     -->
+    <!-- SECTION 6: DATEIGRÖSSE & WIEDERHOLTE CARARE <extent>-FELDER  -->
     <!-- ============================================================ -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5 p-3.5 bg-base-200/30 rounded-xl border border-base-200">
-      <div>
-        <label class="label py-1">
-          <span class="label-text font-bold text-xs uppercase tracking-wider text-base-content/70 flex items-center gap-1.5">
-            <span>💾</span>
-            <span>{{ currentLocale === 'de' ? 'Dateigröße (Messumfang)' : 'File Size (Extent)' }}</span>
-            <span class="text-accent font-black">*</span>
-          </span>
-        </label>
-        <div class="join w-full">
+    <div class="p-3.5 bg-base-200/30 rounded-xl border border-base-200 mb-5" data-xml-tag="extent">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+        <div>
+          <label class="label py-1">
+            <span class="label-text font-bold text-xs uppercase tracking-wider text-base-content/70 flex items-center gap-1.5">
+              <span>💾</span>
+              <span>{{ currentLocale === 'de' ? 'Dateigröße (Messumfang)' : 'File Size (Extent)' }}</span>
+              <span class="text-accent font-black">*</span>
+            </span>
+          </label>
+          <div class="join w-full">
+            <input
+              type="number"
+              step="any"
+              v-model="fileSizeValue"
+              @input="updateExtent"
+              class="input input-sm input-bordered join-item w-full font-mono text-xs"
+              placeholder="e.g. 450"
+            />
+            <select v-model="fileSizeUnit" @change="updateExtent" class="select select-sm select-bordered join-item font-semibold text-xs">
+              <option value="MB">MB</option>
+              <option value="GB">GB</option>
+              <option value="KB">KB</option>
+              <option value="TB">TB</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- CARARE <extent> Primary -->
+        <div>
+          <label class="label py-1">
+            <span class="label-text font-bold text-xs uppercase tracking-wider text-base-content/70 flex items-center gap-1.5">
+              <span>📐</span>
+              <span>{{ currentLocale === 'de' ? 'Primäres Ausmaß (CARARE <extent>)' : 'Primary Extent (CARARE <extent>)' }}</span>
+            </span>
+          </label>
           <input
-            type="number"
-            step="any"
-            v-model="fileSizeValue"
-            @input="updateExtent"
-            class="input input-sm input-bordered join-item w-full font-mono text-xs"
-            placeholder="e.g. 450"
+            type="text"
+            :value="extent"
+            @input="$emit('update:extent', $event.target.value)"
+            class="input input-sm input-bordered w-full font-mono text-xs"
+            placeholder="e.g. 450 MB"
           />
-          <select v-model="fileSizeUnit" @change="updateExtent" class="select select-sm select-bordered join-item font-semibold text-xs">
-            <option value="MB">MB</option>
-            <option value="GB">GB</option>
-            <option value="KB">KB</option>
-            <option value="TB">TB</option>
-          </select>
         </div>
       </div>
 
-      <!-- CARARE <extent> -->
-      <div>
-        <label class="label py-1">
-          <span class="label-text font-bold text-xs uppercase tracking-wider text-base-content/70 flex items-center gap-1.5">
-            <span>📐</span>
-            <span>{{ currentLocale === 'de' ? 'Gesamtes Ausmaß (CARARE <extent>)' : 'Full Extent (CARARE <extent>)' }}</span>
-          </span>
-        </label>
-        <input
-          type="text"
-          :value="extent"
-          @input="$emit('update:extent', $event.target.value)"
-          class="input input-sm input-bordered w-full font-mono text-xs"
-          placeholder="e.g. 450 MB (15.8M Polygone, 8K PBR)"
-        />
-        <p class="text-[10px] text-base-content/50 mt-1">
-          {{ currentLocale === 'de' ? 'Wird direkt in das XML-Element CARARE <extent> exportiert.' : 'Exported directly into the CARARE <extent> element.' }}
-        </p>
-      </div>
+
     </div>
 
     <!-- ============================================================ -->
     <!-- SECTION 7: CARARE <formatDetails> OUTPUT & SYNCHRONISATION    -->
     <!-- ============================================================ -->
-    <div>
+    <div data-xml-tag="formatDetails">
       <div class="flex items-center justify-between mb-1.5">
         <label class="label-text font-bold text-xs uppercase tracking-wider text-base-content/70 flex items-center gap-1.5">
           <span>📋</span>
@@ -921,13 +1380,37 @@
         </span>
       </div>
     </div>
+
+    <!-- Equipment Modal Picker -->
+    <EquipmentPickerModal
+      :isOpen="isEquipmentPickerOpen"
+      mode="select"
+      :locale="currentLocale"
+      @close="isEquipmentPickerOpen = false"
+      @select="handleSelectEquipment"
+    />
+
+    <!-- Software Modal Picker -->
+    <SoftwarePickerModal
+      :isOpen="isSoftwarePickerOpen"
+      mode="select"
+      :locale="currentLocale"
+      @close="isSoftwarePickerOpen = false"
+      @select="handleSelectSoftware"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
+import SoftwarePickerModal from './SoftwarePickerModal.vue';
+import EquipmentPickerModal from './EquipmentPickerModal.vue';
 
 const props = defineProps({
+  form: {
+    type: Object,
+    default: null
+  },
   formats: {
     type: Array,
     default: () => []
@@ -957,6 +1440,51 @@ const emit = defineEmits([
 // ----------------------------------------------------
 const acquisitionMethod = ref('');
 const assetType = ref('mesh');
+
+const isEquipmentPickerOpen = ref(false);
+const isSoftwarePickerOpen = ref(false);
+const equipmentPickerTarget = ref('camera');
+
+const openEquipmentPicker = (target = 'camera') => {
+  equipmentPickerTarget.value = target;
+  isEquipmentPickerOpen.value = true;
+};
+
+const handleSelectSoftware = (sw) => {
+  if (!sw) return;
+  if (!Array.isArray(softwareList.value)) {
+    softwareList.value = [];
+  }
+  softwareList.value.push({
+    name: sw.name,
+    version: sw.version || '',
+    role: sw.role || sw.category || ''
+  });
+  syncSoftwareListToLegacy();
+  onFieldChanged();
+};
+
+const handleSelectEquipment = (eq) => {
+  if (!eq) return;
+  const target = equipmentPickerTarget.value;
+  if (target === 'sls') {
+    slsScanner.value = eq.name;
+  } else if (target === 'tls') {
+    tlsScanner.value = eq.name;
+  } else if (target === 'lens') {
+    photoLens.value = eq.name;
+  } else if (target === 'target') {
+    photoColorTarget.value = eq.name;
+  } else {
+    // Default camera
+    photoCamera.value = eq.name;
+    if (eq.specs && eq.specs.includes('MP')) {
+      const match = eq.specs.match(/(\d+(?:\.\d+)?\s*MP)/i);
+      if (match) photoSensor.value = match[1];
+    }
+  }
+  onFieldChanged();
+};
 
 const ASSET_TYPES = [
   { code: 'mesh', icon: '🧊', labelDe: '3D-Polygonnetz (Mesh)', labelEn: '3D Mesh' },
@@ -1040,17 +1568,19 @@ const applyCamera = (cam) => {
 };
 
 const HECTOR_CAMERAS = [
-  { name: 'Nikon Z 8', res: '45.7 MP (8256×5504 px)', lens: 'NIKKOR Z 50mm f/1.8 S' },
-  { name: 'Nikon D750', res: '24.3 MP (6016×4016 px)', lens: 'AF-S NIKKOR 50mm f/1.8G' },
-  { name: 'Canon EOS R5', res: '45.0 MP (8192×5464 px)', lens: 'Canon RF 50mm f/1.8 STM' },
-  { name: 'Sony Alpha 7R V', res: '61.0 MP (9504×6336 px)', lens: 'Sony FE 50mm f/1.4 GM' }
+  { name: 'Nikon Z 8', res: '45.7 MP', lens: 'NIKKOR Z 50mm f/1.8 S' },
+  { name: 'Nikon D750', res: '24.3 MP', lens: 'AF-S NIKKOR 50mm f/1.8G' },
+  { name: 'Canon EOS R5', res: '45.0 MP', lens: 'Canon RF 50mm f/1.8 STM' },
+  { name: 'Sony Alpha 7R V', res: '61.0 MP', lens: 'Sony FE 50mm f/1.4 GM' }
 ];
 
 const SENSOR_PRESETS = [
-  '45.7 MP (8256×5504 px)',
-  '61.0 MP (9504×6336 px)',
-  '24.3 MP (6016×4016 px)',
-  '20.1 MP (5472×3648 px)'
+  '45.7 MP',
+  '61.0 MP',
+  '24.3 MP',
+  '20.1 MP',
+  '100 MP',
+  '150 MP'
 ];
 
 const LENS_PRESETS = [
@@ -1297,9 +1827,75 @@ const PBR_MAPS = [
 ];
 
 // ----------------------------------------------------
-// 6. Processing Software
+// 5B. Metrology: Dedicated Accuracy & Resolution Fields
 // ----------------------------------------------------
-const processingSoftware = ref('RealityCapture, Blender 4.2');
+const accuracyPoint = ref('0.05 mm');
+const accuracyRmse = ref('0.018 mm ICP-RMSE');
+const accuracyVolumetric = ref('0.05 mm + 0.3 mm/m');
+const accuracyCalibration = ref('VDI/VDE 2634 Kalibrierplatte, Invar-Maßstab & X-Rite ColorChecker Passport');
+const resolutionSpatial = ref('0.1 mm');
+
+// ----------------------------------------------------
+// 6. Processing Software & Versions (Structured List)
+// ----------------------------------------------------
+const softwareList = ref([
+  { name: 'Artec Studio', version: '19', role: 'Scan-Registrierung & Mesh-Fusion (SLS)' },
+  { name: 'Blender', version: '4.2', role: 'Mesh-Dezimation, Retopologie & UV-Unwrapping' },
+  { name: 'Substance Designer', version: '14', role: 'PBR-Textur-Baking (Albedo, Normal, Roughness, AO)' },
+  { name: 'Adobe Photoshop Lightroom', version: '14.1', role: 'RAW-Farbkalibrierung (X-Rite ColorChecker)' }
+]);
+
+const STRUCTURED_SOFTWARE_PRESETS = [
+  { name: 'Artec Studio', version: '19', roleDe: 'SLS Scan-Registrierung & Mesh-Fusion', roleEn: 'SLS Scan Registration & Mesh Fusion' },
+  { name: 'RealityCapture', version: '1.4', roleDe: 'Photogrammetrie SfM/MVS & Texturierung', roleEn: 'Photogrammetry SfM/MVS & Texturing' },
+  { name: 'Agisoft Metashape', version: '2.1', roleDe: 'Bündelblockausgleichung & Dense Cloud', roleEn: 'Bundle Adjustment & Dense Cloud' },
+  { name: 'Blender', version: '4.2', roleDe: 'Mesh-Dezimation, UV-Mapping & Shader', roleEn: 'Mesh Decimation, UV Mapping & Shaders' },
+  { name: 'Substance Designer', version: '14', roleDe: 'PBR-Textur-Baking (Normal/Roughness/AO)', roleEn: 'PBR Texture Baking (Normal/Roughness/AO)' },
+  { name: 'Adobe Photoshop Lightroom', version: '14.1', roleDe: 'RAW-Farbkalibrierung (ColorChecker)', roleEn: 'RAW Color Calibration (ColorChecker)' },
+  { name: 'CloudCompare', version: '2.13', roleDe: 'Punktwolken-Analyse & ICP-Abgleich', roleEn: 'Point Cloud Analysis & ICP Alignment' },
+  { name: 'FARO SCENE', version: '2024.1', roleDe: 'TLS-Registrierung & Kolorierung', roleEn: 'TLS Registration & Colorization' }
+];
+
+const processingSoftware = ref('Artec Studio 19, Blender 4.2, Substance Designer 14, Adobe Photoshop Lightroom 14.1');
+
+const addStructuredSoftware = () => {
+  softwareList.value.push({ name: '', version: '', role: '' });
+  syncSoftwareListToLegacy();
+};
+
+const addStructuredSoftwarePreset = (preset) => {
+  const isDe = props.currentLocale === 'de';
+  const exists = softwareList.value.some(
+    s => s.name.toLowerCase() === preset.name.toLowerCase() && s.version === preset.version
+  );
+  if (!exists) {
+    softwareList.value.push({
+      name: preset.name,
+      version: preset.version,
+      role: isDe ? preset.roleDe : preset.roleEn
+    });
+    syncSoftwareListToLegacy();
+  }
+};
+
+const removeStructuredSoftware = (idx) => {
+  softwareList.value.splice(idx, 1);
+  syncSoftwareListToLegacy();
+};
+
+const syncSoftwareListToLegacy = () => {
+  const formatted = softwareList.value
+    .filter(s => s.name && s.name.trim())
+    .map(s => {
+      const ver = s.version && s.version.trim() ? ` v${s.version.trim()}` : '';
+      const role = s.role && s.role.trim() ? ` (${s.role.trim()})` : '';
+      return `${s.name.trim()}${ver}${role}`;
+    });
+  if (formatted.length > 0) {
+    processingSoftware.value = formatted.join(', ');
+  }
+  onFieldChanged();
+};
 
 const isSearchingSoftware = ref(false);
 const showSoftwareDropdown = ref(false);
@@ -1349,14 +1945,50 @@ const addSoftwarePreset = (sw) => {
   } else if (!processingSoftware.value.includes(sw)) {
     processingSoftware.value += `, ${sw}`;
   }
+  const exists = softwareList.value.some(s => s.name && sw.toLowerCase().includes(s.name.toLowerCase()));
+  if (!exists) {
+    softwareList.value.push({ name: sw, version: '', role: '' });
+  }
   onFieldChanged();
 };
 
 // ----------------------------------------------------
-// 7. File Size & Extent
+// 7. File Size & Repeated CARARE <extent> Elements
 // ----------------------------------------------------
 const fileSizeValue = ref('450');
 const fileSizeUnit = ref('MB');
+
+const computedRepeatedExtents = computed(() => {
+  const list = [];
+  if (fileSizeValue.value) {
+    list.push(`File Size: ${fileSizeValue.value} ${fileSizeUnit.value}`);
+  } else if (props.extent) {
+    list.push(props.extent);
+  }
+  if (assetType.value === 'mesh') {
+    if (polygonCount.value) list.push(`Polygon Count: ${polygonCount.value}`);
+    if (vertexCount.value) list.push(`Vertex Count: ${vertexCount.value}`);
+    if (textureResolution.value) list.push(`Texture Resolution: ${textureResolution.value}`);
+  } else if (assetType.value === 'pointcloud') {
+    if (vertexCount.value) list.push(`Point Count: ${vertexCount.value}`);
+  }
+  if (resolutionSpatial.value) {
+    list.push(`3D Spatial Resolution: ${resolutionSpatial.value}`);
+  }
+  if (photoGsd.value) {
+    list.push(`Ground Sampling Distance (GSD): ${photoGsd.value}`);
+  }
+  if (accuracyPoint.value) {
+    list.push(`3D Point Accuracy: ${accuracyPoint.value}`);
+  }
+  if (accuracyRmse.value) {
+    list.push(`Registration Error (RMSE): ${accuracyRmse.value}`);
+  }
+  if (photoSensor.value && (acquisitionMethod.value === 'photogrammetry' || acquisitionMethod.value === 'hybrid')) {
+    list.push(`Optical Sensor Resolution: ${photoSensor.value}`);
+  }
+  return list;
+});
 
 const updateExtent = () => {
   if (!fileSizeValue.value) return;
@@ -1372,12 +2004,70 @@ const updateExtent = () => {
   }
   const fullExtent = `${fileSizeValue.value} ${fileSizeUnit.value}${extra}`;
   emit('update:extent', fullExtent);
+  syncStructuredFormFields();
 };
+
+// Synchronize structured Accuracy, Resolution, SoftwareList & ExtentList onto parent form
+const syncStructuredFormFields = () => {
+  if (!props.form) return;
+  props.form['accuracy'] = {
+    pointAccuracy: accuracyPoint.value || slsAccuracy.value || '',
+    registrationRmse: accuracyRmse.value || '',
+    volumetricAccuracy: accuracyVolumetric.value || '',
+    calibrationMethod: accuracyCalibration.value || photoColorTarget.value || ''
+  };
+  props.form['resolution'] = {
+    spatialResolution: resolutionSpatial.value || '',
+    gsd: photoGsd.value || '',
+    textureResolution: textureResolution.value || '',
+    sensorResolution: photoSensor.value || ''
+  };
+  props.form['softwareList'] = softwareList.value
+    .filter(s => s && s.name && s.name.trim())
+    .map(s => ({
+      name: s.name.trim(),
+      version: (s.version || '').trim(),
+      role: (s.role || '').trim()
+    }));
+  props.form['extentList'] = [...computedRepeatedExtents.value];
+};
+
+const loadFromForm = () => {
+  if (!props.form) return;
+  if (props.form['accuracy'] && typeof props.form['accuracy'] === 'object') {
+    if (props.form['accuracy'].pointAccuracy) accuracyPoint.value = props.form['accuracy'].pointAccuracy;
+    if (props.form['accuracy'].registrationRmse) accuracyRmse.value = props.form['accuracy'].registrationRmse;
+    if (props.form['accuracy'].volumetricAccuracy) accuracyVolumetric.value = props.form['accuracy'].volumetricAccuracy;
+    if (props.form['accuracy'].calibrationMethod) accuracyCalibration.value = props.form['accuracy'].calibrationMethod;
+  }
+  if (props.form['resolution'] && typeof props.form['resolution'] === 'object') {
+    if (props.form['resolution'].spatialResolution) resolutionSpatial.value = props.form['resolution'].spatialResolution;
+    if (props.form['resolution'].gsd) photoGsd.value = props.form['resolution'].gsd;
+    if (props.form['resolution'].textureResolution) textureResolution.value = props.form['resolution'].textureResolution;
+    if (props.form['resolution'].sensorResolution) photoSensor.value = props.form['resolution'].sensorResolution;
+  }
+  if (Array.isArray(props.form['softwareList']) && props.form['softwareList'].length > 0) {
+    softwareList.value = props.form['softwareList'].map(s => ({
+      name: s.name || '',
+      version: s.version || '',
+      role: s.role || ''
+    }));
+  }
+};
+
+watch(
+  () => props.form && (props.form['recordInformation.id'] || props.form['appellation.id']),
+  () => {
+    loadFromForm();
+    syncStructuredFormFields();
+  }
+);
 
 // ----------------------------------------------------
 // Reactive Trigger
 // ----------------------------------------------------
 const onFieldChanged = () => {
+  syncStructuredFormFields();
   generateSummaries();
 };
 
@@ -1456,6 +2146,16 @@ const generateSummaries = () => {
     }
   }
 
+  // D2. Accuracy & Resolution Summary
+  const metBits = [];
+  if (accuracyPoint.value) metBits.push(`Point Accuracy: ${accuracyPoint.value}`);
+  if (accuracyRmse.value) metBits.push(`RMSE: ${accuracyRmse.value}`);
+  if (resolutionSpatial.value) metBits.push(`Spatial Res.: ${resolutionSpatial.value}`);
+  if (photoGsd.value) metBits.push(`GSD: ${photoGsd.value}`);
+  if (metBits.length > 0) {
+    parts.push(`${isDe ? 'Metrologie' : 'Metrology'}: ${metBits.join(' | ')}`);
+  }
+
   // E. Processing Software
   if (processingSoftware.value) {
     parts.push(`Software: ${processingSoftware.value}`);
@@ -1480,6 +2180,7 @@ const handleClickOutside = (e) => {
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
+  loadFromForm();
   if (props.extent) {
     const match = props.extent.match(/([\d.,]+)\s*(MB|GB|KB|TB|Bytes)/i);
     if (match) {
@@ -1487,6 +2188,7 @@ onMounted(() => {
       fileSizeUnit.value = match[2].toUpperCase();
     }
   }
+  syncStructuredFormFields();
   if (!props.formatDetails) {
     generateSummaries();
   }

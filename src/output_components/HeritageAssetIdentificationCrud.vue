@@ -604,17 +604,12 @@
 
             <div class="flex items-center gap-3">
 
-              <h3 class="text-xl font-bold capitalize">
+              <h3 class="text-xl font-bold flex items-center gap-2">
 
-                {{ isEditing ? t('edit') : t('add') }} {{ getLabel('heritageAssetIdentification', 'heritageAssetIdentification') }}
+                <span>🏛️</span>
+                <span>{{ currentLocale === 'de' ? (isEditing ? 'Kulturgut bearbeiten' : 'Kulturgut erfassen') : (isEditing ? 'Edit Heritage Asset' : 'New Heritage Asset') }}</span>
 
               </h3>
-
-              <span v-if="isEditing" class="badge badge-info badge-sm">
-
-                {{ currentLocale === 'de' ? 'Bearbeitungsmodus aktiv' : 'Editing mode' }}
-
-              </span>
 
             </div>
 
@@ -2636,7 +2631,7 @@
 
               <h2 class="text-2xl font-bold">{{ currentLocale === 'de' ? (getLabel(activeDrawerField, activeDrawerField.split('.').slice(-1)[0]) + ' ' + (drawerEditIndex > -1 ? t('edit') : t('add'))) : ((drawerEditIndex > -1 ? t('edit') : t('add')) + ' ' + getLabel(activeDrawerField, activeDrawerField.split('.').slice(-1)[0])) }}</h2>
 
-              <div class="tooltip tooltip-bottom ml-4" :data-tip="t('addtemplate')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
+              <div class="tooltip tooltip-left z-30 ml-4" :data-tip="t('addtemplate')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
 
                 <button type="button" class="btn btn-square btn-ghost btn-sm btn-transparent" @click.prevent="openAddTemplateModal(activeDrawerField.split('.').slice(-1)[0])">
 
@@ -2650,7 +2645,7 @@
 
               </div>
 
-              <div class="tooltip tooltip-bottom ml-2" :data-tip="t('template')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
+              <div class="tooltip tooltip-left z-30 ml-2" :data-tip="t('template')" v-if="['contacts', 'references', 'temporal', 'spatial'].includes(activeDrawerField.split('.').slice(-1)[0] )">
 
                 <button type="button" class="btn btn-square btn-ghost btn-sm btn-transparent" @click.prevent="openTemplateModal(activeDrawerField.split('.').slice(-1)[0])">
 
@@ -4996,7 +4991,7 @@
 
   />
 
-  <dialog ref="templateModal" class="modal">
+  <dialog ref="templateModal" class="modal z-[9999]">
 
     <div class="modal-box max-w-md">
 
@@ -5062,7 +5057,7 @@
 
   </dialog>
 
-  <dialog ref="addTemplateModal" class="modal">
+  <dialog ref="addTemplateModal" class="modal z-[9999]">
 
     <div class="modal-box max-w-md">
 
@@ -5090,7 +5085,7 @@
 
   </dialog>
 
-  <dialog ref="deleteTemplateModal" class="modal">
+  <dialog ref="deleteTemplateModal" class="modal z-[9999]">
 
     <div class="modal-box">
 
@@ -9055,7 +9050,7 @@ const form = reactive({ 'recordInformation.id': '',
 
   'provenance': '',
 
-  'provenance#lang': '',
+  'provenance#lang': defaultMetadataLanguage?.value || 'de',
 
   'characters.heritageAssetType': [],
 
@@ -10085,6 +10080,9 @@ const save = () => {
   }
   if (!form['recordInformation.metadataRights']) {
     form['recordInformation.metadataRights'] = globalRights.metadataRights || 'https://creativecommons.org/publicdomain/zero/1.0/deed.de';
+  }
+  if (form['provenance'] && !form['provenance#lang']) {
+    form['provenance#lang'] = defaultMetadataLanguage.value || 'de';
   }
 
   if (Array.isArray(form['characters.temporal'])) {
@@ -11272,6 +11270,8 @@ const resetForm = (force = false) => {
 
   form['recordInformation.language'] = [metaLang];
 
+  form['provenance#lang'] = metaLang;
+
   if (globalRights) {
 
     form['recordInformation.metadataRights'] = globalRights.metadataRights || '';
@@ -11318,6 +11318,15 @@ onBeforeUnmount(() => {
 
 
 
-defineExpose({ items, form, save, saveAndContinueNextPart, resetForm, isFormDirty, validationStats });
+const loadItems = (newItems) => {
+  items.value = Array.isArray(newItems) ? JSON.parse(JSON.stringify(newItems)) : [];
+  if (items.value.length > 0) {
+    edit(0);
+  } else {
+    resetForm(true);
+  }
+};
+
+defineExpose({ items, form, isEditing, editIndex, save, edit, loadItems, saveAndContinueNextPart, resetForm, isFormDirty, validationStats });
 
 </script>
