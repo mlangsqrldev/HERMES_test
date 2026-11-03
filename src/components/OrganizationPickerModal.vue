@@ -120,6 +120,21 @@
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <!-- GND Online Lookup / Autocomplete Helper -->
+            <div class="md:col-span-2 p-2.5 bg-primary/5 rounded-xl border border-primary/20 mb-1">
+              <label class="label py-0 mb-1">
+                <span class="label-text text-xs font-bold text-primary flex items-center gap-1">
+                  <span>🔍</span>
+                  <span>{{ locale === 'de' ? 'GND-Katalog durchsuchen (Lobid API Autocomplete):' : 'Search GND Catalog (Lobid API Autocomplete):' }}</span>
+                </span>
+              </label>
+              <InstitutionAutocomplete
+                @select="handleGndSearchSelect"
+                :current-locale="locale"
+                :placeholder="locale === 'de' ? 'Name oder GND eintippen (z. B. Staatliche Museen zu Berlin, Uni Bonn)...' : 'Type name or GND ID...'"
+              />
+            </div>
+
             <div class="md:col-span-2">
               <label class="label py-1"><span class="label-text font-bold">{{ locale === 'de' ? 'Name der Organisation / Institution' : 'Organization Name' }} *</span></label>
               <input type="text" v-model="formData.name" required class="input input-sm input-bordered w-full font-medium" :placeholder="locale === 'de' ? 'z. B. Antikensammlung, Staatliche Museen zu Berlin' : 'e.g. British Museum'" />
@@ -278,7 +293,7 @@
         <div class="flex items-center gap-2">
           <span>{{ savedOrganizations.length }} {{ locale === 'de' ? 'Organisationen im Pool' : 'organizations in pool' }}</span>
           <span class="opacity-40">•</span>
-          <a href="https://lobid.org/gnd" target="_blank" rel="noopener" class="link link-hover text-primary font-medium flex items-center gap-1">
+          <a href="https://lobid.org/gnd" @click.prevent="openExternalUrl('https://lobid.org/gnd')" class="link link-hover text-primary font-medium flex items-center gap-1">
             GND Katalog (Lobid) ↗
           </a>
         </div>
@@ -302,6 +317,8 @@ import {
   removeSavedOrganization,
   updateSavedOrganization
 } from '../utils/sharedState.js';
+import { openExternalUrl } from '../utils/platform.js';
+import InstitutionAutocomplete from './InstitutionAutocomplete.vue';
 
 const props = defineProps({
   isOpen: {
@@ -373,10 +390,25 @@ const onGndBlur = () => {
   }
 };
 
+const handleGndSearchSelect = (inst) => {
+  if (!inst) return;
+  formData.name = inst.label || formData.name;
+  formData.gnd = inst.gnd || '';
+  if (inst.place) {
+    formData.city = inst.place;
+    formData.townOrCity = inst.place;
+  }
+  if (inst.uri) {
+    formData.uri = inst.uri;
+  } else if (inst.gnd) {
+    formData.uri = `https://d-nb.info/gnd/${inst.gnd}`;
+  }
+};
+
 const openGndLink = (gnd) => {
   if (!gnd) return;
-  const url = `https://d-nb.info/gnd/${encodeURIComponent(gnd)}`;
-  window.open(url, '_blank');
+  const url = gnd.startsWith('http') ? gnd : `https://d-nb.info/gnd/${encodeURIComponent(gnd)}`;
+  openExternalUrl(url);
 };
 
 const filteredOrganizations = computed(() => {

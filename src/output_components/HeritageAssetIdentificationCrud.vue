@@ -2465,7 +2465,102 @@
           </div>
         </div>
 
-        <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
+                <!-- ============================================================ -->
+        <!-- RECHTE AM KULTURGUT (PHYSISCHES ORIGINAL)                   -->
+        <!-- ============================================================ -->
+        <div class="col-span-full border-2 border-primary/20 bg-base-100 p-5 rounded-2xl mb-6 shadow-sm">
+          <div class="flex justify-between items-center mb-4 pb-2 border-b border-base-200">
+            <div class="flex items-center gap-2">
+              <span class="text-xl">⚖️</span>
+              <div>
+                <h4 class="font-bold text-base text-base-content">
+                  {{ currentLocale === 'de' ? 'Rechte am Kulturgut (Physisches Original)' : 'Rights on Heritage Asset (Physical Original)' }}
+                </h4>
+                <p class="text-xs text-base-content/60">
+                  {{ currentLocale === 'de'
+                    ? 'Rechteverhältnisse am physischen Sammlungsobjekt selbst (Zugangsrechte, Besitz, Fotogenehmigung) – getrennt von 3D-Daten- und Metadatenrechten.'
+                    : 'Rights regarding the physical artifact itself (access rights, ownership, photography permission) - separate from 3D data and metadata rights.' }}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn btn-xs btn-outline btn-primary gap-1"
+              @click="applyGlobalRightsToForm"
+              :title="currentLocale === 'de' ? 'Rechte aus globaler Rechte-Leiste übernehmen' : 'Apply from global rights bar'"
+            >
+              ⚡ {{ currentLocale === 'de' ? 'Aus globalen Rechten füllen' : 'Fill from Global Rights' }}
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <!-- Urheberrechtsvermerk / Eigentum -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5">
+                  <span>🏛️</span>
+                  <span>{{ getLabel('rights.copyrightCreditLine', 'Urheberrechtsvermerk / Credit Line') }}</span>
+                </span>
+              </label>
+              <input
+                type="text"
+                v-model="form['rights.copyrightCreditLine']"
+                class="input input-sm input-bordered w-full font-medium"
+                :placeholder="currentLocale === 'de' ? 'z. B. Eigentum Antikensammlung Bonn, Inv.-Nr. 1234' : 'e.g. Property of Museum Collection Bonn'"
+              />
+            </div>
+
+            <!-- Zugriffsrechte / Zugänglichkeit des Originals -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5">
+                  <span>🚪</span>
+                  <span>{{ getLabel('rights.accessRights', 'Zugriffsrechte (Original)') }}</span>
+                </span>
+              </label>
+              <input
+                type="text"
+                v-model="form['rights.accessRights']"
+                class="input input-sm input-bordered w-full font-medium"
+                :placeholder="currentLocale === 'de' ? 'z. B. Dauerausstellung, öffentlich zugänglich / Magazinbestand' : 'e.g. Permanent exhibition, open to the public'"
+              />
+            </div>
+
+            <!-- Reproduktionsrechte / Bedingungen -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5">
+                  <span>📸</span>
+                  <span>{{ getLabel('rights.reproductionRights', 'Reproduktionsrechte') }}</span>
+                </span>
+              </label>
+              <input
+                type="text"
+                v-model="form['rights.reproductionRights']"
+                class="input input-sm input-bordered w-full font-medium"
+                :placeholder="currentLocale === 'de' ? 'z. B. Fotogenehmigung des Museums erforderlich' : 'e.g. Photography permitted with museum permission'"
+              />
+            </div>
+
+            <!-- Lizenz / Gemeinfreiheitsstatus des Originals -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5">
+                  <span>📜</span>
+                  <span>{{ getLabel('rights.licence', 'Lizenz / Schutzstatus des Originals') }}</span>
+                </span>
+              </label>
+              <input
+                type="text"
+                v-model="form['rights.licence']"
+                class="input input-sm input-bordered w-full font-medium font-mono text-xs"
+                :placeholder="currentLocale === 'de' ? 'z. B. http://creativecommons.org/publicdomain/mark/1.0/ (Gemeinfrei)' : 'e.g. Public Domain Mark 1.0'"
+              />
+            </div>
+          </div>
+        </div>
+
+<div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
 
           <div class="flex justify-between items-center mb-4 pb-2 border-b border-base-200">
 
@@ -2743,31 +2838,29 @@
 
               </div>
 
-          <select v-model="drawerForm['role']" class="select select-bordered w-full">
-
-            <option disabled value="">{{ currentLocale === 'de' ? getLabel('recordInformation.creation.contacts.role', 'role') + ' ' + t('select') : t('select') + ' ' + getLabel('recordInformation.creation.contacts.role', 'role') }}</option>
-
-            <template v-if="currentLocale === 'de'">
-
-              <option value="Dokumentar">Dokumentar</option>
-
-<option value="Kurator">Kurator</option>
-
-<option value="Projektleitung">Projektleitung</option>
-
-            </template>
-
-            <template v-else>
-
-              <option value="Curator">Curator</option>
-
-<option value="Documentation">Documentation</option>
-
-<option value="Project Management">Project Management</option>
-
-            </template>
-
-          </select>
+          <div class="join w-full">
+            <input
+              type="text"
+              list="contact-roles-list"
+              v-model="drawerForm['role']"
+              class="input input-bordered join-item w-full"
+              :placeholder="currentLocale === 'de' ? 'Rolle wählen oder frei eingeben (z.B. Kurator, Dokumentar, Restaurator)' : 'Select or type role (e.g. Curator, Documentation, Conservator)'"
+            />
+            <datalist id="contact-roles-list">
+              <option value="Kurator" />
+              <option value="Dokumentar" />
+              <option value="Projektleitung" />
+              <option value="Restaurator" />
+              <option value="Digitalisierung" />
+              <option value="3D-Operator" />
+              <option value="Wissenschaftliche Mitarbeit" />
+              <option value="Curator" />
+              <option value="Documentation" />
+              <option value="Project Management" />
+              <option value="Conservator" />
+              <option value="Digitisation Specialist" />
+            </datalist>
+          </div>
 
           
 
@@ -2799,6 +2892,13 @@
 
           
 
+          </div>
+
+          <div class="form-control w-full mb-4">
+            <div class="flex flex-row items-center">
+              <label class="label"><span class="label-text font-bold">{{ currentLocale === 'de' ? 'E-Mail-Adresse' : 'Email Address' }}</span></label>
+            </div>
+            <input type="email" v-model="drawerForm['email']" class="input input-bordered w-full" :placeholder="currentLocale === 'de' ? 'z. B. kontakt@museum.de' : 'e.g. contact@museum.org'" />
           </div></div>
 
       </div>
@@ -4775,7 +4875,7 @@
 
               </div>
 
-                        <input type="url"   pattern="[Hh][Tt][Tt][Pp][Ss]?://(?:(?:[a-zA-Z¡-￿0-9]+-?)*[a-zA-Z¡-￿0-9]+)(?:.(?:[a-zA-Z¡-￿0-9]+-?)*[a-zA-Z¡-￿0-9]+)*(?:.(?:[a-zA-Z¡-￿]{2,}))(?::d{2,5})?(?:/[^s]*)?"   v-model="drawerForm['link']" class="input input-bordered w-full validator " :placeholder="getLabel('references.link', 'e.g. https://doi.org/10.11588/diglit.3456#0291', 'plac')" />
+                        <input type="url"      v-model="drawerForm['link']" class="input input-bordered w-full  " :placeholder="getLabel('references.link', 'e.g. https://doi.org/10.11588/diglit.3456#0291', 'plac')" />
 
               <div class="validator-hint">{{t('validationHint')}}</div>        
 
@@ -4933,7 +5033,7 @@
 
                   </svg>
 
-                  <input type="url" required placeholder="https://" v-model="drawerForm['_value']" pattern="[Hh][Tt][Tt][Pp][Ss]?://(?:(?:[a-zA-Z¡-￿0-9]+-?)*[a-zA-Z¡-￿0-9]+)(?:.(?:[a-zA-Z¡-￿0-9]+-?)*[a-zA-Z¡-￿0-9]+)*(?:.(?:[a-zA-Z¡-￿]{2,}))(?::d{2,5})?(?:/[^s]*)?" title="Must be valid URI"  />
+                  <input type="url" required placeholder="https://" v-model="drawerForm['_value']"  title="Must be valid URI"  />
 
                 </label>
 
@@ -9940,6 +10040,22 @@ const saveDrawer = () => {
 
 
 
+  if (field === 'references') {
+    const sanitizeDoi = (val) => {
+      if (!val || typeof val !== 'string') return val;
+      let s = val.trim();
+      s = s.replace(/^(?:z\.?\s*B\.?\s*:?|e\.?\s*g\.?\s*:?)/i, '');
+      s = s.replace(/[…\.\s]+$/, '');
+      return s.trim();
+    };
+    if (drawerForm['appellation.id']) {
+      drawerForm['appellation.id'] = sanitizeDoi(drawerForm['appellation.id']);
+    }
+    if (drawerForm['link']) {
+      drawerForm['link'] = sanitizeDoi(drawerForm['link']);
+    }
+  }
+
   // Normalize year dates for characters.temporal
 
   if (field === 'characters.temporal') {
@@ -11223,19 +11339,12 @@ watch(currentLocale, (newLocale) => {
 
 
 const applyGlobalRightsToForm = () => {
-
   if (!globalRights) return;
-
   form['recordInformation.metadataRights'] = globalRights.metadataRights || '';
-
-  form['rights.copyrightCreditLine'] = globalRights.copyrightCreditLine || '';
-
-  form['rights.accessRights'] = globalRights.accessRights || '';
-
-  form['rights.licence'] = resolveLicenceUri(globalRights.licence, currentLocale.value) || '';
-
-  form['rights.reproductionRights'] = globalRights.reproductionRights || '';
-
+  form['rights.copyrightCreditLine'] = globalRights.haCopyrightCreditLine || globalRights.copyrightCreditLine || '';
+  form['rights.accessRights'] = globalRights.haAccessRights || globalRights.accessRights || '';
+  form['rights.licence'] = resolveLicenceUri(globalRights.haLicence || globalRights.licence, currentLocale.value) || '';
+  form['rights.reproductionRights'] = globalRights.haReproductionRights || globalRights.reproductionRights || '';
 };
 
 

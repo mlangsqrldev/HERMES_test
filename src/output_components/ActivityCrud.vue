@@ -1412,7 +1412,7 @@
                       <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
                     </g>
                   </svg>
-                  <input type="url" required placeholder="https://" v-model="drawerForm['_value']" pattern="[Hh][Tt][Tt][Pp][Ss]?://(?:(?:[a-zA-Z¡-￿0-9]+-?)*[a-zA-Z¡-￿0-9]+)(?:.(?:[a-zA-Z¡-￿0-9]+-?)*[a-zA-Z¡-￿0-9]+)*(?:.(?:[a-zA-Z¡-￿]{2,}))(?::d{2,5})?(?:/[^s]*)?" title="Must be valid URI"  />
+                  <input type="url" required placeholder="https://" v-model="drawerForm['_value']"  title="Must be valid URI"  />
                 </label>
                 <p class="validator-hint">Must be valid URI</p>
           </div>
@@ -3238,6 +3238,8 @@ const handleOrgSelected = (org) => {
   isOrgPickerOpen.value = false;
 };
 
+const isValidGnd = (val) => /^(\d{7,10}[0-9Xx]?|\d{1,9}-[0-9Xx])$/.test(String(val || '').trim());
+
 const selectSpatialOrg = (org) => {
   if (!org) return;
   recordRecentOrganization(org);
@@ -3245,7 +3247,13 @@ const selectSpatialOrg = (org) => {
   form['spatial.locationSet.namedLocation'] = orgLabel;
   form['spatial.locationSet.geopoliticalArea'] = org.townOrCity || org.city || '';
   form['spatial.locationSet.geopoliticalAreaType'] = (org.townOrCity || org.city) ? 'city' : '';
-  form['happenedAt'] = [org.gnd ? `https://d-nb.info/gnd/${org.gnd}` : org.name];
+  if (org.gnd && isValidGnd(org.gnd)) {
+    form['happenedAt'] = [`https://d-nb.info/gnd/${org.gnd}`];
+  } else if (org.uri) {
+    form['happenedAt'] = [org.uri];
+  } else {
+    form['happenedAt'] = [org.name];
+  }
 };
 
 const clearSpatialOrg = () => {
@@ -3260,8 +3268,10 @@ const setSpatialFromCollection = () => {
   form['spatial.locationSet.namedLocation'] = collectionInstitution.fullLabel;
   form['spatial.locationSet.geopoliticalArea'] = collectionInstitution.city || '';
   form['spatial.locationSet.geopoliticalAreaType'] = collectionInstitution.city ? 'city' : '';
-  if (collectionInstitution.gnd) {
+  if (collectionInstitution.gnd && isValidGnd(collectionInstitution.gnd)) {
     form['happenedAt'] = [`https://d-nb.info/gnd/${collectionInstitution.gnd}`];
+  } else if (collectionInstitution.uri) {
+    form['happenedAt'] = [collectionInstitution.uri];
   } else {
     form['happenedAt'] = [collectionInstitution.fullLabel];
   }

@@ -826,7 +826,7 @@
                       <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
                     </g>
                   </svg>
-                  <input type="url" required placeholder="https://" v-model="drawerForm['_value']" pattern="[Hh][Tt][Tt][Pp][Ss]?://(?:(?:[a-zA-Z¡-￿0-9]+-?)*[a-zA-Z¡-￿0-9]+)(?:.(?:[a-zA-Z¡-￿0-9]+-?)*[a-zA-Z¡-￿0-9]+)*(?:.(?:[a-zA-Z¡-￿]{2,}))(?::d{2,5})?(?:/[^s]*)?" title="Must be valid URI"  />
+                  <input type="url" required placeholder="https://" v-model="drawerForm['_value']"  title="Must be valid URI"  />
                 </label>
                 <p class="validator-hint">Must be valid URI</p>
           </div>
@@ -1854,12 +1854,16 @@ const handleCollectionInstitutionSelect = (item) => {
   });
 };
 
+// Helper to check if an ID is actually a valid GND identifier (not an ISIL like DE-MUS-... or internal ID)
+const isValidGndIdentifier = (val) => /^(\d{7,10}[0-9Xx]?|\d{1,9}-[0-9Xx])$/.test(String(val || '').trim());
+
 // Synchronize collection institution to global shared state for auto-fill in HeritageAsset
 watch([() => form['source'], () => form['id']], ([newSource, newId]) => {
   if (newSource || newId) {
+    const isGnd = isValidGndIdentifier(newId);
     setCollectionInstitution({
       name: newSource || '',
-      gnd: (newId && !newId.startsWith('http')) ? newId : '',
+      gnd: isGnd ? newId : '',
       uri: (newId && newId.startsWith('http')) ? newId : ''
     });
   }

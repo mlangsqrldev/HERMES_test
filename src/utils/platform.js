@@ -1,8 +1,23 @@
 import { load } from "@tauri-apps/plugin-store";
+import { openUrl } from "@tauri-apps/plugin-opener";
 import defaultTemplates from "../assets/default_templates.json";
 
 export const isTauri = () => {
   return typeof window !== "undefined" && Boolean(window.__TAURI_INTERNALS__);
+};
+
+export const openExternalUrl = async (url) => {
+  if (!url) return;
+  try {
+    if (isTauri()) {
+      await openUrl(url);
+    } else {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  } catch (e) {
+    console.warn("Failed to open URL with Tauri opener, falling back to window.open:", e);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
 };
 
 class BrowserStore {

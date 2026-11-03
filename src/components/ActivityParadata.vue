@@ -151,21 +151,31 @@
 
           <!-- Live Search Input -->
           <div class="relative flex-1 min-w-[220px]">
-            <input
-              type="text"
-              v-model="searchQuery"
-              class="w-full bg-transparent outline-none text-xs text-base-content placeholder:text-base-content/40"
-              :placeholder="(dimState[currentDim.id]?.tags || []).length === 0
-                ? (currentLocale === 'de' ? 'HECTOR durchsuchen oder Begriff tippen & Enter...' : 'Search HECTOR or type term & Enter...')
-                : (currentLocale === 'de' ? 'Weiteren Begriff hinzufügen & Enter...' : 'Add another term...')"
-              @input="onSearchInput"
-              @keydown.enter.prevent="addFromInput"
-              @keydown.down.prevent="highlightNext"
-              @keydown.up.prevent="highlightPrev"
-              @keydown.esc.prevent="showDropdown = false"
-              @focus="onFocus"
-              @blur="onBlur"
-            />
+            <div class="flex items-center gap-1.5 w-full">
+              <input
+                type="text"
+                v-model="searchQuery"
+                class="flex-1 bg-transparent outline-none text-xs text-base-content placeholder:text-base-content/40"
+                :placeholder="(dimState[currentDim.id]?.tags || []).length === 0
+                  ? (currentLocale === 'de' ? 'HECTOR durchsuchen oder freien Begriff eingeben...' : 'Search HECTOR or type custom term...')
+                  : (currentLocale === 'de' ? 'Weiteren Begriff hinzufügen...' : 'Add another term...')"
+                @input="onSearchInput"
+                @keydown.enter.prevent="addFromInput"
+                @keydown.down.prevent="highlightNext"
+                @keydown.up.prevent="highlightPrev"
+                @keydown.esc.prevent="showDropdown = false"
+                @focus="onFocus"
+                @blur="onBlur"
+              />
+              <button
+                type="button"
+                class="btn btn-xs btn-primary font-bold px-2.5 shrink-0"
+                :disabled="!searchQuery.trim()"
+                @mousedown.prevent="addFromInput"
+              >
+                + {{ currentLocale === 'de' ? 'Hinzufügen' : 'Add' }}
+              </button>
+            </div>
 
             <!-- Autocomplete Dropdown -->
             <div

@@ -4249,29 +4249,33 @@ const getRecordsFromComponent = (componentRef) => {
 
 
   if (child.form) {
+    const formId = (
+      (typeof child.form['recordInformation.id'] === 'string' ? child.form['recordInformation.id'] : '') ||
+      (typeof child.form['appellation.id'] === 'string' ? child.form['appellation.id'] : '') ||
+      (typeof child.form['id'] === 'string' ? child.form['id'] : '')
+    ).trim();
 
-    // If editing an existing item, update that item in-place rather than duplicating it
+    const existingIdx = formId ? records.findIndex(r => {
+      const rId = (
+        (typeof r['recordInformation.id'] === 'string' ? r['recordInformation.id'] : '') ||
+        (typeof r['appellation.id'] === 'string' ? r['appellation.id'] : '') ||
+        (typeof r['id'] === 'string' ? r['id'] : '')
+      ).trim();
+      return rId && rId === formId;
+    }) : -1;
 
     const isEditingExisting = Boolean(
-
       child.isEditing &&
-
       child.editIndex !== null &&
-
       child.editIndex !== undefined &&
-
       child.editIndex >= 0 &&
-
       child.editIndex < records.length
-
     );
 
-
-
     if (isEditingExisting) {
-
       records[child.editIndex] = JSON.parse(JSON.stringify(child.form));
-
+    } else if (existingIdx >= 0) {
+      records[existingIdx] = JSON.parse(JSON.stringify(child.form));
     } else {
 
       // Ignore pre-populated default fields and attribute keys when checking for unsaved user input

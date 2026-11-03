@@ -248,19 +248,19 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
         <!-- 1. METADATEN-RECHTE (z.B. CC0 1.0 Universal für Metadaten) -->
-        <div class="lg:col-span-4 p-3.5 bg-primary/5 rounded-2xl border border-primary/20 flex flex-col justify-between">
+        <div class="lg:col-span-3 p-3.5 bg-primary/5 rounded-2xl border border-primary/20 flex flex-col justify-between">
           <div>
             <div class="flex flex-wrap items-center justify-between gap-1.5 mb-2 pb-1 border-b border-primary/15">
               <span class="font-bold text-xs uppercase tracking-wider text-primary flex items-center gap-1.5 whitespace-nowrap">
                 <span>🏛️</span>
                 <span>{{ currentLocale === 'de' ? '1. Metadaten-Rechte' : '1. Metadata Rights' }}</span>
               </span>
-              <span class="badge badge-primary badge-xs font-semibold shrink-0">CARARE / Europeana</span>
+              <span class="badge badge-primary badge-xs font-semibold shrink-0">Europeana</span>
             </div>
             <p class="text-[11px] text-base-content/60 mb-2 leading-relaxed">
               {{ currentLocale === 'de'
-                ? 'Gilt für die beschreibenden Metadaten im CARARE-Dokument (Europeana verlangt standardmäßig CC0).'
-                : 'Applies to descriptive metadata in the CARARE record (Europeana requires CC0 by default).' }}
+                ? 'Gilt für die beschreibenden Metadaten im CARARE-Dokument (standardmäßig CC0).'
+                : 'Applies to descriptive metadata in the CARARE record (standard: CC0).' }}
             </p>
 
             <label class="label py-0.5">
@@ -284,7 +284,7 @@
                 :class="globalRights.metadataRights === 'CC0 1.0 Universal' ? 'badge-primary font-bold' : 'badge-ghost border border-base-300'"
                 @click="globalRights.metadataRights = 'CC0 1.0 Universal'; emitApplyRights()"
               >
-                CC0 1.0 Universal
+                CC0 1.0
               </button>
               <button
                 type="button"
@@ -292,19 +292,87 @@
                 :class="globalRights.metadataRights === 'Public Domain Mark 1.0' ? 'badge-primary font-bold' : 'badge-ghost border border-base-300'"
                 @click="globalRights.metadataRights = 'Public Domain Mark 1.0'; emitApplyRights()"
               >
-                Public Domain Mark 1.0
+                Public Domain
               </button>
             </div>
           </div>
         </div>
 
-        <!-- 2. DATEN- & DIGITALISAT-RECHTE (3D-Modelle, Bilder, Punktwolken) -->
-        <div class="lg:col-span-8 p-3.5 bg-base-200/40 rounded-2xl border border-base-300 flex flex-col justify-between">
+        <!-- 2. RECHTE AM PHYSISCHEN KULTURGUT (Heritage Asset Rights) -->
+        <div class="lg:col-span-4 p-3.5 bg-amber-500/5 rounded-2xl border border-amber-500/25 flex flex-col justify-between">
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-1.5 mb-2 pb-1 border-b border-amber-500/20">
+              <span class="font-bold text-xs uppercase tracking-wider text-amber-700 dark:text-amber-400 flex items-center gap-1.5 whitespace-nowrap">
+                <span>🏺</span>
+                <span>{{ currentLocale === 'de' ? '2. Rechte am Kulturgut' : '2. Heritage Asset Rights' }}</span>
+              </span>
+              <span class="badge badge-warning badge-xs font-semibold shrink-0">
+                {{ currentLocale === 'de' ? 'Physisches Original' : 'Physical Asset' }}
+              </span>
+            </div>
+            <p class="text-[11px] text-base-content/60 mb-2 leading-relaxed">
+              {{ currentLocale === 'de'
+                ? 'Gilt für das physische Museumsobjekt selbst (Eigentum, physischer Zugang, Fotorechte am Original).'
+                : 'Applies to the physical museum object itself (ownership, physical access, photo rights on original).' }}
+            </p>
+
+            <div class="grid grid-cols-1 gap-2 mb-2">
+              <div>
+                <label class="label py-0.5">
+                  <span class="label-text text-xs font-semibold">
+                    {{ currentLocale === 'de' ? 'Eigentümer / Credit Line (Original):' : 'Owner / Credit Line (Original):' }}
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  v-model="globalRights.haCopyrightCreditLine"
+                  class="input input-sm input-bordered w-full text-xs"
+                  placeholder="z.B. Staatliche Museen zu Berlin, Antikensammlung"
+                  @change="emitApplyRights"
+                />
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="label py-0.5">
+                    <span class="label-text text-xs font-semibold">
+                      {{ currentLocale === 'de' ? 'Zugang Original:' : 'Access to Object:' }}
+                    </span>
+                  </label>
+                  <select v-model="globalRights.haAccessRights" class="select select-sm select-bordered w-full text-xs" @change="emitApplyRights">
+                    <option value="">{{ currentLocale === 'de' ? '— Standard —' : '— Default —' }}</option>
+                    <option value="Öffentlich ausgestellt">{{ currentLocale === 'de' ? 'Öffentlich ausgestellt' : 'On public display' }}</option>
+                    <option value="Im Museumsdepot / Eingeschränkt">{{ currentLocale === 'de' ? 'Im Museumsdepot' : 'In museum depot' }}</option>
+                    <option value="Restricted access">Restricted access</option>
+                    <option value="Open access">Open access</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="label py-0.5">
+                    <span class="label-text text-xs font-semibold">
+                      {{ currentLocale === 'de' ? 'Reproduktion Original:' : 'Reproduction:' }}
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    v-model="globalRights.haReproductionRights"
+                    class="input input-sm input-bordered w-full text-xs"
+                    placeholder="z.B. Fotografie im Museum gestattet"
+                    @change="emitApplyRights"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. DATEN- & DIGITALISAT-RECHTE (3D-Modelle, Bilder, Punktwolken) -->
+        <div class="lg:col-span-5 p-3.5 bg-base-200/40 rounded-2xl border border-base-300 flex flex-col justify-between">
           <div>
             <div class="flex flex-wrap items-center justify-between gap-1.5 mb-2 pb-1 border-b border-base-300/60">
               <span class="font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5 whitespace-nowrap">
                 <span>🧊</span>
-                <span>{{ currentLocale === 'de' ? '2. Daten- & Medien-Rechte (3D / Bilder)' : '2. Data & Media Rights (3D / Images)' }}</span>
+                <span>{{ currentLocale === 'de' ? '3. 3D-Daten- & Medien-Rechte' : '3. 3D Data & Media Rights' }}</span>
               </span>
               <span class="badge badge-neutral badge-xs font-mono font-semibold shrink-0">
                 {{ getLicenceShortCode(globalRights.licence) || 'CC BY 4.0' }}
@@ -312,16 +380,16 @@
             </div>
             <p class="text-[11px] text-base-content/60 mb-2 leading-relaxed">
               {{ currentLocale === 'de'
-                ? 'Gilt für die eigentlichen 3D-Daten, Texturen, Orthofotos und Rohbilder (Lizenz, Credit-Line und Zugang).'
-                : 'Applies to actual 3D data, textures, orthophotos, and RAW images (license, credit line, and access).' }}
+                ? 'Gilt für die erzeugten 3D-Modelle, Texturen und Punktwolken (Lizenz, Credit-Line und Digitalisierungszugang).'
+                : 'Applies to created 3D models, textures, and point clouds (license, credit line, and digital access).' }}
             </p>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2.5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-2">
               <!-- Digitalisat-Lizenz -->
               <div>
                 <label class="label py-0.5">
                   <span class="label-text text-xs font-semibold">
-                    {{ currentLocale === 'de' ? 'Daten-Lizenz (Digitalisate):' : 'Data License (Resources):' }}
+                    {{ currentLocale === 'de' ? 'Daten-Lizenz (3D):' : 'Data License (3D):' }}
                   </span>
                 </label>
                 <select
@@ -359,14 +427,14 @@
               <div>
                 <label class="label py-0.5">
                   <span class="label-text text-xs font-semibold">
-                    {{ currentLocale === 'de' ? 'Rechteinhaber / Credit Line:' : 'Copyright / Credit Line:' }}
+                    {{ currentLocale === 'de' ? 'Digitalisierungs-Credit:' : 'Digitalisation Credit:' }}
                   </span>
                 </label>
                 <input
                   type="text"
                   v-model="globalRights.copyrightCreditLine"
                   class="input input-sm input-bordered w-full text-xs"
-                  placeholder="z.B. Staatliche Museen zu Berlin / BCDH Uni Bonn"
+                  placeholder="z.B. Digitalisierung durch BCDH Uni Bonn"
                   @change="emitApplyRights"
                 />
               </div>
@@ -375,7 +443,7 @@
               <div>
                 <label class="label py-0.5">
                   <span class="label-text text-xs font-semibold">
-                    {{ currentLocale === 'de' ? 'Reproduktionsrechte:' : 'Reproduction Rights:' }}
+                    {{ currentLocale === 'de' ? 'Reproduktionsrechte 3D:' : 'Reproduction Rights 3D:' }}
                   </span>
                 </label>
                 <input

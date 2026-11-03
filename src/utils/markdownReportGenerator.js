@@ -490,7 +490,7 @@ export function generateMarkdownReport(allData = {}, locale = 'de') {
   } else {
     activities.forEach((act, idx) => {
       const recId = getEntityId(act, `ACT-${idx + 1}`);
-      const name = act['appellation.name'] || (isDe ? 'Digitalisierungskampagne' : 'Digitisation Campaign');
+      const name = extractCleanText(act['appellation.name'], isDe ? 'Digitalisierungskampagne' : 'Digitisation Campaign');
       const actType = formatValueWithUri(act.eventType || act.activityType || '3D-Digitalisierung');
       const date = act['event.date.date'] || act['event.date.dateRangeQualifier'] || '—';
       const purpose = act.hasGeneralPurpose || act.description || '—';
@@ -533,7 +533,7 @@ export function generateMarkdownReport(allData = {}, locale = 'de') {
   // 5. Digital Authenticity Profile (DAP 1-6) - Structured per Activity
   md += `## 5. ${isDe ? 'Digital Authenticity Profile (DAP) – Sechs Dimensionen der materiellen Evidenz' : 'Digital Authenticity Profile (DAP) – Six Dimensions of Material Evidence'}\n\n`;
   md += `${isDe
-    ? 'Das Digital Authenticity Profile dokumentiert die Transformation eines materiellen Kulturguts in das digitale Medium und macht die Grenzen dieser Übersetzung explizit transparent (Ausgangslage → Erfassungsprozess → Begründung → Ergebnis).'
+    ? 'Das Digital Authenticity Profile dokumentiert die Transformation eines materiellen Kulturguts in das digitale Medium und macht die Grenzen dieser Übersetzung explizit transparent (Ausgangslage -> Erfassungsprozess -> Begründung -> Ergebnis).'
     : 'The Digital Authenticity Profile systematically documents the translation from material evidence to digital representation.'}\n\n`;
 
   const dapDefs = [
@@ -585,7 +585,7 @@ export function generateMarkdownReport(allData = {}, locale = 'de') {
 
   activities.forEach((act, actIdx) => {
     const actId = getEntityId(act, `ACT-${actIdx + 1}`);
-    const actName = act['appellation.name'] || `Aktivität ${actIdx + 1}`;
+    const actName = extractCleanText(act['appellation.name'], `Aktivität ${actIdx + 1}`);
     const consistsOfList = Array.isArray(act.consistsOf) ? act.consistsOf : [];
 
     const matchingDaps = dapDefs.filter(def => {
@@ -850,23 +850,23 @@ export function generatePdfReport(allData = {}, locale = 'de') {
 
     validTargets.forEach(targetId => {
       const info = entityRegistry[targetId] || {};
-      let pillText = `→ ${targetId}`;
+      let pillText = `-> ${targetId}`;
       let badgeType = 'default';
 
       if (info.type === 'HeritageAsset') {
         const shortName = info.name && info.name.length > 26 ? info.name.substring(0, 24) + '…' : (info.name || '');
-        pillText = `→ [HA] ${targetId}${shortName ? ` (${shortName})` : ''}`;
+        pillText = `-> [HA] ${targetId}${shortName ? ` (${shortName})` : ''}`;
         badgeType = 'ha';
       } else if (info.type === 'DigitalResource') {
         if (info.subType === 'master') {
-          pillText = `→ [Master 3D] ${targetId}`;
+          pillText = `-> [Master 3D] ${targetId}`;
           badgeType = 'dr-master';
         } else {
-          pillText = `→ [Realtime GLB] ${targetId}`;
+          pillText = `-> [Realtime GLB] ${targetId}`;
           badgeType = 'dr-deriv';
         }
       } else if (info.type === 'Activity') {
-        pillText = `→ [DAP-Kampagne] ${targetId}`;
+        pillText = `-> [DAP-Kampagne] ${targetId}`;
         badgeType = 'activity';
       }
 
@@ -1106,7 +1106,7 @@ export function generatePdfReport(allData = {}, locale = 'de') {
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(9.5);
       doc.setTextColor(3, 105, 161);
-      doc.text(`${idx + 1}. ${name} [ID: ${recId}]`, margin + 4, y + 5.6);
+      doc.text(`${idx + 1}. ${name} [ID: ${recId}]`, margin + 4, y + 5.6, { maxWidth: contentWidth - 52 });
 
       // Badge
       doc.setFont('helvetica', 'bold');
@@ -1174,7 +1174,7 @@ export function generatePdfReport(allData = {}, locale = 'de') {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(9.5);
         doc.setTextColor(180, 83, 9);
-        doc.text(`${idx + 1}. ${name} [ID: ${recId}]`, margin + 4, y + 5.6);
+        doc.text(`${idx + 1}. ${name} [ID: ${recId}]`, margin + 4, y + 5.6, { maxWidth: contentWidth - 52 });
 
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(7);
@@ -1192,7 +1192,7 @@ export function generatePdfReport(allData = {}, locale = 'de') {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(9.5);
         doc.setTextColor(4, 120, 87);
-        doc.text(`${idx + 1}. ${name} [ID: ${recId}]`, margin + 4, y + 5.6);
+        doc.text(`${idx + 1}. ${name} [ID: ${recId}]`, margin + 4, y + 5.6, { maxWidth: contentWidth - 52 });
 
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(7);
@@ -1281,7 +1281,7 @@ export function generatePdfReport(allData = {}, locale = 'de') {
   } else {
     activities.forEach((act, idx) => {
       const recId = getEntityId(act, `ACT-${idx + 1}`);
-      const name = act['appellation.name'] || (isDe ? '3D-Digitalisierung & Paradata' : '3D Digitisation');
+      const name = extractCleanText(act['appellation.name'], isDe ? '3D-Digitalisierung & Paradata' : '3D Digitisation');
       const actType = formatMuseumTerm(act.eventType || act.activityType || '3D-Digitalisierung');
       const date = getActivityDate(act);
       const purpose = act.hasGeneralPurpose || act.description || '';
@@ -1306,7 +1306,7 @@ export function generatePdfReport(allData = {}, locale = 'de') {
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(9.5);
       doc.setTextColor(67, 56, 202);
-      doc.text(`${idx + 1}. ${name} [ID: ${recId}]`, margin + 4, y + 5.6);
+      doc.text(`${idx + 1}. ${name} [ID: ${recId}]`, margin + 4, y + 5.6, { maxWidth: contentWidth - 52 });
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(7);

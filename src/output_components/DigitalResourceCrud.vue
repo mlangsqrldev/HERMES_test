@@ -559,7 +559,7 @@
               </button>
               </div>
               </div>
-                        <input type="url"   pattern="[Hh][Tt][Tt][Pp][Ss]?://(?:(?:[a-zA-Z¡-￿0-9]+-?)*[a-zA-Z¡-￿0-9]+)(?:.(?:[a-zA-Z¡-￿0-9]+-?)*[a-zA-Z¡-￿0-9]+)*(?:.(?:[a-zA-Z¡-￿]{2,}))(?::d{2,5})?(?:/[^s]*)?"  required v-model="form['link']" class="input input-bordered w-full validator " :placeholder="getLabel('link', 'e.g. https://doi.org/10.60507/FK2/MHT0HM/F3BFT8', 'plac')" />
+                        <input type="url"     required v-model="form['link']" class="input input-bordered w-full  " :placeholder="getLabel('link', 'e.g. https://doi.org/10.60507/FK2/MHT0HM/F3BFT8', 'plac')" />
               <div class="validator-hint">{{t('validationHint')}}</div>        
           
           </div>
@@ -1690,7 +1690,7 @@
                       <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
                     </g>
                   </svg>
-                  <input type="url" required placeholder="https://" v-model="drawerForm['_value']" pattern="[Hh][Tt][Tt][Pp][Ss]?://(?:(?:[a-zA-Z¡-￿0-9]+-?)*[a-zA-Z¡-￿0-9]+)(?:.(?:[a-zA-Z¡-￿0-9]+-?)*[a-zA-Z¡-￿0-9]+)*(?:.(?:[a-zA-Z¡-￿]{2,}))(?::d{2,5})?(?:/[^s]*)?" title="Must be valid URI"  />
+                  <input type="url" required placeholder="https://" v-model="drawerForm['_value']"  title="Must be valid URI"  />
                 </label>
                 <p class="validator-hint">Must be valid URI</p>
           </div>
@@ -2794,9 +2794,9 @@ const form = reactive({ 'recordInformation.id': '',
   'recordInformation.language#lang': defaultMetadataLanguage.value || 'de',
   'recordInformation.metadataRights': globalRights?.metadataRights || '',
   'recordInformation.metadataRights#lang': defaultMetadataLanguage.value || 'de',
-  'appellation.name': [],
+  'appellation.name': [{ _value: '', 'appellation.name#lang': defaultMetadataLanguage.value || 'de', 'appellation.name#preferred': true }],
   'appellation.name#lang': defaultMetadataLanguage.value || 'de',
-  'appellation.name#preferred': false,
+  'appellation.name#preferred': true,
   'appellation.id': '',
   'description': '',
   'note': [],
@@ -3157,6 +3157,46 @@ const saveDrawer = () => {
 
 const removeDrawerItem = (field, index) => {
   if (confirm(t('deleteEntryPrompt'))) form[field].splice(index, 1);
+};
+
+const addNewResource = () => {
+  resetForm();
+  isEditing.value = false;
+  editIndex.value = -1;
+  const newId = `DR-${Date.now().toString().slice(-6)}`;
+  form['recordInformation.id'] = newId;
+  form['appellation.id'] = newId;
+  form['appellation.name'] = [{ _value: '', 'appellation.name#lang': defaultMetadataLanguage.value || 'de', 'appellation.name#preferred': true }];
+};
+
+const cloneAsWebDerivative = () => {
+  const source = (editIndex.value >= 0 && items.value[editIndex.value]) ? items.value[editIndex.value] : (items.value[0] || form);
+  const copy = JSON.parse(JSON.stringify(source));
+  const baseId = copy['recordInformation.id'] || copy['appellation.id'] || 'DR-MASTER';
+  const derivId = baseId.replace(/-(?:MASTER|HP|RAW)$/i, '') + '-WEB-GLB';
+  
+  copy['recordInformation.id'] = derivId;
+  copy['appellation.id'] = derivId;
+  
+  // Update name
+  if (Array.isArray(copy['appellation.name']) && copy['appellation.name'].length > 0) {
+    copy['appellation.name'] = copy['appellation.name'].map(n => {
+      if (typeof n === 'object') {
+        return { ...n, _value: `${n._value || ''} (Web 3D Derivat GLB)`.trim() };
+      }
+      return `${n} (Web 3D Derivat GLB)`;
+    });
+  } else {
+    copy['appellation.name'] = [{ _value: '3D Web Derivat (GLB / Low-Poly)', 'appellation.name#lang': defaultMetadataLanguage.value || 'de', 'appellation.name#preferred': true }];
+  }
+
+  copy['format'] = 'model/gltf-binary';
+  copy['type'] = '3D';
+  copy['isFormatOf'] = [baseId];
+  copy['isDerivativeOf'] = [baseId];
+  
+  items.value.push(copy);
+  edit(items.value.length - 1);
 };
 
 const save = () => {

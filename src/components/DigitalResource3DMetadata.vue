@@ -120,7 +120,7 @@
             <button
               type="button"
               class="btn btn-xs btn-outline btn-accent gap-1 font-bold shadow-2xs"
-              @click="isEquipmentPickerOpen = true"
+              @click="openEquipmentPicker('camera')"
               :title="currentLocale === 'de' ? 'Kamera oder Gerät aus dem zentralen Pool auswählen' : 'Pick camera or equipment from central pool'"
             >
               📷 {{ currentLocale === 'de' ? 'Aus Geräte-Pool' : 'From Equipment Pool' }}
@@ -298,7 +298,7 @@
             <button
               type="button"
               class="btn btn-xs btn-outline btn-accent gap-1 font-bold shadow-2xs"
-              @click="isEquipmentPickerOpen = true"
+              @click="openEquipmentPicker('camera')"
               :title="currentLocale === 'de' ? 'SLS-Scanner aus dem zentralen Pool auswählen' : 'Pick SLS scanner from central pool'"
             >
               💡 {{ currentLocale === 'de' ? 'Aus Geräte-Pool' : 'From Equipment Pool' }}
@@ -473,7 +473,7 @@
             <button
               type="button"
               class="btn btn-xs btn-outline btn-accent gap-1 font-bold shadow-2xs"
-              @click="isEquipmentPickerOpen = true"
+              @click="openEquipmentPicker('camera')"
               :title="currentLocale === 'de' ? 'TLS-Scanner aus dem zentralen Pool auswählen' : 'Pick TLS scanner from central pool'"
             >
               💡 {{ currentLocale === 'de' ? 'Aus Geräte-Pool' : 'From Equipment Pool' }}

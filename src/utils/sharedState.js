@@ -112,7 +112,14 @@ export const getLicenceShortCode = (val) => {
 };
 
 const defaultRights = {
+  // 1. CARARE / Europeana record metadata rights (standard: CC0)
   metadataRights: '',
+  // 2. Physical Heritage Asset rights (Originalobjekt / Eigentum)
+  haCopyrightCreditLine: '',
+  haAccessRights: '',
+  haReproductionRights: '',
+  haLicence: '',
+  // 3. Digital Resource rights (3D-Digitalisate / Medien / Scans)
   copyrightCreditLine: '',
   accessRights: '',
   licence: '',
@@ -150,6 +157,10 @@ export const saveGlobalRights = (rightsObj) => {
 export const resetGlobalRights = () => {
   Object.assign(globalRights, {
     metadataRights: '',
+    haCopyrightCreditLine: '',
+    haAccessRights: '',
+    haReproductionRights: '',
+    haLicence: '',
     copyrightCreditLine: '',
     accessRights: '',
     licence: '',
