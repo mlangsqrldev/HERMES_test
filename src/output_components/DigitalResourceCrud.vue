@@ -7,9 +7,24 @@
       <div class="container mx-auto p-4 max-w-7xl">
 
         <div class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm">
-          <div class="flex justify-between items-center mb-4 pb-2 border-b border-base-200">
-             <div>
-               <h4 class="font-bold text-lg capitalize text-base-content/60">{{ t('saved') }} {{ getLabel('digitalResource', 'digitalResource') }}</h4>
+          <div class="flex flex-wrap justify-between items-center mb-4 pb-2 border-b border-base-200 gap-2">
+             <div class="flex items-center gap-3">
+               <h4 class="font-bold text-lg capitalize text-base-content/80 flex items-center gap-2">
+                 <span>📦</span>
+                 <span>{{ t('saved') }} {{ getLabel('digitalResource', 'Digitale Ressourcen / 3D-Modelle') }}</span>
+                 <span class="badge badge-primary badge-sm font-bold">{{ items.length }}</span>
+               </h4>
+             </div>
+             <div class="flex items-center gap-2">
+               <button
+                 type="button"
+                 class="btn btn-xs btn-outline btn-success gap-1 shadow-xs font-semibold"
+                 @click="addNewDigitalResource"
+                 :title="currentLocale === 'de' ? 'Neue digitale Ressource (z.B. 3D-Master oder Derivat) anlegen' : 'Create new digital resource'"
+               >
+                 <span>➕</span>
+                 <span>{{ currentLocale === 'de' ? 'Neue Digitale Ressource' : 'New Digital Resource' }}</span>
+               </button>
              </div>
           </div>
           <div class="overflow-x-auto">
@@ -24,8 +39,16 @@
                    <tr v-for="(item, idx) in items" :key="idx">
                       <td>{{ Array.isArray(item['recordInformation.id']) ? item['recordInformation.id'].length + ' ' + t('items') : item['recordInformation.id'] }}</td><td>{{ Array.isArray(item['appellation.name']) ? item['appellation.name'].length + ' ' + t('items') : item['appellation.name'] }}</td><td>{{ Array.isArray(item['appellation.name#lang']) ? item['appellation.name#lang'].length + ' ' + t('items') : item['appellation.name#lang'] }}</td><td>{{ Array.isArray(item['appellation.name#preferred']) ? item['appellation.name#preferred'].length + ' ' + t('items') : item['appellation.name#preferred'] }}</td>
                       <td>
-                         <div class="flex gap-1">
+                         <div class="flex gap-1 items-center">
                            <button type="button" class="btn btn-xs btn-ghost text-info" @click.prevent="edit(idx)">{{ t('edit') }}</button>
+                           <button
+                             type="button"
+                             class="btn btn-xs btn-outline btn-secondary gap-1"
+                             @click.prevent="createDerivative(idx)"
+                             :title="currentLocale === 'de' ? 'Daraus ein abgeleitetes 3D-Web-Derivat (Low-Poly / GLB) erzeugen' : 'Create derived 3D web derivative (GLB)'"
+                           >
+                             📑 {{ currentLocale === 'de' ? 'Derivat erzeugen' : 'Derivative' }}
+                           </button>
                            <button type="button" class="btn btn-xs btn-ghost text-error" @click.prevent="remove(idx)">{{ t('del') }}</button>
                          </div>
                       </td>
@@ -3276,5 +3299,16 @@ const loadItems = (newItems) => {
   }
 };
 
-defineExpose({ items, form, isEditing, editIndex, save, edit, loadItems, resetForm });
+const addNewDigitalResource = () => {
+  addNewResource();
+};
+
+const createDerivative = (idx = null) => {
+  if (idx !== null && items.value[idx]) {
+    editIndex.value = idx;
+  }
+  cloneAsWebDerivative();
+};
+
+defineExpose({ items, form, isEditing, editIndex, save, edit, loadItems, resetForm, addNewDigitalResource, createDerivative, addNewResource, cloneAsWebDerivative });
 </script>

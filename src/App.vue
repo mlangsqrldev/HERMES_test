@@ -6915,13 +6915,21 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
 
     const rec = { ...haRecord };
 
-    rec["rights.copyrightCreditLine"] = rec["rights.copyrightCreditLine"] || globalRights.copyrightCreditLine || "";
+    // Inherit physical heritage asset rights, or fallback to general rights
+    rec["rights.copyrightCreditLine"] = rec["rights.copyrightCreditLine"] || globalRights.haCopyrightCreditLine || globalRights.copyrightCreditLine || "";
 
-    rec["rights.accessRights"] = rec["rights.accessRights"] || globalRights.accessRights || "";
+    rec["rights.accessRights"] = rec["rights.accessRights"] || globalRights.haAccessRights || globalRights.accessRights || "";
 
-    rec["rights.reproductionRights"] = rec["rights.reproductionRights"] || globalRights.reproductionRights || "";
+    rec["rights.reproductionRights"] = rec["rights.reproductionRights"] || globalRights.haReproductionRights || globalRights.reproductionRights || "";
 
-    rec["rights.licence"] = rec["rights.licence"] || globalRights.licence || "";
+    rec["rights.licence"] = rec["rights.licence"] || globalRights.haLicence || globalRights.licence || "";
+
+    // Automatically link to campaign activity via wasDigitizedBy if not explicitly set
+    const existingWdb = Array.isArray(rec["wasDigitizedBy"]) ? rec["wasDigitizedBy"].filter(Boolean) : (rec["wasDigitizedBy"] ? [rec["wasDigitizedBy"]] : []);
+    if (existingWdb.length === 0 && activities && activities.length > 0) {
+      const actId = activities[0]["recordInformation.id"] || activities[0]["appellation.id"] || "Activity_1";
+      rec["wasDigitizedBy"] = [actId];
+    }
 
     return rec;
 
@@ -7225,6 +7233,8 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
       const matchedDrIds = new Set(haDrs.map(d => String(d["recordInformation.id"] || d["appellation.id"] || "")).filter(Boolean));
 
       const haActs = activities.filter(actRecord => {
+        // If there is only 1 campaign activity in the project, it brackets all heritage assets
+        if (activities.length === 1) return true;
         if (heritageAssets.length === 1) return true;
         const actId = String(actRecord["recordInformation.id"] || actRecord["appellation.id"] || "");
         if (haRelIds.has(actId)) return true;

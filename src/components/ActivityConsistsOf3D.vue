@@ -32,6 +32,21 @@
       </div>
     </div>
 
+    <!-- Architecture Notice (CARARE & DAP) -->
+    <div class="mb-4 p-3 bg-info/10 border border-info/30 rounded-xl text-xs text-base-content/80 flex items-start gap-2.5">
+      <span class="text-base text-info leading-none">ℹ️</span>
+      <div class="space-y-1">
+        <strong class="font-bold text-info block">
+          {{ currentLocale === 'de' ? 'Beziehung zwischen Digital Authenticity Profile (DAP) und CARARE consistsOf:' : 'Relationship between DAP and CARARE consistsOf:' }}
+        </strong>
+        <p class="leading-relaxed">
+          {{ currentLocale === 'de'
+            ? 'Das CARARE-Schema kennt kein eigenes DAP-Element. Alle Digitalisierungs-, Mess- und Bearbeitungsschritte werden im XML als <consistsOf>-Teilschritte der Aktivität gespeichert. Das DAP (DAP-1 bis DAP-6) oben bildet die 6 standardisierten Authentizitäts-Dimensionen ab. Hier unten können Sie zusätzlich freie, rein technische Teilschritte der Kampagne (z. B. separate Scansessions, Ausrichtungs-Durchläufe oder Drohnenflüge) anlegen.'
+            : 'The CARARE schema represents all acquisition and processing events as <consistsOf> sub-activities of the campaign. The 6 DAP dimensions above are the standardized authenticity dimensions. Here you can add optional technical sub-activities (e.g. specialized scan sessions or drone passes).' }}
+        </p>
+      </div>
+    </div>
+
     <!-- 1. METHODEN-WAHL -->
     <div class="mb-4 p-3.5 bg-base-200/40 rounded-xl border border-base-200">
       <div class="flex items-center justify-between mb-2">
@@ -195,7 +210,18 @@
       >
         <div class="space-y-1 min-w-0 flex-1">
           <div class="flex items-center gap-2 flex-wrap">
-            <span class="badge badge-xs badge-neutral font-mono">#{{ idx + 1 }}</span>
+            <span v-if="isDapItem(item)" class="badge badge-xs badge-info font-mono font-bold">
+              🛡️ {{ getDapBadge(item) }}
+            </span>
+            <span v-else class="badge badge-xs badge-neutral font-mono">
+              #{{ idx + 1 }}
+            </span>
+            <span v-if="!isDapItem(item)" class="badge badge-xs badge-outline text-[10px] text-base-content/70">
+              {{ currentLocale === 'de' ? 'Freier Teilschritt' : 'Custom Sub-Activity' }}
+            </span>
+            <span v-else class="badge badge-xs badge-ghost text-[10px] text-base-content/60">
+              {{ currentLocale === 'de' ? 'DAP-Authentizität' : 'DAP Dimension' }}
+            </span>
             <span class="font-bold text-base-content leading-snug">
               {{ item.hadSpecificPurpose || (currentLocale === 'de' ? 'Teilschritt ohne Titel' : 'Sub-activity') }}
             </span>
@@ -256,6 +282,19 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['add-step', 'edit-step', 'remove-step']);
+
+const isDapItem = (item) => {
+  if (!item) return false;
+  const m = String(item.methods || '');
+  const p = String(item.hadSpecificPurpose || '');
+  return /DAP-[1-6]/i.test(m) || /DAP-[1-6]/i.test(p);
+};
+
+const getDapBadge = (item) => {
+  if (!item) return '';
+  const match = (String(item.methods || '') + ' ' + String(item.hadSpecificPurpose || '')).match(/DAP-[1-6]/i);
+  return match ? match[0].toUpperCase() : '';
+};
 
 const activeMethod = ref('photogrammetry');
 const selectedHardware = ref(['Nikon Z 8', 'NIKKOR Z 50mm f/1.8 S']);

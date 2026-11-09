@@ -793,26 +793,27 @@ const syncToConsistsOf = () => {
       let hadSpecificPurpose = `${dim.id}: ${dim.shortTitleDe}`;
       let techniquesText = '';
       let materialsText = '';
+      const fullContent = [tags.join('; '), note].filter(Boolean).join(' — ');
 
       if (dim.id === 'DAP-1') {
-        hadSpecificPurpose = note ? `DAP-1 Materielle Evidenz: ${note}` : `DAP-1: Materielle Spuren & Merkmale (Ausgangsbefund)`;
-        materialsText = tags.join('; ');
-        techniquesText = '';
+        hadSpecificPurpose = `DAP-1 Materielle Evidenz & Befund: ${fullContent || 'Ausgangszustand'}`;
+        materialsText = fullContent;
+        techniquesText = fullContent;
       } else if (dim.id === 'DAP-2') {
-        hadSpecificPurpose = note ? `DAP-2 Erfassungsumfang & Auslassung: ${note}` : `DAP-2: Aufnahmeprozess & Erfassungsumfang`;
-        techniquesText = tags.join('; ');
+        hadSpecificPurpose = `DAP-2 Erfassungsumfang & Auslassungen: ${fullContent || 'Aufnahmeprozess'}`;
+        techniquesText = fullContent;
       } else if (dim.id === 'DAP-3') {
-        hadSpecificPurpose = note ? `DAP-3 Geometrie: ${note}` : `DAP-3: Geometrie-Bearbeitung`;
-        techniquesText = tags.join('; ');
+        hadSpecificPurpose = `DAP-3 Geometriebearbeitung (HECTOR): ${fullContent || 'Geometrie'}`;
+        techniquesText = fullContent;
       } else if (dim.id === 'DAP-4') {
-        hadSpecificPurpose = note ? `DAP-4 Textur & Shader: ${note}` : `DAP-4: Textur, Shader & Material`;
-        techniquesText = tags.join('; ');
+        hadSpecificPurpose = `DAP-4 Textur, Shader & Material: ${fullContent || 'Texturierung'}`;
+        techniquesText = fullContent;
       } else if (dim.id === 'DAP-5') {
-        hadSpecificPurpose = note ? `DAP-5 Begründung: ${tags.join('; ')} (${note})` : `DAP-5 Begründung: ${tags.join('; ')}`;
-        techniquesText = '';
+        hadSpecificPurpose = `DAP-5 Begründung & Leitlinien: ${fullContent || 'Wissenschaftliche Kriterien'}`;
+        techniquesText = fullContent;
       } else if (dim.id === 'DAP-6') {
-        hadSpecificPurpose = note ? `DAP-6 Abbildungsbilanz: ${tags.join('; ')} (${note})` : `DAP-6 Abbildungsbilanz: ${tags.join('; ')}`;
-        techniquesText = '';
+        hadSpecificPurpose = `DAP-6 Abbildungsbilanz & Evidenzvergleich: ${fullContent || 'Transformationsgrenzen'}`;
+        techniquesText = fullContent;
       }
 
       const consistsOfRecord = {
