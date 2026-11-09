@@ -6166,6 +6166,38 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
 
 
 
+    // Ensure WrapCollection (collectionInformation) always has valid <coverage><spatial><locationSet>
+    if (node.name === "collectionInformation") {
+      let cov = node.children.find(c => c.name === "coverage");
+      if (!cov) {
+        cov = node.addChild("coverage");
+      }
+      let spat = cov.children.find(c => c.name === "spatial");
+      if (!spat) {
+        spat = cov.addChild("spatial");
+      }
+      let locSet = spat.children.find(c => c.name === "locationSet");
+      if (!locSet) {
+        locSet = spat.addChild("locationSet");
+      }
+      let namedLoc = locSet.children.find(c => c.name === "namedLocation");
+      if (!namedLoc || !namedLoc.text || !String(namedLoc.text).trim()) {
+        if (!namedLoc) namedLoc = locSet.addChild("namedLocation");
+        namedLoc.text = "Bonn, Deutschland";
+        namedLoc.attributes["lang"] = fallbackLang;
+        namedLoc.attributes["preferred"] = "true";
+      }
+      let addr = locSet.children.find(c => c.name === "address");
+      if (!addr) {
+        addr = locSet.addChild("address");
+      }
+      let country = addr.children.find(c => c.name === "country");
+      if (!country || !country.text || !String(country.text).trim()) {
+        if (!country) country = addr.addChild("country");
+        country.text = "DE";
+      }
+    }
+
     if ((node.name === "heritageAssetIdentification" || node.name === "digitalResource") && hasContent(node)) {
 
       node.getOrCreateChild("recordInformation");
@@ -6849,12 +6881,13 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
 
 
 
+    const matchedOrg = (savedOrganizations.value || []).find(o => o.name === rec["source"]) || savedOrganizations.value?.[0];
     if (!rec["coverage.spatial.locationSet.address.country"]) {
-
-      const matchedOrg = (savedOrganizations.value || []).find(o => o.name === rec["source"]) || savedOrganizations.value?.[0];
-
       rec["coverage.spatial.locationSet.address.country"] = (matchedOrg?.country || "DE").toUpperCase();
-
+    }
+    if (!rec["coverage.spatial.locationSet.namedLocation"] || (Array.isArray(rec["coverage.spatial.locationSet.namedLocation"]) && rec["coverage.spatial.locationSet.namedLocation"].length === 0)) {
+      const loc = matchedOrg ? (matchedOrg.city ? `${matchedOrg.city}, ${matchedOrg.name}` : matchedOrg.name) : (rec["source"] || "Bonn, Deutschland");
+      rec["coverage.spatial.locationSet.namedLocation"] = [loc];
     }
 
     return rec;

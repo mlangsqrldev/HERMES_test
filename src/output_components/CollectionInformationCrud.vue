@@ -549,7 +549,7 @@
               <span class="text-xl">🏛️</span>
               <div>
                 <h4 class="font-bold text-lg text-base-content/90">
-                  {{ currentLocale === 'de' ? 'Räumliche Verortung (Zentral über Organisation)' : 'Spatial Location (Centrally via Organization)' }}
+                  {{ currentLocale === 'de' ? 'Räumliche Abdeckung (WrapCollection > Räumlich / Spatial Coverage)' : 'Spatial Coverage (WrapCollection > Spatial)' }}
                 </h4>
                 <p class="text-xs text-base-content/60">
                   {{ currentLocale === 'de'
@@ -591,6 +591,38 @@
                 <span v-if="org.city" class="opacity-60 text-[10px]">({{ org.city }})</span>
                 <span v-if="form['source'] === org.name" class="font-bold">✓</span>
               </button>
+            </div>
+          </div>
+
+          <!-- Direct Inline Quick-Edit for WrapCollection Spatial Coverage -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 p-3.5 bg-base-100 rounded-xl border border-primary/20">
+            <div>
+              <label class="label py-0.5"><span class="label-text text-xs font-bold">{{ currentLocale === 'de' ? 'Benannter Ort (namedLocation)' : 'Named Location' }}</span></label>
+              <input
+                type="text"
+                v-model="form['coverage.spatial.locationSet.namedLocation']"
+                class="input input-sm input-bordered w-full text-xs font-medium"
+                :placeholder="currentLocale === 'de' ? 'z. B. Bonn, Akademisches Kunstmuseum' : 'e.g. Bonn, Academic Art Museum'"
+              />
+            </div>
+            <div>
+              <label class="label py-0.5"><span class="label-text text-xs font-bold">{{ currentLocale === 'de' ? 'Stadt / Gemeinde' : 'City / Town' }}</span></label>
+              <input
+                type="text"
+                v-model="form['coverage.spatial.locationSet.address.townOrCity']"
+                class="input input-sm input-bordered w-full text-xs"
+                placeholder="Bonn"
+              />
+            </div>
+            <div>
+              <label class="label py-0.5"><span class="label-text text-xs font-bold">{{ currentLocale === 'de' ? 'Land (ISO 3166-1 alpha-2)' : 'Country Code' }}</span></label>
+              <input
+                type="text"
+                maxlength="2"
+                v-model="form['coverage.spatial.locationSet.address.country']"
+                class="input input-sm input-bordered w-full text-xs font-mono uppercase"
+                placeholder="DE"
+              />
             </div>
           </div>
 
