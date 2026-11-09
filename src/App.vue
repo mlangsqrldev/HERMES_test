@@ -545,17 +545,24 @@
 
 
           <button class="btn btn-sm btn-primary gap-2 justify-start font-bold shadow-md shadow-primary/20 hover:scale-[1.02] transition-all" @click="exportToCarareXML"
-
-            :disabled="currentFile != '' && progress != 100">
-
+            :disabled="currentFile != '' && progress != 100"
+            :title="currentLocale === 'de' ? 'Exportiert alle Objekte in einer gemeinsamen CARARE-Sammeldatei (Batch / carareWrap)' : 'Export all objects in a single batch CARARE file'">
             <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
-
               <path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520Z"/>
-
             </svg>
+            {{ t("exportCARAREXML") }} {{ heritageAssetsCount > 1 ? (currentLocale === 'de' ? '(Sammel-XML)' : '(Batch XML)') : '' }}
+          </button>
 
-            {{ t("exportCARAREXML") }}
-
+          <!-- Split Export Button: 1 standalone XML per Heritage Asset in ZIP -->
+          <button
+            v-if="heritageAssetsCount > 1"
+            class="btn btn-sm btn-outline btn-primary gap-2 justify-start font-bold shadow-xs hover:scale-[1.02] transition-all"
+            @click="exportSingleCarareXmlsZip"
+            :disabled="currentFile != '' && progress != 100"
+            :title="currentLocale === 'de' ? 'Erzeugt ein ZIP mit separaten XML-Dateien (1 XML-Datei pro Kulturgut für dateibasierte Repositorien und Harvester)' : 'Generate a ZIP with 1 separate XML file per heritage asset'"
+          >
+            <span class="text-base">📦</span>
+            {{ currentLocale === 'de' ? '1 XML pro Objekt (ZIP)' : '1 XML per Asset (ZIP)' }}
           </button>
 
 
@@ -7408,6 +7415,113 @@ const liveCarareXml = computed(() => {
 });
 
 
+
+const exportSingleCarareXmlsZip = async () => {
+  isExporting.value = true;
+  exportStatus.value = null;
+  errorMessage.value = "";
+
+  try {
+    const allData = {
+      Collection: getRecordsFromComponent(collectionRef),
+      HeritageAsset: getRecordsFromComponent(heritageRef),
+      DigitalResource: getRecordsFromComponent(digitalRef),
+      Activity: getRecordsFromComponent(activityRef),
+    };
+
+    const heritageAssets = allData.HeritageAsset || [];
+    if (heritageAssets.length === 0) {
+      throw new Error(currentLocale.value === 'de' ? 'Keine Kulturgüter vorhanden.' : 'No heritage assets recorded.');
+    }
+
+    const zip = new JSZip();
+
+    heritageAssets.forEach((haRecord, idx) => {
+      const haId = String(haRecord["recordInformation.id"] || haRecord["appellation.id"] || `HA-${idx + 1}`).trim();
+      const safeId = haId.replace(/[^a-zA-Z0-9._-]/g, '_');
+
+      // Generate a standalone CARARE XML file for this single heritage asset
+      const singleXml = buildXmlString("carare", {
+        Collection: allData.Collection || [],
+        HeritageAsset: [haRecord],
+        DigitalResource: allData.DigitalResource || [],
+        Activity: allData.Activity || [],
+      });
+
+      zip.file(`CARARE_${safeId}.xml`, singleXml);
+    });
+
+    // Also include a summary README inside the ZIP
+    const isDe = currentLocale.value === 'de';
+    const readmeContent = isDe
+      ? `HERMES CARARE 2.0.6 - Einzelfile-Export (1 XML-Datei pro Kulturgut)
+` +
+        `====================================================================
+
+` +
+        `Anzahl generierter CARARE-Objektdateien: ${heritageAssets.length}
+` +
+        `Erstellungsdatum: ${new Date().toISOString()}
+
+` +
+        `Jede Datei enthält einen vollwertigen, validen CARARE-2.0.6-Datensatz (<carareWrap><carare id="...">),
+` +
+        `bestehend aus der Sammlungsidentifikation, genau dem jeweiligen Kulturgut,
+` +
+        `dessen zugeordneten 3D-Ressourcen und der Digitalisierungsaktivität.
+`
+      : `HERMES CARARE 2.0.6 - Individual Record Export (1 XML file per object)
+` +
+        `===================================================================
+
+` +
+        `Number of CARARE object files: ${heritageAssets.length}
+` +
+        `Generated: ${new Date().toISOString()}
+
+` +
+        `Each XML file contains a self-contained, valid CARARE 2.0.6 record (<carareWrap><carare id="...">),
+` +
+        `including collection information, exactly one heritage asset, its digital resources, and activity.
+`;
+
+    zip.file("README.txt", readmeContent);
+
+    const zipContent = await zip.generateAsync({ type: "uint8array" });
+    const defaultFilename = `hermes-carare-einzelfiles-${Date.now()}.zip`;
+
+    if (isTauri()) {
+      const selectedPath = await save({
+        defaultPath: defaultFilename,
+        filters: [{ name: "ZIP Archive", extensions: ["zip"] }],
+      });
+      if (!selectedPath) {
+        isExporting.value = false;
+        return;
+      }
+      await writeFile(selectedPath, zipContent);
+    } else {
+      const blob = new Blob([zipContent], { type: "application/zip" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = defaultFilename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    exportStatus.value = "success";
+    setTimeout(() => { exportStatus.value = null; }, 4000);
+  } catch (error) {
+    console.error("Single CARARE XML Export failed:", error);
+    exportStatus.value = "error";
+    errorMessage.value = error.message || "An unexpected error occurred during export.";
+  } finally {
+    isExporting.value = false;
+  }
+};
 
 const exportToCarareXML = async () => {
 
