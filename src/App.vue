@@ -2231,7 +2231,11 @@ const triggerImportTemplatesJson = async () => {
 
     } catch (err) {
 
-      console.warn("Tauri native file picker fallback:", err);
+      console.error("Tauri template import error:", err);
+
+      alert((currentLocale.value === "de" ? "Fehler beim Laden der Vorlagen: " : "Error loading templates: ") + (err.message || err));
+
+      return;
 
     }
 
@@ -3729,7 +3733,11 @@ const triggerImport = async () => {
 
     } catch (err) {
 
-      console.warn("Tauri native file picker fallback:", err);
+      console.error("Tauri native file import error:", err);
+
+      alert((currentLocale.value === "de" ? "Fehler beim Laden der Datei: " : "Error loading file: ") + (err.message || err));
+
+      return;
 
     }
 
