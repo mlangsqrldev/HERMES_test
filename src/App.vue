@@ -7183,15 +7183,12 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
 
 
 
-      if (collections.length > 0) {
+      // Exactly ONE collectionInformation per carare record (CARARE 2.0.6: minOccurs="1" maxOccurs="1")
+      if (collections.length > 0 && collections[0]) {
 
-        collections.forEach((colRecord) => {
+        const colNode = carareContainer.addChild("collectionInformation");
 
-          const colNode = carareContainer.addChild("collectionInformation");
-
-          populateNode(colNode, enrichCollectionRecord(colRecord));
-
-        });
+        populateNode(colNode, enrichCollectionRecord(collections[0]));
 
       }
 

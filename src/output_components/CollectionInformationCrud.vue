@@ -31,98 +31,42 @@
               </button>
               <button
                 type="button"
-                class="btn btn-sm btn-primary gap-1"
+                class="btn btn-sm btn-ghost border border-base-300 gap-1 text-base-content/70 hover:text-error"
                 @click.prevent="resetForm(true)"
-                :title="currentLocale === 'de' ? 'Formular leeren für neue Sammlung' : 'New Collection'"
+                :title="currentLocale === 'de' ? 'Formular leeren' : 'Reset Form'"
               >
-                ➕ {{ currentLocale === 'de' ? 'Neue Sammlung' : 'New Collection' }}
+                🗑️ {{ currentLocale === 'de' ? 'Leeren' : 'Reset' }}
               </button>
             </div>
           </div>
-          <!-- Recorded Collections List / Switcher -->
-          <div v-if="items.length > 0" class="mb-6 p-3.5 bg-base-100 rounded-xl border border-base-300 shadow-2xs">
-            <div class="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-base-200">
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-sm text-base-content flex items-center gap-1.5">
-                  <span>🏛️</span>
-                  <span>{{ currentLocale === 'de' ? 'Erfasste Sammlungen' : 'Recorded Collections' }}</span>
-                </span>
-                <span class="badge badge-primary badge-sm font-bold font-mono">{{ items.length }}</span>
+<!-- CARARE 2.0.6 Single Collection Status Banner -->
+          <div class="mb-6 p-4 rounded-2xl bg-base-100 border border-base-300 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl font-bold">
+                🏛️
               </div>
-              <span class="text-xs text-base-content/60">
-                {{ currentLocale === 'de' ? 'Klicken Sie auf "Bearbeiten", um eine Sammlung im Formular zu laden' : 'Click "Edit" to load a collection into the form' }}
-              </span>
+              <div class="space-y-0.5">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 class="font-bold text-sm text-base-content">
+                    {{ form['collectionTitle'] || form['id'] || (currentLocale === 'de' ? 'Aktive Sammlung des Projekts' : 'Active Project Collection') }}
+                  </h4>
+                  <span class="badge badge-primary badge-xs font-semibold">CARARE: 1 Sammlung pro Projekt (0..1)</span>
+                </div>
+                <p class="text-xs text-base-content/60">
+                  {{ currentLocale === 'de'
+                    ? 'Laut CARARE 2.0.6 enthält ein Datensatz genau eine Sammlungsinformation. Diese Sammlung gilt als feste Klammer für alle erfassten Kulturgüter des Projekts.'
+                    : 'According to CARARE 2.0.6, a record contains exactly one collection. All heritage assets in this project share this collection.' }}
+                </p>
+              </div>
             </div>
 
-            <div class="overflow-x-auto">
-              <table class="table table-xs w-full">
-                <thead class="bg-base-200/60 text-[11px]">
-                  <tr>
-                    <th>{{ currentLocale === 'de' ? 'Sammlung / Titel' : 'Collection / Title' }}</th>
-                    <th>{{ currentLocale === 'de' ? 'Datensatz-ID' : 'Record ID' }}</th>
-                    <th>{{ currentLocale === 'de' ? 'Institution (Quelle)' : 'Institution (Source)' }}</th>
-                    <th>{{ currentLocale === 'de' ? 'Status' : 'Status' }}</th>
-                    <th class="text-right">{{ currentLocale === 'de' ? 'Aktionen' : 'Actions' }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="(colItem, idx) in items"
-                    :key="idx"
-                    class="hover:bg-base-200/40 transition-colors"
-                    :class="isEditing && editIndex === idx ? 'bg-primary/10 border-l-4 border-primary' : ''"
-                  >
-                    <td class="font-bold text-xs">
-                      {{ getDisplayName(colItem) }}
-                    </td>
-                    <td class="font-mono text-xs text-base-content/80">
-                      {{ colItem.id || '—' }}
-                    </td>
-                    <td class="text-xs text-base-content/70">
-                      {{ colItem.source || '—' }}
-                    </td>
-                    <td>
-                      <span
-                        v-if="isEditing && editIndex === idx"
-                        class="badge badge-xs badge-primary font-semibold"
-                      >
-                        {{ currentLocale === 'de' ? 'Aktiv in Bearbeitung' : 'Active in Form' }}
-                      </span>
-                      <span v-else class="badge badge-xs badge-ghost text-base-content/50">
-                        {{ currentLocale === 'de' ? 'Gespeichert' : 'Saved' }}
-                      </span>
-                    </td>
-                    <td class="text-right">
-                      <div class="flex items-center justify-end gap-1">
-                        <button
-                          type="button"
-                          class="btn btn-xs btn-outline btn-primary gap-1"
-                          @click.prevent="edit(idx)"
-                          :title="currentLocale === 'de' ? 'Im Formular bearbeiten' : 'Edit in form'"
-                        >
-                          ✏️ {{ currentLocale === 'de' ? 'Bearbeiten' : 'Edit' }}
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-xs btn-ghost text-secondary"
-                          @click.prevent="duplicate(idx)"
-                          :title="currentLocale === 'de' ? 'Sammlung duplizieren' : 'Duplicate collection'"
-                        >
-                          📋
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-xs btn-ghost text-error"
-                          @click.prevent="remove(idx)"
-                          :title="currentLocale === 'de' ? 'Sammlung löschen' : 'Delete collection'"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="flex items-center gap-2 shrink-0">
+              <span v-if="form['id']" class="badge badge-sm badge-neutral font-mono">
+                ID: {{ form['id'] }}
+              </span>
+              <span v-if="form['source']" class="badge badge-sm badge-ghost text-xs">
+                {{ form['source'] }}
+              </span>
             </div>
           </div>
 
@@ -2230,13 +2174,9 @@ const save = () => {
   if (form['coverage.temporal.timeSpan.endDate']) {
     form['coverage.temporal.timeSpan.endDate'] = normalizeYearDate(form['coverage.temporal.timeSpan.endDate']);
   }
-  if (isEditing.value) {
-    items.value[editIndex.value] = JSON.parse(JSON.stringify(form));
-  } else {
-    items.value.push(JSON.parse(JSON.stringify(form)));
-    isEditing.value = true;
-    editIndex.value = items.value.length - 1;
-  }
+  items.value = [JSON.parse(JSON.stringify(form))];
+  isEditing.value = true;
+  editIndex.value = 0;
   formSnapshot.value = JSON.stringify(form);
   saveSuccessBadge.value = true;
   setTimeout(() => {
