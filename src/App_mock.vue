@@ -130,9 +130,15 @@
             {{ step }}
           </li>
         </ul>
-        
-        <input type="file" ref="fileInput" class="hidden" accept=".zip" @change="importFromBagIt" />
-        
+
+        <input
+          type="file"
+          ref="fileInput"
+          class="hidden"
+          accept=".zip"
+          @change="importFromBagIt"
+        />
+
         <button class="w-full btn btn-outline m-2" @click="triggerImport">
           {{ t("importBagIt") }}
           <svg
@@ -143,7 +149,9 @@
             fill="currentColor"
             class="size-[1.2em] primary-content"
           >
-            <path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
+            <path
+              d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"
+            />
           </svg>
         </button>
 
@@ -169,13 +177,26 @@
           </svg>
         </button>
 
-        <button class="w-full btn btn-ghost text-warning border-warning/50 mt-8 m-2" @click="fillDummyData">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-1">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
+        <button
+          class="w-full btn btn-ghost text-warning border-warning/50 mt-8 m-2"
+          @click="fillDummyData"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-5 h-5 mr-1"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z"
+            />
           </svg>
           {{ t("fillMock") }}
         </button>
-
       </div>
 
       <div
@@ -272,7 +293,11 @@
                           </div>
                         </td>
                       </tr>
-                      <tr v-if="!fileHashes || Object.keys(fileHashes).length === 0">
+                      <tr
+                        v-if="
+                          !fileHashes || Object.keys(fileHashes).length === 0
+                        "
+                      >
                         <td
                           colspan="100"
                           class="text-center text-base-content/40 py-4 italic"
@@ -317,7 +342,8 @@ const uiTranslations = {
   en: {
     importBagIt: "Import BagIt Archive",
     importSuccess: "BagIt Archive successfully imported!",
-    importError: "Failed to parse BagIt archive. Ensure it is a valid HERMES format.",
+    importError:
+      "Failed to parse BagIt archive. Ensure it is a valid HERMES format.",
     exportBagIt: "Export BagIt Archive",
     selectDir: "Select Data Directory to Hash",
     hashing: "Hashing:",
@@ -326,12 +352,13 @@ const uiTranslations = {
     edit: "Edit",
     del: "Del",
     noItems: "No items added yet.",
-    fillMock: "[DEV] Mock Data"
+    fillMock: "[DEV] Mock Data",
   },
   de: {
     importBagIt: "BagIt-Archiv importieren",
     importSuccess: "BagIt-Archiv erfolgreich importiert!",
-    importError: "Fehler beim Parsen des BagIt-Archivs. Stellen Sie sicher, dass es ein gültiges HERMES-Format ist.",
+    importError:
+      "Fehler beim Parsen des BagIt-Archivs. Stellen Sie sicher, dass es ein gültiges HERMES-Format ist.",
     exportBagIt: "BagIt-Archiv exportieren",
     selectDir: "Datenverzeichnis zum Hashen auswählen",
     hashing: "Wird gehasht:",
@@ -340,7 +367,7 @@ const uiTranslations = {
     edit: "Bearbeiten",
     del: "Löschen",
     noItems: "Noch keine Elemente hinzugefügt.",
-    fillMock: "[DEV] Testdaten"
+    fillMock: "[DEV] Testdaten",
   },
 };
 
@@ -387,8 +414,20 @@ const handleDirectorySelect = async () => {
   }
 };
 
-const stepsEN = ["Collection", "Heritage Asset", "Digital Resource", "Activities", "Files"];
-const stepsDE = ["Sammlung", "Kulturgut", "Digitale Ressource", "Aktivitäten", "Dateien"];
+const stepsEN = [
+  "Collection",
+  "Heritage Asset",
+  "Digital Resource",
+  "Activities",
+  "Files",
+];
+const stepsDE = [
+  "Sammlung",
+  "Kulturgut",
+  "Digitale Ressource",
+  "Aktivitäten",
+  "Dateien",
+];
 
 const activeStepIndex = ref(0);
 const sectionRefs = ref([]);
@@ -405,7 +444,10 @@ const generateSHA256 = async (text) => {
 
 const scrollToSection = (index) => {
   if (sectionRefs.value[index]) {
-    sectionRefs.value[index].scrollIntoView({ behavior: "smooth", block: "start" });
+    sectionRefs.value[index].scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   }
 };
 
@@ -427,7 +469,7 @@ onMounted(() => {
         }
       });
     },
-    { rootMargin: "-20% 0px -70% 0px", threshold: 0 }
+    { rootMargin: "-20% 0px -70% 0px", threshold: 0 },
   );
 
   sectionRefs.value.forEach((el) => {
@@ -450,33 +492,37 @@ const fileInput = ref(null);
 // ==========================================
 const fillDummyData = () => {
   const refs = [collectionRef, heritageRef, digitalRef, activityRef];
-  
-  refs.forEach(compRef => {
+
+  refs.forEach((compRef) => {
     const child = compRef.value?.[0];
     if (!child || !child.form) return;
-    
-    Object.keys(child.form).forEach(key => {
+
+    Object.keys(child.form).forEach((key) => {
       const val = child.form[key];
-      const fieldName = key.split('.').pop();
+      const fieldName = key.split(".").pop();
       const lowerKey = fieldName.toLowerCase();
 
       // Skip filling if it's an array (requires deeper drawer interaction)
       // except for simple primitive arrays like 'keywords'
       if (Array.isArray(val)) {
-        if (lowerKey.includes('keyword') || lowerKey.includes('tag')) {
-          child.form[key] = ['Lorem', 'Ipsum', 'MockData'];
+        if (lowerKey.includes("keyword") || lowerKey.includes("tag")) {
+          child.form[key] = ["Lorem", "Ipsum", "MockData"];
         }
       } else {
         // Heuristics for standard required formats
-        if (lowerKey.includes('date')) {
-          child.form[key] = new Date().toISOString().split('T')[0];
-        } else if (lowerKey.includes('url') || lowerKey.includes('relation') || lowerKey.includes('link')) {
-          child.form[key] = 'https://example.com/mock-data';
-        } else if (lowerKey.includes('id') || lowerKey.includes('identifier')) {
+        if (lowerKey.includes("date")) {
+          child.form[key] = new Date().toISOString().split("T")[0];
+        } else if (
+          lowerKey.includes("url") ||
+          lowerKey.includes("relation") ||
+          lowerKey.includes("link")
+        ) {
+          child.form[key] = "https://example.com/mock-data";
+        } else if (lowerKey.includes("id") || lowerKey.includes("identifier")) {
           child.form[key] = `MOCK-ID-${Math.floor(Math.random() * 10000)}`;
-        } else if (lowerKey.includes('email')) {
-          child.form[key] = 'test@example.com';
-        } else if (typeof val === 'boolean') {
+        } else if (lowerKey.includes("email")) {
+          child.form[key] = "test@example.com";
+        } else if (typeof val === "boolean") {
           child.form[key] = true;
         } else {
           // Standard text fallback
@@ -500,19 +546,36 @@ const importFromBagIt = async (event) => {
 
   try {
     const zip = await JSZip.loadAsync(file);
-    const bagInfoFile = Object.values(zip.files).find(f => f.name.endsWith('bag-info.txt'));
+    const bagInfoFile = Object.values(zip.files).find((f) =>
+      f.name.endsWith("bag-info.txt"),
+    );
 
     if (!bagInfoFile) {
-      alert(t('importError'));
+      alert(t("importError"));
       return;
     }
 
     const bagInfoContent = await bagInfoFile.async("string");
-    const lines = bagInfoContent.split('\n');
+    const lines = bagInfoContent.split("\n");
 
-    const parsedData = { Collection: [], HeritageAsset: [], DigitalResource: [], Activity: [] };
-    let currentRecords = { Collection: {}, HeritageAsset: {}, DigitalResource: {}, Activity: {} };
-    let firstKeyOfSection = { Collection: null, HeritageAsset: null, DigitalResource: null, Activity: null };
+    const parsedData = {
+      Collection: [],
+      HeritageAsset: [],
+      DigitalResource: [],
+      Activity: [],
+    };
+    let currentRecords = {
+      Collection: {},
+      HeritageAsset: {},
+      DigitalResource: {},
+      Activity: {},
+    };
+    let firstKeyOfSection = {
+      Collection: null,
+      HeritageAsset: null,
+      DigitalResource: null,
+      Activity: null,
+    };
 
     const setNestedValue = (obj, pathParts, value) => {
       let current = obj;
@@ -523,17 +586,24 @@ const importFromBagIt = async (event) => {
       const lastKey = pathParts[pathParts.length - 1];
 
       if (current[lastKey] !== undefined) {
-        if (!Array.isArray(current[lastKey])) current[lastKey] = [current[lastKey]];
+        if (!Array.isArray(current[lastKey]))
+          current[lastKey] = [current[lastKey]];
         current[lastKey].push(value);
       } else {
         current[lastKey] = value;
       }
     };
 
-    const stdHeaders = ['Bagging-Date', 'BagIt-Version', 'Tag-File-Character-Encoding', 'Payload-Oxum', 'Bag-Size'];
+    const stdHeaders = [
+      "Bagging-Date",
+      "BagIt-Version",
+      "Tag-File-Character-Encoding",
+      "Payload-Oxum",
+      "Bag-Size",
+    ];
 
-    lines.forEach(line => {
-      const separatorIdx = line.indexOf(':');
+    lines.forEach((line) => {
+      const separatorIdx = line.indexOf(":");
       if (separatorIdx === -1) return;
 
       const rawKey = line.substring(0, separatorIdx).trim();
@@ -541,13 +611,13 @@ const importFromBagIt = async (event) => {
 
       if (stdHeaders.includes(rawKey) || !value) return;
 
-      const parts = rawKey.split('.');
+      const parts = rawKey.split(".");
       const section = parts.shift();
 
-      if (!parsedData[section]) return; 
+      if (!parsedData[section]) return;
 
       const rootField = parts[0];
-      
+
       if (!firstKeyOfSection[section]) {
         firstKeyOfSection[section] = rootField;
       } else if (rootField === firstKeyOfSection[section]) {
@@ -558,25 +628,28 @@ const importFromBagIt = async (event) => {
       setNestedValue(currentRecords[section], parts, value);
     });
 
-    Object.keys(currentRecords).forEach(sec => {
+    Object.keys(currentRecords).forEach((sec) => {
       if (Object.keys(currentRecords[sec]).length > 0) {
         parsedData[sec].push(currentRecords[sec]);
       }
     });
 
-    if (collectionRef.value?.[0]) collectionRef.value[0].items = parsedData.Collection;
-    if (heritageRef.value?.[0]) heritageRef.value[0].items = parsedData.HeritageAsset;
-    if (digitalRef.value?.[0]) digitalRef.value[0].items = parsedData.DigitalResource;
-    if (activityRef.value?.[0]) activityRef.value[0].items = parsedData.Activity;
+    if (collectionRef.value?.[0])
+      collectionRef.value[0].items = parsedData.Collection;
+    if (heritageRef.value?.[0])
+      heritageRef.value[0].items = parsedData.HeritageAsset;
+    if (digitalRef.value?.[0])
+      digitalRef.value[0].items = parsedData.DigitalResource;
+    if (activityRef.value?.[0])
+      activityRef.value[0].items = parsedData.Activity;
 
-    alert(t('importSuccess'));
-
+    alert(t("importSuccess"));
   } catch (error) {
     console.error(error);
-    alert(t('importError'));
+    alert(t("importError"));
   }
-  
-  event.target.value = '';
+
+  event.target.value = "";
 };
 
 // ==========================================
@@ -646,7 +719,7 @@ const exportToBagInfoTxt = async () => {
       }
     });
   }
-  
+
   let bagitContent = `BagIt-Version: 1.0\n`;
   bagitContent += `Tag-File-Character-Encoding: UTF-8\n`;
 

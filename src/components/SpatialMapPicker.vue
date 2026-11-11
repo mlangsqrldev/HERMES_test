@@ -1,17 +1,31 @@
 <template>
-  <div class="spatial-map-picker w-full rounded-2xl border border-base-300 bg-base-100 overflow-hidden shadow-sm flex flex-col">
+  <div
+    class="spatial-map-picker w-full rounded-2xl border border-base-300 bg-base-100 overflow-hidden shadow-sm flex flex-col"
+  >
     <!-- Map Toolbar Header -->
-    <div class="px-3.5 py-2 bg-base-200/70 border-b border-base-300 flex flex-wrap items-center justify-between gap-2 text-xs">
+    <div
+      class="px-3.5 py-2 bg-base-200/70 border-b border-base-300 flex flex-wrap items-center justify-between gap-2 text-xs"
+    >
       <div class="flex items-center gap-2">
         <span class="text-base">🗺️</span>
         <span class="font-bold text-base-content/80">
-          {{ currentLocale === 'de' ? 'Interaktive Fundort-Karte' : 'Interactive Location Map' }}
+          {{
+            currentLocale === "de"
+              ? "Interaktive Fundort-Karte"
+              : "Interactive Location Map"
+          }}
         </span>
-        <span v-if="hasValidCoords" class="badge badge-xs badge-primary font-mono font-bold tracking-tight px-1.5 py-0.5">
+        <span
+          v-if="hasValidCoords"
+          class="badge badge-xs badge-primary font-mono font-bold tracking-tight px-1.5 py-0.5"
+        >
           {{ currentLat.toFixed(5) }}, {{ currentLng.toFixed(5) }}
         </span>
-        <span v-else class="badge badge-xs badge-ghost text-base-content/50 italic">
-          {{ currentLocale === 'de' ? 'Kein Punkt gesetzt' : 'No pin set' }}
+        <span
+          v-else
+          class="badge badge-xs badge-ghost text-base-content/50 italic"
+        >
+          {{ currentLocale === "de" ? "Kein Punkt gesetzt" : "No pin set" }}
         </span>
       </div>
 
@@ -21,27 +35,51 @@
           <button
             type="button"
             class="btn btn-xs join-item"
-            :class="activeTileLayer === 'osm' ? 'btn-neutral' : 'btn-ghost border border-base-300'"
+            :class="
+              activeTileLayer === 'osm'
+                ? 'btn-neutral'
+                : 'btn-ghost border border-base-300'
+            "
             @click="switchLayer('osm')"
-            :title="currentLocale === 'de' ? 'Standardkarte (OpenStreetMap)' : 'Standard Map (OSM)'"
+            :title="
+              currentLocale === 'de'
+                ? 'Standardkarte (OpenStreetMap)'
+                : 'Standard Map (OSM)'
+            "
           >
             OSM
           </button>
           <button
             type="button"
             class="btn btn-xs join-item"
-            :class="activeTileLayer === 'topo' ? 'btn-neutral' : 'btn-ghost border border-base-300'"
+            :class="
+              activeTileLayer === 'topo'
+                ? 'btn-neutral'
+                : 'btn-ghost border border-base-300'
+            "
             @click="switchLayer('topo')"
-            :title="currentLocale === 'de' ? 'Topographische Geländekarte (OpenTopoMap)' : 'Topographic Map (OpenTopoMap)'"
+            :title="
+              currentLocale === 'de'
+                ? 'Topographische Geländekarte (OpenTopoMap)'
+                : 'Topographic Map (OpenTopoMap)'
+            "
           >
             Topo
           </button>
           <button
             type="button"
             class="btn btn-xs join-item"
-            :class="activeTileLayer === 'sat' ? 'btn-neutral' : 'btn-ghost border border-base-300'"
+            :class="
+              activeTileLayer === 'sat'
+                ? 'btn-neutral'
+                : 'btn-ghost border border-base-300'
+            "
             @click="switchLayer('sat')"
-            :title="currentLocale === 'de' ? 'Satellitenbild / Luftbild (Esri World Imagery)' : 'Satellite Imagery (Esri)'"
+            :title="
+              currentLocale === 'de'
+                ? 'Satellitenbild / Luftbild (Esri World Imagery)'
+                : 'Satellite Imagery (Esri)'
+            "
           >
             Sat
           </button>
@@ -52,11 +90,14 @@
           type="button"
           class="btn btn-xs btn-ghost gap-1 opacity-75 hover:opacity-100 border border-base-300/60"
           @click="openApiSettings"
-          :title="currentLocale === 'de' ? 'API-Zugangsdaten (GeoNames)' : 'API Credentials (GeoNames)'"
+          :title="
+            currentLocale === 'de'
+              ? 'API-Zugangsdaten (GeoNames)'
+              : 'API Credentials (GeoNames)'
+          "
         >
           🔑 <span class="hidden sm:inline text-[11px]">GeoNames</span>
         </button>
-
 
         <!-- Recenter on marker button -->
         <button
@@ -64,9 +105,13 @@
           type="button"
           class="btn btn-xs btn-ghost gap-1 text-primary hover:bg-primary/10"
           @click="recenterMap"
-          :title="currentLocale === 'de' ? 'Auf Markierung zentrieren' : 'Center on Pin'"
+          :title="
+            currentLocale === 'de'
+              ? 'Auf Markierung zentrieren'
+              : 'Center on Pin'
+          "
         >
-          🎯 {{ currentLocale === 'de' ? 'Zentrieren' : 'Center' }}
+          🎯 {{ currentLocale === "de" ? "Zentrieren" : "Center" }}
         </button>
 
         <!-- Clear marker button -->
@@ -75,7 +120,11 @@
           type="button"
           class="btn btn-xs btn-ghost text-error hover:bg-error/10"
           @click="clearCoords"
-          :title="currentLocale === 'de' ? 'Koordinaten entfernen' : 'Clear coordinates'"
+          :title="
+            currentLocale === 'de'
+              ? 'Koordinaten entfernen'
+              : 'Clear coordinates'
+          "
         >
           ✕
         </button>
@@ -93,9 +142,11 @@
       >
         <span class="text-primary font-bold">👆</span>
         <span>
-          {{ currentLocale === 'de'
-            ? 'Klicken oder Pin ziehen, um Koordinaten (X/Y) zu setzen'
-            : 'Click or drag pin to set coordinates (X/Y)' }}
+          {{
+            currentLocale === "de"
+              ? "Klicken oder Pin ziehen, um Koordinaten (X/Y) zu setzen"
+              : "Click or drag pin to set coordinates (X/Y)"
+          }}
         </span>
       </div>
     </div>
@@ -103,60 +154,68 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import { openApiSettings } from '../utils/sharedState.js';
+import {
+  ref,
+  computed,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  nextTick,
+} from "vue";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { openApiSettings } from "../utils/sharedState.js";
 
 const props = defineProps({
   lat: {
     type: [Number, String],
-    default: null
+    default: null,
   },
   lng: {
     type: [Number, String],
-    default: null
+    default: null,
   },
   locationName: {
     type: String,
-    default: ''
+    default: "",
   },
   currentLocale: {
     type: String,
-    default: 'de'
+    default: "de",
   },
   height: {
     type: String,
-    default: '230px'
+    default: "230px",
   },
   readonly: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
-const emit = defineEmits(['update:lat', 'update:lng', 'change', 'clear']);
+const emit = defineEmits(["update:lat", "update:lng", "change", "clear"]);
 
 const mapContainer = ref(null);
 let map = null;
 let marker = null;
 let currentTileLayer = null;
-const activeTileLayer = ref('osm'); // 'osm' | 'topo' | 'sat'
+const activeTileLayer = ref("osm"); // 'osm' | 'topo' | 'sat'
 
 // Tile layer URLs (all reliable, no API key required)
 const TILE_LAYERS = {
   osm: {
-    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    attribution: '&copy; OpenStreetMap contributors'
+    url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    attribution: "&copy; OpenStreetMap contributors",
   },
   topo: {
-    url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-    attribution: '&copy; OpenStreetMap, SRTM | &copy; OpenTopoMap'
+    url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+    attribution: "&copy; OpenStreetMap, SRTM | &copy; OpenTopoMap",
   },
   sat: {
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-  }
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    attribution:
+      "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+  },
 };
 
 // Numerical coordinate parsing
@@ -171,15 +230,20 @@ const currentLng = computed(() => {
 });
 
 const hasValidCoords = computed(() => {
-  return currentLat.value !== null && currentLng.value !== null &&
-    currentLat.value >= -90 && currentLat.value <= 90 &&
-    currentLng.value >= -180 && currentLng.value <= 180;
+  return (
+    currentLat.value !== null &&
+    currentLng.value !== null &&
+    currentLat.value >= -90 &&
+    currentLat.value <= 90 &&
+    currentLng.value >= -180 &&
+    currentLng.value <= 180
+  );
 });
 
 // Modern SVG Pin divIcon (zero broken image links in bundler)
-const createPinIcon = (label = '') => {
+const createPinIcon = (label = "") => {
   return L.divIcon({
-    className: 'hermes-map-pin',
+    className: "hermes-map-pin",
     html: `
       <div style="position: relative; width: 32px; height: 32px; cursor: grab;">
         <div style="
@@ -210,7 +274,7 @@ const createPinIcon = (label = '') => {
     `,
     iconSize: [32, 32],
     iconAnchor: [14, 28],
-    popupAnchor: [2, -28]
+    popupAnchor: [2, -28],
   });
 };
 
@@ -226,11 +290,13 @@ const initMap = () => {
     center: [initialLat, initialLng],
     zoom: initialZoom,
     zoomControl: true,
-    attributionControl: false
+    attributionControl: false,
   });
 
   // Add scale control
-  L.control.scale({ imperial: false, metric: true, position: 'bottomright' }).addTo(map);
+  L.control
+    .scale({ imperial: false, metric: true, position: "bottomright" })
+    .addTo(map);
 
   // Set tile layer
   switchLayer(activeTileLayer.value);
@@ -242,7 +308,7 @@ const initMap = () => {
 
   // Click on map to place/move pin
   if (!props.readonly) {
-    map.on('click', (e) => {
+    map.on("click", (e) => {
       const lat = parseFloat(e.latlng.lat.toFixed(6));
       const lng = parseFloat(e.latlng.lng.toFixed(6));
       emitCoordinates(lat, lng);
@@ -251,7 +317,7 @@ const initMap = () => {
   }
 
   // Auto-resize on window/drawer resize
-  window.addEventListener('resize', invalidateSize);
+  window.addEventListener("resize", invalidateSize);
   setTimeout(invalidateSize, 250);
 };
 
@@ -264,7 +330,7 @@ const switchLayer = (type) => {
   const cfg = TILE_LAYERS[type] || TILE_LAYERS.osm;
   currentTileLayer = L.tileLayer(cfg.url, {
     maxZoom: 18,
-    attribution: cfg.attribution
+    attribution: cfg.attribution,
   }).addTo(map);
 };
 
@@ -276,11 +342,11 @@ const addOrUpdateMarker = (lat, lng) => {
   if (!marker) {
     marker = L.marker(latlng, {
       icon: createPinIcon(),
-      draggable: !props.readonly
+      draggable: !props.readonly,
     }).addTo(map);
 
     if (!props.readonly) {
-      marker.on('dragend', () => {
+      marker.on("dragend", () => {
         const pos = marker.getLatLng();
         const newLat = parseFloat(pos.lat.toFixed(6));
         const newLng = parseFloat(pos.lng.toFixed(6));
@@ -291,7 +357,9 @@ const addOrUpdateMarker = (lat, lng) => {
     marker.setLatLng(latlng);
   }
 
-  const popupTitle = props.locationName || (props.currentLocale === 'de' ? 'Ausgewählter Ort' : 'Selected Location');
+  const popupTitle =
+    props.locationName ||
+    (props.currentLocale === "de" ? "Ausgewählter Ort" : "Selected Location");
   marker.bindPopup(`
     <div style="font-family: inherit; font-size: 11px; line-height: 1.4; padding: 2px;">
       <b style="color: #0284c7;">📍 ${popupTitle}</b><br/>
@@ -308,21 +376,25 @@ const removeMarker = () => {
 };
 
 const emitCoordinates = (lat, lng) => {
-  emit('update:lat', String(lat));
-  emit('update:lng', String(lng));
-  emit('change', { lat, lng });
+  emit("update:lat", String(lat));
+  emit("update:lng", String(lng));
+  emit("change", { lat, lng });
 };
 
 const recenterMap = () => {
   if (!map || !hasValidCoords.value) return;
-  map.setView([currentLat.value, currentLng.value], Math.max(map.getZoom(), 12), { animate: true });
+  map.setView(
+    [currentLat.value, currentLng.value],
+    Math.max(map.getZoom(), 12),
+    { animate: true },
+  );
 };
 
 const clearCoords = () => {
   removeMarker();
-  emit('update:lat', '');
-  emit('update:lng', '');
-  emit('clear');
+  emit("update:lat", "");
+  emit("update:lng", "");
+  emit("clear");
 };
 
 const invalidateSize = () => {
@@ -336,18 +408,23 @@ watch([currentLat, currentLng], ([newLat, newLng]) => {
   if (newLat !== null && newLng !== null) {
     if (map) {
       addOrUpdateMarker(newLat, newLng);
-      map.setView([newLat, newLng], Math.max(map.getZoom(), 11), { animate: true });
+      map.setView([newLat, newLng], Math.max(map.getZoom(), 11), {
+        animate: true,
+      });
     }
   } else {
     removeMarker();
   }
 });
 
-watch(() => props.locationName, () => {
-  if (marker && hasValidCoords.value) {
-    addOrUpdateMarker(currentLat.value, currentLng.value);
-  }
-});
+watch(
+  () => props.locationName,
+  () => {
+    if (marker && hasValidCoords.value) {
+      addOrUpdateMarker(currentLat.value, currentLng.value);
+    }
+  },
+);
 
 let resizeObserver = null;
 let intersectionObserver = null;
@@ -361,14 +438,17 @@ onMounted(() => {
       });
       resizeObserver.observe(mapContainer.value);
 
-      if (typeof window !== 'undefined' && window.IntersectionObserver) {
-        intersectionObserver = new IntersectionObserver((entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              invalidateSize();
+      if (typeof window !== "undefined" && window.IntersectionObserver) {
+        intersectionObserver = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                invalidateSize();
+              }
             }
-          }
-        }, { threshold: 0.05 });
+          },
+          { threshold: 0.05 },
+        );
         intersectionObserver.observe(mapContainer.value);
       }
     }
@@ -376,7 +456,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', invalidateSize);
+  window.removeEventListener("resize", invalidateSize);
   if (resizeObserver) {
     resizeObserver.disconnect();
     resizeObserver = null;
@@ -393,7 +473,7 @@ onBeforeUnmount(() => {
 
 defineExpose({
   recenter: recenterMap,
-  invalidateSize
+  invalidateSize,
 });
 </script>
 

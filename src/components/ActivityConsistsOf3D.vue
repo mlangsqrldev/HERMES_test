@@ -1,20 +1,35 @@
 <template>
-  <div class="col-span-full border-2 border-primary/20 bg-base-100 rounded-2xl p-5 mb-6 shadow-sm" data-xml-tag="consistsOf">
+  <div
+    class="col-span-full border-2 border-primary/20 bg-base-100 rounded-2xl p-5 mb-6 shadow-sm"
+    data-xml-tag="consistsOf"
+  >
     <!-- Header -->
-    <div class="flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b border-base-200">
+    <div
+      class="flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b border-base-200"
+    >
       <div class="flex items-center gap-2.5">
-        <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl font-bold shadow-xs">
+        <div
+          class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl font-bold shadow-xs"
+        >
           🎯
         </div>
         <div>
           <h4 class="font-bold text-base leading-tight flex items-center gap-2">
-            <span>{{ currentLocale === 'de' ? '3D-Digitalisierungsmethoden, Technik & Equipment (CARARE consistsOf)' : '3D Digitisation Methods, Techniques & Equipment (CARARE consistsOf)' }}</span>
-            <span class="badge badge-primary badge-sm font-semibold">CARARE 2.0.6</span>
+            <span>{{
+              currentLocale === "de"
+                ? "3D-Digitalisierungsmethoden, Technik & Equipment (CARARE consistsOf)"
+                : "3D Digitisation Methods, Techniques & Equipment (CARARE consistsOf)"
+            }}</span>
+            <span class="badge badge-primary badge-sm font-semibold"
+              >CARARE 2.0.6</span
+            >
           </h4>
           <p class="text-xs text-base-content/60 mt-0.5 max-w-3xl">
-            {{ currentLocale === 'de'
-              ? 'Laut CARARE-Schema werden Digitalisierungsmethoden (Photogrammetrie, SLS, TLS), Techniken und verwendete Hard-/Software nicht in der Ressource, sondern als Teilschritte (consistsOf) der Aktivität erfasst.'
-              : 'According to the CARARE schema, digitisation methods (Photogrammetry, SLS, TLS), techniques and hardware/software belong to Activity sub-events (consistsOf), not the digital resource.' }}
+            {{
+              currentLocale === "de"
+                ? "Laut CARARE-Schema werden Digitalisierungsmethoden (Photogrammetrie, SLS, TLS), Techniken und verwendete Hard-/Software nicht in der Ressource, sondern als Teilschritte (consistsOf) der Aktivität erfasst."
+                : "According to the CARARE schema, digitisation methods (Photogrammetry, SLS, TLS), techniques and hardware/software belong to Activity sub-events (consistsOf), not the digital resource."
+            }}
           </p>
         </div>
       </div>
@@ -25,24 +40,41 @@
           type="button"
           class="btn btn-xs btn-outline btn-primary gap-1"
           @click="addPredefinedSubactivity('both')"
-          :title="currentLocale === 'de' ? 'Erstellt Erfassungs- und Verarbeitungs-Teilschritt automatisch' : 'Creates capture and post-processing steps'"
+          :title="
+            currentLocale === 'de'
+              ? 'Erstellt Erfassungs- und Verarbeitungs-Teilschritt automatisch'
+              : 'Creates capture and post-processing steps'
+          "
         >
-          ⚡ {{ currentLocale === 'de' ? 'Standard-Workflow übernehmen (Erfassung + Verarbeitung)' : 'Apply Full Standard Workflow' }}
+          ⚡
+          {{
+            currentLocale === "de"
+              ? "Standard-Workflow übernehmen (Erfassung + Verarbeitung)"
+              : "Apply Full Standard Workflow"
+          }}
         </button>
       </div>
     </div>
 
     <!-- Architecture Notice (CARARE & DAP) -->
-    <div class="mb-4 p-3 bg-info/10 border border-info/30 rounded-xl text-xs text-base-content/80 flex items-start gap-2.5">
+    <div
+      class="mb-4 p-3 bg-info/10 border border-info/30 rounded-xl text-xs text-base-content/80 flex items-start gap-2.5"
+    >
       <span class="text-base text-info leading-none">ℹ️</span>
       <div class="space-y-1">
         <strong class="font-bold text-info block">
-          {{ currentLocale === 'de' ? 'Beziehung zwischen Digital Authenticity Profile (DAP) und CARARE consistsOf:' : 'Relationship between DAP and CARARE consistsOf:' }}
+          {{
+            currentLocale === "de"
+              ? "Beziehung zwischen Digital Authenticity Profile (DAP) und CARARE consistsOf:"
+              : "Relationship between DAP and CARARE consistsOf:"
+          }}
         </strong>
         <p class="leading-relaxed">
-          {{ currentLocale === 'de'
-            ? 'Das CARARE-Schema kennt kein eigenes DAP-Element. Alle Digitalisierungs-, Mess- und Bearbeitungsschritte werden im XML als <consistsOf>-Teilschritte der Aktivität gespeichert. Das DAP (DAP-1 bis DAP-6) oben bildet die 6 standardisierten Authentizitäts-Dimensionen ab. Hier unten können Sie zusätzlich freie, rein technische Teilschritte der Kampagne (z. B. separate Scansessions, Ausrichtungs-Durchläufe oder Drohnenflüge) anlegen.'
-            : 'The CARARE schema represents all acquisition and processing events as <consistsOf> sub-activities of the campaign. The 6 DAP dimensions above are the standardized authenticity dimensions. Here you can add optional technical sub-activities (e.g. specialized scan sessions or drone passes).' }}
+          {{
+            currentLocale === "de"
+              ? "Das CARARE-Schema kennt kein eigenes DAP-Element. Alle Digitalisierungs-, Mess- und Bearbeitungsschritte werden im XML als &lt;consistsOf&gt;-Teilschritte der Aktivität gespeichert. Das DAP (DAP-1 bis DAP-6) oben bildet die 6 standardisierten Authentizitäts-Dimensionen ab. Hier unten können Sie zusätzlich freie, rein technische Teilschritte der Kampagne (z. B. separate Scansessions, Ausrichtungs-Durchläufe oder Drohnenflüge) anlegen."
+              : "The CARARE schema represents all acquisition and processing events as &lt;consistsOf&gt; sub-activities of the campaign. The 6 DAP dimensions above are the standardized authenticity dimensions. Here you can add optional technical sub-activities (e.g. specialized scan sessions or drone passes)."
+          }}
         </p>
       </div>
     </div>
@@ -50,12 +82,22 @@
     <!-- 1. METHODEN-WAHL -->
     <div class="mb-4 p-3.5 bg-base-200/40 rounded-xl border border-base-200">
       <div class="flex items-center justify-between mb-2">
-        <label class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5">
+        <label
+          class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5"
+        >
           <span>🎯</span>
-          <span>{{ currentLocale === 'de' ? '1. Primäres 3D-Erfassungsverfahren' : '1. Primary 3D Acquisition Method' }}</span>
+          <span>{{
+            currentLocale === "de"
+              ? "1. Primäres 3D-Erfassungsverfahren"
+              : "1. Primary 3D Acquisition Method"
+          }}</span>
         </label>
         <span class="text-[11px] text-base-content/50">
-          {{ currentLocale === 'de' ? 'Wählen Sie das Verfahren zur Vorkonfiguration' : 'Select method to configure sub-activities' }}
+          {{
+            currentLocale === "de"
+              ? "Wählen Sie das Verfahren zur Vorkonfiguration"
+              : "Select method to configure sub-activities"
+          }}
         </span>
       </div>
 
@@ -63,41 +105,73 @@
         <button
           type="button"
           class="btn btn-sm flex items-center justify-start gap-2.5 px-3 transition-all"
-          :class="activeMethod === 'photogrammetry' ? 'btn-secondary text-secondary-content font-bold shadow-xs' : 'btn-ghost border border-base-300 hover:border-secondary/60'"
+          :class="
+            activeMethod === 'photogrammetry'
+              ? 'btn-secondary text-secondary-content font-bold shadow-xs'
+              : 'btn-ghost border border-base-300 hover:border-secondary/60'
+          "
           @click="selectMethod('photogrammetry')"
         >
           <span>📷</span>
-          <span>{{ currentLocale === 'de' ? 'Photogrammetrie (SfM / MVS)' : 'Photogrammetry (SfM / MVS)' }}</span>
+          <span>{{
+            currentLocale === "de"
+              ? "Photogrammetrie (SfM / MVS)"
+              : "Photogrammetry (SfM / MVS)"
+          }}</span>
         </button>
 
         <button
           type="button"
           class="btn btn-sm flex items-center justify-start gap-2.5 px-3 transition-all"
-          :class="activeMethod === 'sls' ? 'btn-primary text-primary-content font-bold shadow-xs' : 'btn-ghost border border-base-300 hover:border-primary/60'"
+          :class="
+            activeMethod === 'sls'
+              ? 'btn-primary text-primary-content font-bold shadow-xs'
+              : 'btn-ghost border border-base-300 hover:border-primary/60'
+          "
           @click="selectMethod('sls')"
         >
           <span>💡</span>
-          <span>{{ currentLocale === 'de' ? 'SLS (Streifenlichtscanning)' : 'SLS (Structured Light)' }}</span>
+          <span>{{
+            currentLocale === "de"
+              ? "SLS (Streifenlichtscanning)"
+              : "SLS (Structured Light)"
+          }}</span>
         </button>
 
         <button
           type="button"
           class="btn btn-sm flex items-center justify-start gap-2.5 px-3 transition-all"
-          :class="activeMethod === 'tls' ? 'btn-accent text-accent-content font-bold shadow-xs' : 'btn-ghost border border-base-300 hover:border-accent/60'"
+          :class="
+            activeMethod === 'tls'
+              ? 'btn-accent text-accent-content font-bold shadow-xs'
+              : 'btn-ghost border border-base-300 hover:border-accent/60'
+          "
           @click="selectMethod('tls')"
         >
           <span>🌐</span>
-          <span>{{ currentLocale === 'de' ? 'TLS (Terrestrischer Laserscan)' : 'TLS (Terrestrial Laser Scan)' }}</span>
+          <span>{{
+            currentLocale === "de"
+              ? "TLS (Terrestrischer Laserscan)"
+              : "TLS (Terrestrial Laser Scan)"
+          }}</span>
         </button>
 
         <button
           type="button"
           class="btn btn-sm flex items-center justify-start gap-2.5 px-3 transition-all"
-          :class="activeMethod === 'hybrid' ? 'btn-neutral text-neutral-content font-bold shadow-xs' : 'btn-ghost border border-base-300 hover:border-neutral/60'"
+          :class="
+            activeMethod === 'hybrid'
+              ? 'btn-neutral text-neutral-content font-bold shadow-xs'
+              : 'btn-ghost border border-base-300 hover:border-neutral/60'
+          "
           @click="selectMethod('hybrid')"
         >
           <span>🔀</span>
-          <span>{{ currentLocale === 'de' ? 'Hybrid (SLS + Photogrammetrie)' : 'Hybrid (SLS + Photogrammetry)' }}</span>
+          <span>{{
+            currentLocale === "de"
+              ? "Hybrid (SLS + Photogrammetrie)"
+              : "Hybrid (SLS + Photogrammetry)"
+          }}</span>
         </button>
       </div>
     </div>
@@ -105,12 +179,20 @@
     <!-- 2. HARDWARE & SOFTWARE KONFIGURATOR -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
       <!-- Left: Hardware Equipment -->
-      <div class="p-4 bg-base-200/40 rounded-xl border border-base-200 flex flex-col justify-between">
+      <div
+        class="p-4 bg-base-200/40 rounded-xl border border-base-200 flex flex-col justify-between"
+      >
         <div>
           <div class="flex items-center justify-between mb-2">
-            <label class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5">
+            <label
+              class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5"
+            >
               <span>📷</span>
-              <span>{{ currentLocale === 'de' ? 'Hardware-Equipment (Kamera / Scanner)' : 'Hardware Equipment (Camera / Scanner)' }}</span>
+              <span>{{
+                currentLocale === "de"
+                  ? "Hardware-Equipment (Kamera / Scanner)"
+                  : "Hardware Equipment (Camera / Scanner)"
+              }}</span>
             </label>
           </div>
 
@@ -121,10 +203,14 @@
               :key="hw.name"
               type="button"
               class="preset-chip"
-              :class="selectedHardware.includes(hw.name) ? 'ring-2 ring-primary bg-primary/15 font-bold' : ''"
+              :class="
+                selectedHardware.includes(hw.name)
+                  ? 'ring-2 ring-primary bg-primary/15 font-bold'
+                  : ''
+              "
               @click="toggleHardware(hw.name)"
             >
-              <span>{{ selectedHardware.includes(hw.name) ? '✓' : '+' }}</span>
+              <span>{{ selectedHardware.includes(hw.name) ? "✓" : "+" }}</span>
               <span>{{ hw.name }}</span>
             </button>
           </div>
@@ -134,17 +220,29 @@
           type="text"
           v-model="customHardware"
           class="input input-sm input-bordered w-full text-xs font-mono"
-          :placeholder="currentLocale === 'de' ? 'z. B. Sony A7R V / Nikkor 50mm / Artec Leo' : 'e.g. Sony A7R V / Nikkor 50mm / Artec Leo'"
+          :placeholder="
+            currentLocale === 'de'
+              ? 'z. B. Sony A7R V / Nikkor 50mm / Artec Leo'
+              : 'e.g. Sony A7R V / Nikkor 50mm / Artec Leo'
+          "
         />
       </div>
 
       <!-- Right: Processing Software & Techniques -->
-      <div class="p-4 bg-base-200/40 rounded-xl border border-base-200 flex flex-col justify-between">
+      <div
+        class="p-4 bg-base-200/40 rounded-xl border border-base-200 flex flex-col justify-between"
+      >
         <div>
           <div class="flex items-center justify-between mb-2">
-            <label class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5">
+            <label
+              class="label-text font-bold text-xs uppercase tracking-wider text-base-content/80 flex items-center gap-1.5"
+            >
               <span>💻</span>
-              <span>{{ currentLocale === 'de' ? 'Verarbeitungs-Software & Pipeline' : 'Processing Software & Pipeline' }}</span>
+              <span>{{
+                currentLocale === "de"
+                  ? "Verarbeitungs-Software & Pipeline"
+                  : "Processing Software & Pipeline"
+              }}</span>
             </label>
           </div>
 
@@ -155,10 +253,14 @@
               :key="sw"
               type="button"
               class="preset-chip"
-              :class="selectedSoftware.includes(sw) ? 'ring-2 ring-secondary bg-secondary/15 font-bold' : ''"
+              :class="
+                selectedSoftware.includes(sw)
+                  ? 'ring-2 ring-secondary bg-secondary/15 font-bold'
+                  : ''
+              "
               @click="toggleSoftware(sw)"
             >
-              <span>{{ selectedSoftware.includes(sw) ? '✓' : '+' }}</span>
+              <span>{{ selectedSoftware.includes(sw) ? "✓" : "+" }}</span>
               <span>{{ sw }}</span>
             </button>
           </div>
@@ -168,16 +270,28 @@
           type="text"
           v-model="customSoftware"
           class="input input-sm input-bordered w-full text-xs font-mono"
-          :placeholder="currentLocale === 'de' ? 'z. B. RealityCapture, Agisoft Metashape, Blender' : 'e.g. RealityCapture, Agisoft Metashape, Blender'"
+          :placeholder="
+            currentLocale === 'de'
+              ? 'z. B. RealityCapture, Agisoft Metashape, Blender'
+              : 'e.g. RealityCapture, Agisoft Metashape, Blender'
+          "
         />
       </div>
     </div>
 
     <!-- 3. ACTIONS TO POPULATE CONSISTS-OF -->
-    <div class="flex flex-wrap items-center justify-between gap-3 p-3 bg-primary/5 rounded-xl border border-primary/20">
+    <div
+      class="flex flex-wrap items-center justify-between gap-3 p-3 bg-primary/5 rounded-xl border border-primary/20"
+    >
       <div class="text-xs text-base-content/70">
-        <span>{{ currentLocale === 'de' ? 'Aktuell hinterlegte Teilschritte in dieser Aktivität:' : 'Current sub-activities in this activity:' }}</span>
-        <strong class="ml-1 text-primary">{{ (consistsOfList || []).length }}</strong>
+        <span>{{
+          currentLocale === "de"
+            ? "Aktuell hinterlegte Teilschritte in dieser Aktivität:"
+            : "Current sub-activities in this activity:"
+        }}</span>
+        <strong class="ml-1 text-primary">{{
+          (consistsOfList || []).length
+        }}</strong>
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
@@ -187,7 +301,11 @@
           @click="addPredefinedSubactivity('capture')"
         >
           <span>➕</span>
-          <span>{{ currentLocale === 'de' ? 'Erfassungs-Schritt anlegen' : 'Add Capture Step' }}</span>
+          <span>{{
+            currentLocale === "de"
+              ? "Erfassungs-Schritt anlegen"
+              : "Add Capture Step"
+          }}</span>
         </button>
 
         <button
@@ -196,13 +314,20 @@
           @click="addPredefinedSubactivity('processing')"
         >
           <span>➕</span>
-          <span>{{ currentLocale === 'de' ? 'Post-Processing-Schritt anlegen' : 'Add Post-Processing Step' }}</span>
+          <span>{{
+            currentLocale === "de"
+              ? "Post-Processing-Schritt anlegen"
+              : "Add Post-Processing Step"
+          }}</span>
         </button>
       </div>
     </div>
 
     <!-- Active consistsOf Sub-Activities Mini-List -->
-    <div v-if="consistsOfList && consistsOfList.length > 0" class="mt-3 space-y-2">
+    <div
+      v-if="consistsOfList && consistsOfList.length > 0"
+      class="mt-3 space-y-2"
+    >
       <div
         v-for="(item, idx) in consistsOfList"
         :key="idx"
@@ -210,38 +335,96 @@
       >
         <div class="space-y-1 min-w-0 flex-1">
           <div class="flex items-center gap-2 flex-wrap">
-            <span v-if="isDapItem(item)" class="badge badge-xs badge-info font-mono font-bold">
+            <span
+              v-if="isDapItem(item)"
+              class="badge badge-xs badge-info font-mono font-bold"
+            >
               🛡️ {{ getDapBadge(item) }}
             </span>
             <span v-else class="badge badge-xs badge-neutral font-mono">
               #{{ idx + 1 }}
             </span>
-            <span v-if="!isDapItem(item)" class="badge badge-xs badge-outline text-[10px] text-base-content/70">
-              {{ currentLocale === 'de' ? 'Freier Teilschritt' : 'Custom Sub-Activity' }}
+            <span
+              v-if="!isDapItem(item)"
+              class="badge badge-xs badge-outline text-[10px] text-base-content/70"
+            >
+              {{
+                currentLocale === "de"
+                  ? "Freier Teilschritt"
+                  : "Custom Sub-Activity"
+              }}
             </span>
-            <span v-else class="badge badge-xs badge-ghost text-[10px] text-base-content/60">
-              {{ currentLocale === 'de' ? 'DAP-Authentizität' : 'DAP Dimension' }}
+            <span
+              v-else
+              class="badge badge-xs badge-ghost text-[10px] text-base-content/60"
+            >
+              {{
+                currentLocale === "de" ? "DAP-Authentizität" : "DAP Dimension"
+              }}
             </span>
             <span class="font-bold text-base-content leading-snug">
-              {{ item.hadSpecificPurpose || (currentLocale === 'de' ? 'Teilschritt ohne Titel' : 'Sub-activity') }}
+              {{
+                item.hadSpecificPurpose ||
+                (currentLocale === "de"
+                  ? "Teilschritt ohne Titel"
+                  : "Sub-activity")
+              }}
             </span>
-            <span v-if="item['hadSpecificPurpose#lang'] || item['#lang']" class="badge badge-xs badge-ghost uppercase font-mono">
-              {{ item['hadSpecificPurpose#lang'] || item['#lang'] }}
+            <span
+              v-if="item['hadSpecificPurpose#lang'] || item['#lang']"
+              class="badge badge-xs badge-ghost uppercase font-mono"
+            >
+              {{ item["hadSpecificPurpose#lang"] || item["#lang"] }}
             </span>
           </div>
 
-          <div class="flex items-center gap-3 text-base-content/70 flex-wrap text-[11px]">
-            <span v-if="item.methods && (!Array.isArray(item.methods) || item.methods.length > 0)">
-              <strong>{{ currentLocale === 'de' ? 'Methode(n):' : 'Method(s):' }}</strong>
-              {{ Array.isArray(item.methods) ? item.methods.join(' • ') : item.methods }}
+          <div
+            class="flex items-center gap-3 text-base-content/70 flex-wrap text-[11px]"
+          >
+            <span
+              v-if="
+                item.methods &&
+                (!Array.isArray(item.methods) || item.methods.length > 0)
+              "
+            >
+              <strong>{{
+                currentLocale === "de" ? "Methode(n):" : "Method(s):"
+              }}</strong>
+              {{
+                Array.isArray(item.methods)
+                  ? item.methods.join(" • ")
+                  : item.methods
+              }}
             </span>
-            <span v-if="item.techniques && (!Array.isArray(item.techniques) || item.techniques.length > 0)">
-              <strong>{{ currentLocale === 'de' ? 'Technik(en):' : 'Technique(s):' }}</strong>
-              {{ Array.isArray(item.techniques) ? `${item.techniques.length}× (${item.techniques[0]}...)` : item.techniques }}
+            <span
+              v-if="
+                item.techniques &&
+                (!Array.isArray(item.techniques) || item.techniques.length > 0)
+              "
+            >
+              <strong>{{
+                currentLocale === "de" ? "Technik(en):" : "Technique(s):"
+              }}</strong>
+              {{
+                Array.isArray(item.techniques)
+                  ? `${item.techniques.length}× (${item.techniques[0]}...)`
+                  : item.techniques
+              }}
             </span>
-            <span v-if="item.equipment && (!Array.isArray(item.equipment) || item.equipment.length > 0)">
-              <strong>{{ currentLocale === 'de' ? 'Equipment:' : 'Equipment:' }}</strong>
-              {{ Array.isArray(item.equipment) ? item.equipment.join(' • ') : item.equipment }}
+            <span
+              v-if="
+                item.equipment &&
+                (!Array.isArray(item.equipment) || item.equipment.length > 0)
+              "
+            >
+              <strong>{{
+                currentLocale === "de" ? "Equipment:" : "Equipment:"
+              }}</strong>
+              {{
+                Array.isArray(item.equipment)
+                  ? item.equipment.join(" • ")
+                  : item.equipment
+              }}
             </span>
           </div>
         </div>
@@ -252,7 +435,7 @@
             class="btn btn-ghost btn-xs text-info"
             @click="$emit('edit-step', idx)"
           >
-            {{ currentLocale === 'de' ? 'Bearbeiten' : 'Edit' }}
+            {{ currentLocale === "de" ? "Bearbeiten" : "Edit" }}
           </button>
           <button
             type="button"
@@ -268,99 +451,120 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed } from "vue";
 
 const props = defineProps({
   consistsOfList: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   currentLocale: {
     type: String,
-    default: 'de'
-  }
+    default: "de",
+  },
 });
 
-const emit = defineEmits(['add-step', 'edit-step', 'remove-step']);
+const emit = defineEmits(["add-step", "edit-step", "remove-step"]);
 
 const isDapItem = (item) => {
   if (!item) return false;
-  const m = String(item.methods || '');
-  const p = String(item.hadSpecificPurpose || '');
+  const m = String(item.methods || "");
+  const p = String(item.hadSpecificPurpose || "");
   return /DAP-[1-6]/i.test(m) || /DAP-[1-6]/i.test(p);
 };
 
 const getDapBadge = (item) => {
-  if (!item) return '';
-  const match = (String(item.methods || '') + ' ' + String(item.hadSpecificPurpose || '')).match(/DAP-[1-6]/i);
-  return match ? match[0].toUpperCase() : '';
+  if (!item) return "";
+  const match = (
+    String(item.methods || "") +
+    " " +
+    String(item.hadSpecificPurpose || "")
+  ).match(/DAP-[1-6]/i);
+  return match ? match[0].toUpperCase() : "";
 };
 
-const activeMethod = ref('photogrammetry');
-const selectedHardware = ref(['Nikon Z 8', 'NIKKOR Z 50mm f/1.8 S']);
-const customHardware = ref('');
-const selectedSoftware = ref(['RealityCapture', 'Blender 4.3']);
-const customSoftware = ref('');
+const activeMethod = ref("photogrammetry");
+const selectedHardware = ref(["Nikon Z 8", "NIKKOR Z 50mm f/1.8 S"]);
+const customHardware = ref("");
+const selectedSoftware = ref(["RealityCapture", "Blender 4.3"]);
+const customSoftware = ref("");
 
 const PHOTO_HW = [
-  { name: 'Sony A7R V (61 MP)' },
-  { name: 'Nikon Z 8 (45.7 MP)' },
-  { name: 'NIKKOR Z 50mm f/1.8 S' },
-  { name: 'Sony FE 50mm f/1.4 GM' },
-  { name: 'Phase One IQ4 150MP' },
-  { name: 'Polfilter & Ringlicht' },
-  { name: 'Elektrischer Drehteller' }
+  { name: "Sony A7R V (61 MP)" },
+  { name: "Nikon Z 8 (45.7 MP)" },
+  { name: "NIKKOR Z 50mm f/1.8 S" },
+  { name: "Sony FE 50mm f/1.4 GM" },
+  { name: "Phase One IQ4 150MP" },
+  { name: "Polfilter & Ringlicht" },
+  { name: "Elektrischer Drehteller" },
 ];
 
 const SLS_HW = [
-  { name: 'Artec Leo (VCSEL 3D-Scanner)' },
-  { name: 'EinScan Pro HD (Streifenlicht)' },
-  { name: 'GOM ATOS Q (Blaues Streifenlicht)' },
-  { name: 'Breuckmann smartSCAN' },
-  { name: 'Artec Eva' },
-  { name: 'Optische Kalibriertargets' }
+  { name: "Artec Leo (VCSEL 3D-Scanner)" },
+  { name: "EinScan Pro HD (Streifenlicht)" },
+  { name: "GOM ATOS Q (Blaues Streifenlicht)" },
+  { name: "Breuckmann smartSCAN" },
+  { name: "Artec Eva" },
+  { name: "Optische Kalibriertargets" },
 ];
 
 const TLS_HW = [
-  { name: 'Leica RTC360 (3D-Laserscanner)' },
-  { name: 'Faro Focus Core / Premium' },
-  { name: 'Z+F IMAGER 5016' },
-  { name: 'Leica BLK360 G2' },
-  { name: 'Geodätische Passmarken' }
+  { name: "Leica RTC360 (3D-Laserscanner)" },
+  { name: "Faro Focus Core / Premium" },
+  { name: "Z+F IMAGER 5016" },
+  { name: "Leica BLK360 G2" },
+  { name: "Geodätische Passmarken" },
 ];
 
 const currentHwPresets = computed(() => {
-  if (activeMethod.value === 'photogrammetry') return PHOTO_HW;
-  if (activeMethod.value === 'sls') return SLS_HW;
-  if (activeMethod.value === 'tls') return TLS_HW;
+  if (activeMethod.value === "photogrammetry") return PHOTO_HW;
+  if (activeMethod.value === "sls") return SLS_HW;
+  if (activeMethod.value === "tls") return TLS_HW;
   return [...PHOTO_HW.slice(0, 3), ...SLS_HW.slice(0, 3)];
 });
 
 const SOFTWARE_PRESETS = [
-  'RealityCapture 1.4',
-  'Agisoft Metashape Pro 2.1',
-  'Artec Studio 19 Pro',
-  'FARO SCENE',
-  'CloudCompare',
-  'MeshLab',
-  'Blender 4.3 LTS',
-  'Substance 3D Painter'
+  "RealityCapture 1.4",
+  "Agisoft Metashape Pro 2.1",
+  "Artec Studio 19 Pro",
+  "FARO SCENE",
+  "CloudCompare",
+  "MeshLab",
+  "Blender 4.3 LTS",
+  "Substance 3D Painter",
 ];
 
 const selectMethod = (method) => {
   activeMethod.value = method;
-  if (method === 'photogrammetry') {
-    selectedHardware.value = ['Nikon Z 8 (45.7 MP)', 'NIKKOR Z 50mm f/1.8 S', 'Polfilter & Ringlicht'];
-    selectedSoftware.value = ['RealityCapture 1.4', 'Blender 4.3 LTS'];
-  } else if (method === 'sls') {
-    selectedHardware.value = ['Artec Leo (VCSEL 3D-Scanner)', 'Optische Kalibriertargets'];
-    selectedSoftware.value = ['Artec Studio 19 Pro', 'Blender 4.3 LTS'];
-  } else if (method === 'tls') {
-    selectedHardware.value = ['Leica RTC360 (3D-Laserscanner)', 'Geodätische Passmarken'];
-    selectedSoftware.value = ['FARO SCENE', 'CloudCompare'];
-  } else if (method === 'hybrid') {
-    selectedHardware.value = ['Artec Leo (VCSEL 3D-Scanner)', 'Sony A7R V (61 MP)'];
-    selectedSoftware.value = ['Artec Studio 19 Pro', 'RealityCapture 1.4', 'Blender 4.3 LTS'];
+  if (method === "photogrammetry") {
+    selectedHardware.value = [
+      "Nikon Z 8 (45.7 MP)",
+      "NIKKOR Z 50mm f/1.8 S",
+      "Polfilter & Ringlicht",
+    ];
+    selectedSoftware.value = ["RealityCapture 1.4", "Blender 4.3 LTS"];
+  } else if (method === "sls") {
+    selectedHardware.value = [
+      "Artec Leo (VCSEL 3D-Scanner)",
+      "Optische Kalibriertargets",
+    ];
+    selectedSoftware.value = ["Artec Studio 19 Pro", "Blender 4.3 LTS"];
+  } else if (method === "tls") {
+    selectedHardware.value = [
+      "Leica RTC360 (3D-Laserscanner)",
+      "Geodätische Passmarken",
+    ];
+    selectedSoftware.value = ["FARO SCENE", "CloudCompare"];
+  } else if (method === "hybrid") {
+    selectedHardware.value = [
+      "Artec Leo (VCSEL 3D-Scanner)",
+      "Sony A7R V (61 MP)",
+    ];
+    selectedSoftware.value = [
+      "Artec Studio 19 Pro",
+      "RealityCapture 1.4",
+      "Blender 4.3 LTS",
+    ];
   }
 };
 
@@ -385,83 +589,117 @@ const toggleSoftware = (name) => {
 const getEffectiveHardware = () => {
   const list = [...selectedHardware.value];
   if (customHardware.value.trim()) list.push(customHardware.value.trim());
-  return list.join('; ');
+  return list.join("; ");
 };
 
 const getEffectiveSoftware = () => {
   const list = [...selectedSoftware.value];
   if (customSoftware.value.trim()) list.push(customSoftware.value.trim());
-  return list.join('; ');
+  return list.join("; ");
 };
 
 const addPredefinedSubactivity = (kind) => {
-  const isDe = props.currentLocale === 'de';
-  const lang = isDe ? 'de' : 'en';
+  const isDe = props.currentLocale === "de";
+  const lang = isDe ? "de" : "en";
 
-  if (kind === 'capture' || kind === 'both') {
-    let methodText = '';
-    let techText = '';
-    let matText = '';
-    let purposeText = '';
+  if (kind === "capture" || kind === "both") {
+    let methodText = "";
+    let techText = "";
+    let matText = "";
+    let purposeText = "";
 
-    if (activeMethod.value === 'photogrammetry') {
-      methodText = isDe ? 'Nahbereichs-Photogrammetrie (Structure-from-Motion / SfM)' : 'Close-range photogrammetry (SfM / MVS)';
-      techText = isDe ? 'Polarisierte Beleuchtung (Cross-Polarisation), Drehteller-Multiwinkel, Farbkalibrierung' : 'Cross-polarised lighting, turntable multi-angle, color calibration';
-      matText = isDe ? 'X-Rite ColorChecker Classic, kalibrierte Passmarken' : 'X-Rite ColorChecker Classic, calibrated scale bars';
-      purposeText = isDe ? 'Hochauflösende 3D-Oberflächenerfassung und Texturierung mittels Nahbereichsphotogrammetrie' : 'High-resolution 3D surface capture and texturing via close-range photogrammetry';
-    } else if (activeMethod.value === 'sls') {
-      methodText = isDe ? 'Streifenlicht-3D-Scanning (Structured light scanning)' : 'Structured light 3D scanning';
-      techText = isDe ? 'Optische Streifenmusterprojektion, berührungslose Sub-Millimeter-Abtastung' : 'Optical fringe projection, non-contact sub-millimeter sampling';
-      matText = isDe ? '3D-Kalibriertargets' : '3D calibration targets';
-      purposeText = isDe ? 'Berührungslose hochpräzise Streifenlicht-3D-Erfassung der geometrischen Oberfläche' : 'Non-contact high-precision structured light 3D capture of geometric surface';
-    } else if (activeMethod.value === 'tls') {
-      methodText = isDe ? 'Terrestrisches Laserscanning (TLS)' : 'Terrestrial laser scanning (TLS)';
-      techText = isDe ? 'Phasenvergleichs-/Laufzeitmessung, geodätische Scan-Registrierung' : 'Phase-shift / time-of-flight LiDAR, geodetic station alignment';
-      matText = isDe ? 'Retroreflektierende Passmarken' : 'Retroreflective targets';
-      purposeText = isDe ? 'Großräumige hochpräzise 3D-Laserscan-Erfassung des Denkmals / Objekts' : 'Large-scale high-precision 3D terrestrial laser scan acquisition';
+    if (activeMethod.value === "photogrammetry") {
+      methodText = isDe
+        ? "Nahbereichs-Photogrammetrie (Structure-from-Motion / SfM)"
+        : "Close-range photogrammetry (SfM / MVS)";
+      techText = isDe
+        ? "Polarisierte Beleuchtung (Cross-Polarisation), Drehteller-Multiwinkel, Farbkalibrierung"
+        : "Cross-polarised lighting, turntable multi-angle, color calibration";
+      matText = isDe
+        ? "X-Rite ColorChecker Classic, kalibrierte Passmarken"
+        : "X-Rite ColorChecker Classic, calibrated scale bars";
+      purposeText = isDe
+        ? "Hochauflösende 3D-Oberflächenerfassung und Texturierung mittels Nahbereichsphotogrammetrie"
+        : "High-resolution 3D surface capture and texturing via close-range photogrammetry";
+    } else if (activeMethod.value === "sls") {
+      methodText = isDe
+        ? "Streifenlicht-3D-Scanning (Structured light scanning)"
+        : "Structured light 3D scanning";
+      techText = isDe
+        ? "Optische Streifenmusterprojektion, berührungslose Sub-Millimeter-Abtastung"
+        : "Optical fringe projection, non-contact sub-millimeter sampling";
+      matText = isDe ? "3D-Kalibriertargets" : "3D calibration targets";
+      purposeText = isDe
+        ? "Berührungslose hochpräzise Streifenlicht-3D-Erfassung der geometrischen Oberfläche"
+        : "Non-contact high-precision structured light 3D capture of geometric surface";
+    } else if (activeMethod.value === "tls") {
+      methodText = isDe
+        ? "Terrestrisches Laserscanning (TLS)"
+        : "Terrestrial laser scanning (TLS)";
+      techText = isDe
+        ? "Phasenvergleichs-/Laufzeitmessung, geodätische Scan-Registrierung"
+        : "Phase-shift / time-of-flight LiDAR, geodetic station alignment";
+      matText = isDe
+        ? "Retroreflektierende Passmarken"
+        : "Retroreflective targets";
+      purposeText = isDe
+        ? "Großräumige hochpräzise 3D-Laserscan-Erfassung des Denkmals / Objekts"
+        : "Large-scale high-precision 3D terrestrial laser scan acquisition";
     } else {
-      methodText = isDe ? 'Hybride 3D-Erfassung (Streifenlichtscanning & Nahbereichsphotogrammetrie)' : 'Hybrid 3D acquisition (Structured light & photogrammetry)';
-      techText = isDe ? 'Multisensor-Fusion, optische Geometrieabtastung und PBR-Farbaufnahme' : 'Multi-sensor data fusion, optical geometry sampling and PBR color capture';
-      matText = isDe ? 'Kalibrierkörper, Passmarken, ColorChecker' : 'Calibration targets, scale bars, ColorChecker';
-      purposeText = isDe ? 'Kombinierte 3D-Erfassung für maximale Geometrie-Genauigkeit und Texturauflösung' : 'Combined 3D acquisition for maximum geometric precision and texture resolution';
+      methodText = isDe
+        ? "Hybride 3D-Erfassung (Streifenlichtscanning & Nahbereichsphotogrammetrie)"
+        : "Hybrid 3D acquisition (Structured light & photogrammetry)";
+      techText = isDe
+        ? "Multisensor-Fusion, optische Geometrieabtastung und PBR-Farbaufnahme"
+        : "Multi-sensor data fusion, optical geometry sampling and PBR color capture";
+      matText = isDe
+        ? "Kalibrierkörper, Passmarken, ColorChecker"
+        : "Calibration targets, scale bars, ColorChecker";
+      purposeText = isDe
+        ? "Kombinierte 3D-Erfassung für maximale Geometrie-Genauigkeit und Texturauflösung"
+        : "Combined 3D acquisition for maximum geometric precision and texture resolution";
     }
 
     const captureStep = {
       hadSpecificPurpose: purposeText,
-      'hadSpecificPurpose#lang': lang,
+      "hadSpecificPurpose#lang": lang,
       startDate: new Date().getFullYear().toString(),
       endDate: new Date().getFullYear().toString(),
       methods: methodText,
-      'methods#lang': lang,
+      "methods#lang": lang,
       techniques: techText,
-      'techniques#lang': lang,
+      "techniques#lang": lang,
       materials: matText,
-      'materials#lang': lang,
+      "materials#lang": lang,
       equipment: `Hardware: ${getEffectiveHardware()}; Software: ${getEffectiveSoftware()}`,
-      'equipment#lang': lang
+      "equipment#lang": lang,
     };
 
-    emit('add-step', captureStep);
+    emit("add-step", captureStep);
   }
 
-  if (kind === 'processing' || kind === 'both') {
+  if (kind === "processing" || kind === "both") {
     const procStep = {
       hadSpecificPurpose: isDe
-        ? '3D-Post-Processing: Bereinigung der Punktwolke, Netzoptimierung, UV-Unwrapping und Textur-Baking'
-        : '3D post-processing: point cloud cleanup, mesh decimation, UV unwrapping and texture baking',
-      'hadSpecificPurpose#lang': lang,
+        ? "3D-Post-Processing: Bereinigung der Punktwolke, Netzoptimierung, UV-Unwrapping und Textur-Baking"
+        : "3D post-processing: point cloud cleanup, mesh decimation, UV unwrapping and texture baking",
+      "hadSpecificPurpose#lang": lang,
       startDate: new Date().getFullYear().toString(),
       endDate: new Date().getFullYear().toString(),
-      methods: isDe ? 'Polygondezimierung, Quad-Remeshing, PBR-Textur-Baking' : 'Polygon decimation, quad remeshing, PBR texture baking',
-      'methods#lang': lang,
-      techniques: isDe ? 'Poisson-Rekonstruktion, Non-overlapping UV-Packing, Tangent-Space Normal Baking' : 'Poisson reconstruction, non-overlapping UV packing, tangent-space normal baking',
-      'techniques#lang': lang,
-      materials: '',
-      equipment: `Software: ${getEffectiveSoftware() || 'Blender 4.3 LTS, Instant Meshes, RealityCapture'}`,
-      'equipment#lang': lang
+      methods: isDe
+        ? "Polygondezimierung, Quad-Remeshing, PBR-Textur-Baking"
+        : "Polygon decimation, quad remeshing, PBR texture baking",
+      "methods#lang": lang,
+      techniques: isDe
+        ? "Poisson-Rekonstruktion, Non-overlapping UV-Packing, Tangent-Space Normal Baking"
+        : "Poisson reconstruction, non-overlapping UV packing, tangent-space normal baking",
+      "techniques#lang": lang,
+      materials: "",
+      equipment: `Software: ${getEffectiveSoftware() || "Blender 4.3 LTS, Instant Meshes, RealityCapture"}`,
+      "equipment#lang": lang,
     };
 
-    emit('add-step', procStep);
+    emit("add-step", procStep);
   }
 };
 </script>

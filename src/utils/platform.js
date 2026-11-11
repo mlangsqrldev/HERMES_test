@@ -12,11 +12,14 @@ export const openExternalUrl = async (url) => {
     if (isTauri()) {
       await openUrl(url);
     } else {
-      window.open(url, '_blank', 'noopener,noreferrer');
+      window.open(url, "_blank", "noopener,noreferrer");
     }
   } catch (e) {
-    console.warn("Failed to open URL with Tauri opener, falling back to window.open:", e);
-    window.open(url, '_blank', 'noopener,noreferrer');
+    console.warn(
+      "Failed to open URL with Tauri opener, falling back to window.open:",
+      e,
+    );
+    window.open(url, "_blank", "noopener,noreferrer");
   }
 };
 
@@ -32,12 +35,17 @@ class BrowserStore {
         return JSON.parse(stored);
       }
       if (this.name === "templates.json" && defaultTemplates) {
-        localStorage.setItem(`hermes_${this.name}`, JSON.stringify(defaultTemplates));
+        localStorage.setItem(
+          `hermes_${this.name}`,
+          JSON.stringify(defaultTemplates),
+        );
         return defaultTemplates;
       }
       return {};
     } catch {
-      return this.name === "templates.json" && defaultTemplates ? defaultTemplates : {};
+      return this.name === "templates.json" && defaultTemplates
+        ? defaultTemplates
+        : {};
     }
   }
 
@@ -61,12 +69,18 @@ class BrowserStore {
   }
 }
 
-export const getAppStore = async (name = "templates.json", options = { autoSave: true }) => {
+export const getAppStore = async (
+  name = "templates.json",
+  options = { autoSave: true },
+) => {
   if (isTauri()) {
     try {
       return await load(name, options);
     } catch (e) {
-      console.warn("Tauri store load failed, falling back to browser storage:", e);
+      console.warn(
+        "Tauri store load failed, falling back to browser storage:",
+        e,
+      );
       return new BrowserStore(name);
     }
   }
