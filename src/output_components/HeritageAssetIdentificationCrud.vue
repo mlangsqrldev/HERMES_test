@@ -48,8 +48,8 @@
                 @click="addNewHeritageAsset"
                 :title="
                   currentLocale === 'de'
-                    ? 'Neues Kulturgut mit Kampagnen-Defaults anlegen'
-                    : 'Create new asset with campaign defaults'
+                    ? 'Neues Kulturgut anlegen'
+                    : 'Create new heritage asset'
                 "
               >
                 <span>➕</span>
@@ -249,27 +249,6 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-1.5">
-              <!-- Bulk Apply Campaign -->
-
-              <button
-                type="button"
-                class="btn btn-xs btn-warning text-warning-content font-bold gap-1"
-                @click="bulkApplyCampaignToSelected"
-                :title="
-                  currentLocale === 'de'
-                    ? 'Kampagnen-Voreinstellungen auf alle ausgewählten Objekte vererben'
-                    : 'Inherit campaign presets to selected'
-                "
-              >
-                <span>🎯</span>
-
-                <span>{{
-                  currentLocale === "de"
-                    ? "Aus Kampagne vererben"
-                    : "Inherit from Campaign"
-                }}</span>
-              </button>
-
               <!-- Bulk Assign Licence -->
 
               <div class="dropdown dropdown-bottom dropdown-end">
@@ -538,27 +517,6 @@
                       : "New Heritage Asset"
                 }}</span>
               </h3>
-            </div>
-
-            <div class="flex items-center gap-2">
-              <button
-                type="button"
-                class="btn btn-xs btn-outline btn-warning gap-1 font-bold shadow-2xs"
-                @click.prevent="applyCampaignToCurrentForm"
-                :title="
-                  currentLocale === 'de'
-                    ? 'Übernimmt alle Voreinstellungen der Master-Kampagne (Institution, Lizenz, Epoche, Material) in dieses Kulturgut'
-                    : 'Inherit campaign presets into this asset'
-                "
-              >
-                <span>🎯</span>
-
-                <span>{{
-                  currentLocale === "de"
-                    ? "Aus Kampagne vererben"
-                    : "Inherit from Campaign"
-                }}</span>
-              </button>
             </div>
           </div>
 
@@ -8003,8 +7961,6 @@ import {
   updateProjectHeritageAssets,
   projectDigitalResources,
   projectActivities,
-  campaignPreset,
-  applyCampaignToHeritageAsset,
   incrementStringNumber,
   getLicenceShortCode,
 } from "../utils/sharedState.js";
@@ -12825,26 +12781,8 @@ const duplicate = (index) => {
   smartDuplicate(index);
 };
 
-// Feature 3: Campaign Inheritance
-
-const applyCampaignToCurrentForm = () => {
-  applyCampaignToHeritageAsset(form, true);
-
-  formSnapshot.value = JSON.stringify(form);
-
-  saveSuccessBadge.value = true;
-
-  setTimeout(() => {
-    saveSuccessBadge.value = false;
-  }, 2500);
-};
-
 const addNewHeritageAsset = () => {
   resetForm(true);
-
-  if (campaignPreset && campaignPreset.active) {
-    applyCampaignToHeritageAsset(form, false);
-  }
 
   isEditing.value = false;
 
@@ -12885,10 +12823,6 @@ const addNewInGrid = () => {
 
     "rights.licence": globalRights?.licence || "",
   };
-
-  if (campaignPreset && campaignPreset.active) {
-    applyCampaignToHeritageAsset(newItem, false);
-  }
 
   items.value.push(newItem);
 };
@@ -12991,22 +12925,6 @@ const onGridFieldChange = (originalIndex, field, val) => {
 };
 
 // Feature 5: Bulk Actions Logic
-
-const bulkApplyCampaignToSelected = () => {
-  if (selectedOriginalIndices.value.length === 0) return;
-
-  selectedOriginalIndices.value.forEach((idx) => {
-    if (items.value[idx]) {
-      applyCampaignToHeritageAsset(items.value[idx], false);
-    }
-  });
-
-  alert(
-    currentLocale.value === "de"
-      ? `Kampagnen-Voreinstellungen auf ${selectedOriginalIndices.value.length} Kulturgüter übertragen!`
-      : `Campaign presets applied to ${selectedOriginalIndices.value.length} heritage assets!`,
-  );
-};
 
 const bulkAssignLicence = (licenceUri) => {
   if (!licenceUri || selectedOriginalIndices.value.length === 0) return;
@@ -13462,10 +13380,6 @@ const resetForm = (force = false) => {
       resolveLicenceUri(globalRights.licence, currentLocale.value) || "";
 
     form["rights.reproductionRights"] = globalRights.reproductionRights || "";
-  }
-
-  if (campaignPreset && campaignPreset.active) {
-    applyCampaignToHeritageAsset(form, false);
   }
 
   isEditing.value = false;

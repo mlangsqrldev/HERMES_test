@@ -183,41 +183,6 @@
           }}</span>
         </button>
 
-        <!-- Master Campaign Presets (Kampagnen-Klammer) -->
-        <button
-          type="button"
-          class="btn btn-xs gap-1.5 btn-outline border-base-300 hover:border-warning hover:bg-warning/10 shadow-xs"
-          @click="isCampaignModalOpen = true"
-          :title="
-            currentLocale === 'de'
-              ? 'Kampagnen-Klammer & Vererbung für alle Objekte konfigurieren'
-              : 'Configure master campaign presets & inheritance'
-          "
-        >
-          <span class="text-sm">🎯</span>
-          <span class="font-bold text-xs">{{
-            currentLocale === "de" ? "Kampagne" : "Campaign"
-          }}</span>
-          <span
-            class="badge badge-xs"
-            :class="
-              campaignPreset.active
-                ? 'badge-warning font-semibold text-warning-content'
-                : 'badge-ghost'
-            "
-          >
-            {{
-              campaignPreset.active
-                ? currentLocale === "de"
-                  ? "Aktiv"
-                  : "On"
-                : currentLocale === "de"
-                  ? "Aus"
-                  : "Off"
-            }}
-          </span>
-        </button>
-
         <!-- API Settings -->
         <button
           type="button"
@@ -311,14 +276,6 @@
       mode="manage"
       :locale="currentLocale"
       @close="isEquipmentModalOpen = false"
-    />
-
-    <!-- Master Campaign Preset Modal -->
-    <CampaignPresetModal
-      :isOpen="isCampaignModalOpen"
-      :currentLocale="currentLocale"
-      @close="isCampaignModalOpen = false"
-      @bulk-apply-campaign="handleBulkApplyCampaign"
     />
 
     <!-- API Settings Modal -->
@@ -786,7 +743,6 @@ import {
   savedCollections,
   savedSoftware,
   savedEquipment,
-  campaignPreset,
   CC_LICENCES,
   getLicenceShortCode,
   resolveLicenceUri,
@@ -794,7 +750,6 @@ import {
 import PersonPickerModal from "./PersonPickerModal.vue";
 import OrganizationPickerModal from "./OrganizationPickerModal.vue";
 import CollectionPickerModal from "./CollectionPickerModal.vue";
-import CampaignPresetModal from "./CampaignPresetModal.vue";
 import SoftwarePickerModal from "./SoftwarePickerModal.vue";
 import EquipmentPickerModal from "./EquipmentPickerModal.vue";
 import ApiSettingsModal from "./ApiSettingsModal.vue";
@@ -811,14 +766,12 @@ const emit = defineEmits([
   "apply-rights",
   "apply-language",
   "apply-collection",
-  "bulk-apply-campaign",
 ]);
 
 const isRightsExpanded = ref(false);
 const isPersonModalOpen = ref(false);
 const isOrgModalOpen = ref(false);
 const isCollectionModalOpen = ref(false);
-const isCampaignModalOpen = ref(false);
 const isSoftwareModalOpen = ref(false);
 const isEquipmentModalOpen = ref(false);
 const isApiSettingsOpen = ref(false);
@@ -830,15 +783,6 @@ const handleCollectionSelect = (col) => {
     props.currentLocale === "de"
       ? `Sammlung "${col.title || col.id}" ausgewählt!`
       : `Collection "${col.title || col.id}" selected!`,
-  );
-};
-
-const handleBulkApplyCampaign = (preset) => {
-  emit("bulk-apply-campaign", preset);
-  showToast(
-    props.currentLocale === "de"
-      ? "Kampagne auf alle Datensätze übertragen!"
-      : "Campaign presets applied to all records!",
   );
 };
 

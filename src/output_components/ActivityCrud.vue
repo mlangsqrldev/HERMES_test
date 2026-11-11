@@ -21,8 +21,8 @@
               >
                 <span>{{
                   currentLocale === "de"
-                    ? "Kampagnen-Klammer (Übergeordnete Aktivität)"
-                    : "Campaign Bracket (Master Activity)"
+                    ? "Übergeordnete Aktivität (Digitalisierungsprojekt)"
+                    : "Master Activity (Digitisation Project)"
                 }}</span>
                 <span class="badge badge-primary badge-xs font-semibold"
                   >CARARE 2.0.6</span
@@ -31,8 +31,8 @@
               <p class="text-xs text-base-content/70 leading-relaxed max-w-4xl">
                 {{
                   currentLocale === "de"
-                    ? "Diese Aktivität repräsentiert die Digitalisierungskampagne. Sie fungiert als gemeinsame Klammer für alle erfassten Kulturgüter und deren 3D-Modelle. Im CARARE-XML-Export wird sie mit ihrer ID in jeden Objekt-Datensatz eingebettet und verknüpft die Kulturgüter automatisch über &lt;wasDigitizedBy&gt;."
-                    : "This activity represents the digitisation campaign. It serves as the master bracket linking all recorded heritage assets and their 3D models via &lt;wasDigitizedBy&gt; in the CARARE XML."
+                    ? "Diese Aktivität repräsentiert das übergeordnete Digitalisierungsprojekt (CARARE &lt;activity&gt;). Sie verknüpft die erfassten Kulturgüter und deren digitale Ressourcen. Im CARARE-XML-Export wird sie mit ihrer ID referenziert und verbindet die Datensätze über &lt;wasDigitizedBy&gt;."
+                    : "This activity represents the overarching digitisation project (CARARE &lt;activity&gt;). It links the recorded heritage assets and digital resources via &lt;wasDigitizedBy&gt; in the CARARE XML export."
                 }}
               </p>
             </div>
@@ -807,8 +807,8 @@
                         >
                           <span>{{
                             currentLocale === "de"
-                              ? "Kampagnen-Klammer (Übergeordnete Aktivität)"
-                              : "Campaign Bracket (Master Activity)"
+                              ? "Übergeordnete Aktivität (Digitalisierungsprojekt)"
+                              : "Master Activity (Digitisation Project)"
                           }}</span>
                           <span
                             class="badge badge-primary badge-xs font-semibold"
@@ -820,8 +820,8 @@
                         >
                           {{
                             currentLocale === "de"
-                              ? "Diese Aktivität repräsentiert die Digitalisierungskampagne. Sie fungiert als gemeinsame Klammer für alle erfassten Kulturgüter und deren 3D-Modelle. Im CARARE-XML-Export wird sie mit ihrer ID in jeden Objekt-Datensatz eingebettet und verknüpft die Kulturgüter automatisch über &lt;wasDigitizedBy&gt;."
-                              : "This activity represents the digitisation campaign. It serves as the master bracket linking all recorded heritage assets and their 3D models via &lt;wasDigitizedBy&gt; in the CARARE XML."
+                              ? "Diese Aktivität repräsentiert das übergeordnete Digitalisierungsprojekt (CARARE &lt;activity&gt;). Sie verknüpft die erfassten Kulturgüter und deren digitale Ressourcen. Im CARARE-XML-Export wird sie mit ihrer ID referenziert und verbindet die Datensätze über &lt;wasDigitizedBy&gt;."
+                              : "This activity represents the overarching digitisation project (CARARE &lt;activity&gt;). It links the recorded heritage assets and digital resources via &lt;wasDigitizedBy&gt; in the CARARE XML export."
                           }}
                         </p>
                       </div>
@@ -1512,8 +1512,8 @@
                     >
                       <span>{{
                         currentLocale === "de"
-                          ? "Kampagnen-Klammer (Übergeordnete Aktivität)"
-                          : "Campaign Bracket (Master Activity)"
+                          ? "Übergeordnete Aktivität (Digitalisierungsprojekt)"
+                          : "Master Activity (Digitisation Project)"
                       }}</span>
                       <span class="badge badge-primary badge-xs font-semibold"
                         >CARARE 2.0.6</span
@@ -1524,8 +1524,8 @@
                     >
                       {{
                         currentLocale === "de"
-                          ? "Diese Aktivität repräsentiert die Digitalisierungskampagne. Sie fungiert als gemeinsame Klammer für alle erfassten Kulturgüter und deren 3D-Modelle. Im CARARE-XML-Export wird sie mit ihrer ID in jeden Objekt-Datensatz eingebettet und verknüpft die Kulturgüter automatisch über &lt;wasDigitizedBy&gt;."
-                          : "This activity represents the digitisation campaign. It serves as the master bracket linking all recorded heritage assets and their 3D models via &lt;wasDigitizedBy&gt; in the CARARE XML."
+                          ? "Diese Aktivität repräsentiert das übergeordnete Digitalisierungsprojekt (CARARE &lt;activity&gt;). Sie verknüpft die erfassten Kulturgüter und deren digitale Ressourcen. Im CARARE-XML-Export wird sie mit ihrer ID referenziert und verbindet die Datensätze über &lt;wasDigitizedBy&gt;."
+                          : "This activity represents the overarching digitisation project (CARARE &lt;activity&gt;). It links the recorded heritage assets and digital resources via &lt;wasDigitizedBy&gt; in the CARARE XML export."
                       }}
                     </p>
                   </div>
@@ -1750,8 +1750,8 @@
                     >
                       <span>{{
                         currentLocale === "de"
-                          ? "Kampagnen-Klammer (Übergeordnete Aktivität)"
-                          : "Campaign Bracket (Master Activity)"
+                          ? "Übergeordnete Aktivität (Digitalisierungsprojekt)"
+                          : "Master Activity (Digitisation Project)"
                       }}</span>
                       <span class="badge badge-primary badge-xs font-semibold"
                         >CARARE 2.0.6</span
@@ -1762,8 +1762,8 @@
                     >
                       {{
                         currentLocale === "de"
-                          ? "Diese Aktivität repräsentiert die Digitalisierungskampagne. Sie fungiert als gemeinsame Klammer für alle erfassten Kulturgüter und deren 3D-Modelle. Im CARARE-XML-Export wird sie mit ihrer ID in jeden Objekt-Datensatz eingebettet und verknüpft die Kulturgüter automatisch über &lt;wasDigitizedBy&gt;."
-                          : "This activity represents the digitisation campaign. It serves as the master bracket linking all recorded heritage assets and their 3D models via &lt;wasDigitizedBy&gt; in the CARARE XML."
+                          ? "Diese Aktivität repräsentiert das übergeordnete Digitalisierungsprojekt (CARARE &lt;activity&gt;). Sie verknüpft die erfassten Kulturgüter und deren digitale Ressourcen. Im CARARE-XML-Export wird sie mit ihrer ID referenziert und verbindet die Datensätze über &lt;wasDigitizedBy&gt;."
+                          : "This activity represents the overarching digitisation project (CARARE &lt;activity&gt;). It links the recorded heritage assets and digital resources via &lt;wasDigitizedBy&gt; in the CARARE XML export."
                       }}
                     </p>
                   </div>

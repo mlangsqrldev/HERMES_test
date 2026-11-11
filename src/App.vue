@@ -654,7 +654,6 @@
           @apply-rights="applyGlobalRightsToAll"
           @apply-language="applyGlobalLanguageToAll"
           @apply-collection="applyGlobalCollectionToForm"
-          @bulk-apply-campaign="applyGlobalCampaignToAll"
         />
 
         <section
@@ -1279,9 +1278,6 @@ import {
   isApiSettingsOpen,
   openApiSettings,
   closeApiSettings,
-  applyCampaignToHeritageAsset,
-  applyCampaignToDigitalResource,
-  applyCampaignToActivity,
 } from "./utils/sharedState.js";
 
 import { invoke } from "@tauri-apps/api/core";
@@ -1559,48 +1555,6 @@ const applyGlobalCollectionToForm = (col) => {
 
   if (el && typeof el.scrollIntoView === "function") {
     el.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-};
-
-const applyGlobalCampaignToAll = (preset) => {
-  if (!preset) return;
-
-  // 1. Heritage Assets
-
-  const haComp = heritageRef.value?.[0];
-
-  if (haComp) {
-    if (haComp.form) applyCampaignToHeritageAsset(haComp.form, true);
-
-    if (Array.isArray(haComp.items)) {
-      haComp.items.forEach((item) => applyCampaignToHeritageAsset(item, true));
-    }
-  }
-
-  // 2. Digital Resources
-
-  const drComp = digitalRef.value?.[0];
-
-  if (drComp) {
-    if (drComp.form) applyCampaignToDigitalResource(drComp.form, true);
-
-    if (Array.isArray(drComp.items)) {
-      drComp.items.forEach((item) =>
-        applyCampaignToDigitalResource(item, true),
-      );
-    }
-  }
-
-  // 3. Activities
-
-  const actComp = activityRef.value?.[0];
-
-  if (actComp) {
-    if (actComp.form) applyCampaignToActivity(actComp.form, true);
-
-    if (Array.isArray(actComp.items)) {
-      actComp.items.forEach((item) => applyCampaignToActivity(item, true));
-    }
   }
 };
 
@@ -4891,7 +4845,7 @@ const handleXmlLineClick = (payload) => {
  *    and embedded into each <carare> record.
  * 4. Multiple <digitalResource> elements (3D master mesh, WebGL GLB derivative, raw photos)
  *    are repeated within the relevant object's <carare> record.
- * 5. Campaign activities are linked to each object via <wasDigitizedBy>.
+ * 5. Digitisation activities are linked to each object via <wasDigitizedBy>.
  * 6. Child elements are validated and strictly ordered according to CARARE schema sequence:
  *    collectionInformation -> heritageAssetIdentification -> digitalResource -> activity.
  *
@@ -6296,7 +6250,7 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
       globalRights.licence ||
       "";
 
-    // Automatically link to campaign activity via wasDigitizedBy if not explicitly set
+    // Automatically link to digitisation activity via wasDigitizedBy if not explicitly set
     const existingWdb = Array.isArray(rec["wasDigitizedBy"])
       ? rec["wasDigitizedBy"].filter(Boolean)
       : rec["wasDigitizedBy"]
