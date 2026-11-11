@@ -732,19 +732,25 @@
                 </button>
               </div>
               </div>
-          <select v-model="drawerForm['role']" class="select select-bordered w-full">
-            <option disabled value="">{{ currentLocale === 'de' ? getLabel('recordInformation.creation.contacts.role', 'role') + ' ' + t('select') : t('select') + ' ' + getLabel('recordInformation.creation.contacts.role', 'role') }}</option>
-            <template v-if="currentLocale === 'de'">
-              <option value="Dokumentar">Dokumentar</option>
-<option value="Kurator">Kurator</option>
-<option value="Projektleitung">Projektleitung</option>
-            </template>
-            <template v-else>
-              <option value="Curator">Curator</option>
-<option value="Documentation">Documentation</option>
-<option value="Project Management">Project Management</option>
-            </template>
-          </select>
+          <input
+            type="text"
+            list="dr-contact-roles-list"
+            v-model="drawerForm['role']"
+            class="input input-bordered w-full"
+            :placeholder="getLabel('recordInformation.creation.contacts.role', 'e.g. Documentation, Curator, 3D Digitization Specialist', 'plac')"
+          />
+          <datalist id="dr-contact-roles-list">
+            <option value="3D Digitization Specialist">3D Digitization Specialist / 3D-Digitalisierungsexperte</option>
+            <option value="Curator">Curator / Kurator</option>
+            <option value="Documentation">Documentation / Dokumentar</option>
+            <option value="Project Management">Project Management / Projektleitung</option>
+            <option value="Conservator">Conservator / Restaurator</option>
+            <option value="Photographer">Photographer / Fotograf</option>
+            <option value="Researcher">Researcher / Wissenschaftlicher Mitarbeiter</option>
+            <option value="Data Manager">Data Manager / Datenmanager</option>
+            <option value="Archaeologist">Archaeologist / Archäologe</option>
+            <option value="Art Historian">Art Historian / Kunsthistoriker</option>
+          </datalist>
           
         </div>
         <div class="form-control w-full mb-4">
@@ -1539,7 +1545,25 @@
               </button>
               </div>
               </div>
-                        <input type="text"     required v-model="drawerForm['roles']" class="input input-bordered w-full validator " :placeholder="getLabel('actors.roles', 'e.g. 3D Data Acquisition Lead | Data Processing', 'plac')" />
+                        <input
+                          type="text"
+                          list="dr-actor-roles-list"
+                          required
+                          v-model="drawerForm['roles']"
+                          class="input input-bordered w-full validator"
+                          :placeholder="getLabel('actors.roles', 'e.g. 3D Data Acquisition Lead | Data Processing', 'plac')"
+                        />
+                        <datalist id="dr-actor-roles-list">
+                          <option value="3D Data Acquisition Lead">3D Data Acquisition Lead / Leitung 3D-Datenerfassung</option>
+                          <option value="3D Digitization Specialist">3D Digitization Specialist / 3D-Operator</option>
+                          <option value="Data Processing">Data Processing / Datenverarbeitung & Post-Processing</option>
+                          <option value="Curator">Curator / Kurator</option>
+                          <option value="Documentation Officer">Documentation Officer / Dokumentar</option>
+                          <option value="Project Manager">Project Manager / Projektleitung</option>
+                          <option value="Restorer / Conservator">Restorer / Restaurator</option>
+                          <option value="Photographer">Photographer / Fotograf</option>
+                          <option value="Scientific Supervisor">Scientific Supervisor / Wissenschaftliche Betreuung</option>
+                        </datalist>
           </div>
         </div>
       </div>

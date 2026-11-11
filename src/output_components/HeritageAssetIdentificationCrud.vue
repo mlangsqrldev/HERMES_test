@@ -3233,9 +3233,9 @@
 
               </div>
 
-                        <input type="text"    pattern='^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$' required v-model="drawerForm['timeSpan.startDate']" class="input input-bordered w-full validator " :placeholder="getLabel('characters.temporal.timeSpan.startDate', 'e.g. -500, 48, -7 or 2025', 'plac')" />
+                        <input type="text"    pattern='^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$' required v-model="drawerForm['timeSpan.startDate']" @input="validateDateNotFuture($event)" class="input input-bordered w-full validator " :placeholder="getLabel('characters.temporal.timeSpan.startDate', 'e.g. -500, 48, -7 or 2025', 'plac')" />
 
-              <div class="validator-hint">{{t('validationHint')}}</div>        
+              <div class="validator-hint">{{ currentLocale === 'de' ? 'Gültiges Datum erforderlich (JJJJ, JJJJ-MM oder JJJJ-MM-TT, nicht in der Zukunft)' : 'Valid date required (YYYY, YYYY-MM or YYYY-MM-DD, not in future)' }}</div>        
 
           
 
@@ -3269,9 +3269,9 @@
 
               </div>
 
-                        <input type="text"    pattern='^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$' required v-model="drawerForm['timeSpan.endDate']" class="input input-bordered w-full validator " :placeholder="getLabel('characters.temporal.timeSpan.endDate', 'e.g. -400, 48, -7 or 2025', 'plac')" />
+                        <input type="text"    pattern='^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$' required v-model="drawerForm['timeSpan.endDate']" @input="validateDateNotFuture($event)" class="input input-bordered w-full validator " :placeholder="getLabel('characters.temporal.timeSpan.endDate', 'e.g. -400, 48, -7 or 2025', 'plac')" />
 
-              <div class="validator-hint">{{t('validationHint')}}</div>        
+              <div class="validator-hint">{{ currentLocale === 'de' ? 'Gültiges Datum erforderlich (JJJJ, JJJJ-MM oder JJJJ-MM-TT, nicht in der Zukunft)' : 'Valid date required (YYYY, YYYY-MM or YYYY-MM-DD, not in future)' }}</div>        
 
           
 
@@ -5276,7 +5276,9 @@ import {
 
   resolveGeopoliticalArea,
 
-  normalizeYearDate, 
+  normalizeYearDate,
+
+  isFutureDate,
 
   CC_LICENCES, 
 
@@ -10032,6 +10034,17 @@ const onDrawerMapCoordsChange = ({ lat, lng }) => {
 
 
 
+const validateDateNotFuture = (event) => {
+  const el = event?.target;
+  if (!el) return;
+  const val = el.value;
+  if (isFutureDate(val)) {
+    el.setCustomValidity(currentLocale.value === 'de' ? 'Das Datum darf nicht in der Zukunft liegen.' : 'Date cannot be in the future.');
+  } else {
+    el.setCustomValidity('');
+  }
+};
+
 const saveDrawer = () => {
 
   const field = activeDrawerField.value;
@@ -10056,9 +10069,17 @@ const saveDrawer = () => {
     }
   }
 
-  // Normalize year dates for characters.temporal
+  // Validate and normalize year dates for characters.temporal
 
   if (field === 'characters.temporal') {
+
+    if (isFutureDate(drawerForm['timeSpan.startDate']) || isFutureDate(drawerForm['timeSpan.endDate'])) {
+
+      alert(currentLocale.value === 'de' ? 'Das Datierungs-Datum darf nicht in der Zukunft liegen.' : 'Heritage asset date cannot be in the future.');
+
+      return;
+
+    }
 
     if (drawerForm['timeSpan.startDate']) {
 
@@ -10202,6 +10223,18 @@ const save = () => {
   }
 
   if (Array.isArray(form['characters.temporal'])) {
+
+    for (const item of form['characters.temporal']) {
+
+      if (item && (isFutureDate(item['timeSpan.startDate']) || isFutureDate(item['timeSpan.endDate']))) {
+
+        alert(currentLocale.value === 'de' ? 'Das Datierungs-Datum darf nicht in der Zukunft liegen.' : 'Heritage asset date cannot be in the future.');
+
+        return;
+
+      }
+
+    }
 
     form['characters.temporal'].forEach(item => {
 

@@ -188,6 +188,39 @@ export const normalizeYearDate = (val) => {
   return `${sign}${paddedYear}${rest}`;
 };
 
+// Check whether a date or year is in the future
+export const isFutureDate = (val) => {
+  if (val === null || val === undefined) return false;
+  const str = String(val).trim();
+  if (!str) return false;
+  // Negative years (BCE / v. Chr.) are in the past
+  if (str.startsWith('-')) return false;
+
+  const now = new Date();
+  const curYear = now.getFullYear();
+  const curMonth = now.getMonth() + 1;
+  const curDay = now.getDate();
+
+  // Matches YYYY, YYYY-MM, or YYYY-MM-DD (with optional leading +)
+  const match = str.match(/^\+?(\d{1,4})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12]\d|3[01]))?)?$/);
+  if (!match) return false;
+
+  const year = parseInt(match[1], 10);
+  if (year > curYear) return true;
+  if (year < curYear) return false;
+
+  // Year is current year: check month if present
+  if (!match[2]) return false;
+  const month = parseInt(match[2], 10);
+  if (month > curMonth) return true;
+  if (month < curMonth) return false;
+
+  // Month is current month: check day if present
+  if (!match[3]) return false;
+  const day = parseInt(match[3], 10);
+  return day > curDay;
+};
+
 // 4. Unified Saved Persons / Actors / Contacts Master Pool (clean slate, no dummy data)
 const defaultPersons = [];
 

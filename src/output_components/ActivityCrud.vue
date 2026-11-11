@@ -896,19 +896,25 @@
                 </button>
               </div>
               </div>
-          <select v-model="drawerForm['role']" class="select select-bordered w-full">
-            <option disabled value="">{{ currentLocale === 'de' ? getLabel('recordInformation.creation.contacts.role', 'role') + ' ' + t('select') : t('select') + ' ' + getLabel('recordInformation.creation.contacts.role', 'role') }}</option>
-            <template v-if="currentLocale === 'de'">
-              <option value="Dokumentar">Dokumentar</option>
-<option value="Kurator">Kurator</option>
-<option value="Projektleitung">Projektleitung</option>
-            </template>
-            <template v-else>
-              <option value="Curator">Curator</option>
-<option value="Documentation">Documentation</option>
-<option value="Project Management">Project Management</option>
-            </template>
-          </select>
+          <input
+            type="text"
+            list="act-contact-roles-list"
+            v-model="drawerForm['role']"
+            class="input input-bordered w-full"
+            :placeholder="getLabel('recordInformation.creation.contacts.role', 'e.g. Documentation, Curator, 3D Digitization Specialist', 'plac')"
+          />
+          <datalist id="act-contact-roles-list">
+            <option value="3D Digitization Specialist">3D Digitization Specialist / 3D-Digitalisierungsexperte</option>
+            <option value="Curator">Curator / Kurator</option>
+            <option value="Documentation">Documentation / Dokumentar</option>
+            <option value="Project Management">Project Management / Projektleitung</option>
+            <option value="Conservator">Conservator / Restaurator</option>
+            <option value="Photographer">Photographer / Fotograf</option>
+            <option value="Researcher">Researcher / Wissenschaftlicher Mitarbeiter</option>
+            <option value="Data Manager">Data Manager / Datenmanager</option>
+            <option value="Archaeologist">Archaeologist / Archäologe</option>
+            <option value="Art Historian">Art Historian / Kunsthistoriker</option>
+          </datalist>
           
         </div>
         <div class="form-control w-full mb-4">
@@ -1085,7 +1091,24 @@
               </button>
               </div>
               </div>
-                        <input type="text"      v-model="drawerForm['roles']" class="input input-bordered w-full validator " :placeholder="getLabel('actors.roles', 'e.g. 3D Data Acquisition Lead', 'plac')" />
+                        <input
+                          type="text"
+                          list="act-actor-roles-list"
+                          v-model="drawerForm['roles']"
+                          class="input input-bordered w-full validator"
+                          :placeholder="getLabel('actors.roles', 'e.g. 3D Data Acquisition Lead | Data Processing', 'plac')"
+                        />
+                        <datalist id="act-actor-roles-list">
+                          <option value="3D Data Acquisition Lead">3D Data Acquisition Lead / Leitung 3D-Datenerfassung</option>
+                          <option value="3D Digitization Specialist">3D Digitization Specialist / 3D-Operator</option>
+                          <option value="Data Processing">Data Processing / Datenverarbeitung & Post-Processing</option>
+                          <option value="Curator">Curator / Kurator</option>
+                          <option value="Documentation Officer">Documentation Officer / Dokumentar</option>
+                          <option value="Project Manager">Project Manager / Projektleitung</option>
+                          <option value="Restorer / Conservator">Restorer / Restaurator</option>
+                          <option value="Photographer">Photographer / Fotograf</option>
+                          <option value="Scientific Supervisor">Scientific Supervisor / Wissenschaftliche Betreuung</option>
+                        </datalist>
               <div class="validator-hint">{{t('validationHint')}}</div>        
           
           </div></div>
@@ -1142,8 +1165,8 @@
               </button>
               </div>
               </div>
-                        <input type="text" pattern="^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$" required v-model="drawerForm['timeSpan.startDate']" class="input input-bordered w-full validator " :placeholder="getLabel('temporal.timeSpan.startDate', 'e.g. -500, 48, -7 or 2025', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
+                        <input type="text" pattern="^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$" required v-model="drawerForm['timeSpan.startDate']" @input="validateDateNotFuture($event)" class="input input-bordered w-full validator " :placeholder="getLabel('temporal.timeSpan.startDate', 'e.g. -500, 48, -7 or 2025', 'plac')" />
+              <div class="validator-hint">{{ currentLocale === 'de' ? 'Gültiges Datum erforderlich (JJJJ, JJJJ-MM oder JJJJ-MM-TT, nicht in der Zukunft)' : 'Valid date required (YYYY, YYYY-MM or YYYY-MM-DD, not in future)' }}</div>        
           
           </div>
         <div class="form-control w-full mb-4">
@@ -1160,8 +1183,8 @@
               </button>
               </div>
               </div>
-                        <input type="text" pattern="^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$" required v-model="drawerForm['timeSpan.endDate']" class="input input-bordered w-full validator " :placeholder="getLabel('temporal.timeSpan.endDate', 'e.g. -400, 48, -7 or 2025', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
+                        <input type="text" pattern="^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$" required v-model="drawerForm['timeSpan.endDate']" @input="validateDateNotFuture($event)" class="input input-bordered w-full validator " :placeholder="getLabel('temporal.timeSpan.endDate', 'e.g. -400, 48, -7 or 2025', 'plac')" />
+              <div class="validator-hint">{{ currentLocale === 'de' ? 'Gültiges Datum erforderlich (JJJJ, JJJJ-MM oder JJJJ-MM-TT, nicht in der Zukunft)' : 'Valid date required (YYYY, YYYY-MM or YYYY-MM-DD, not in future)' }}</div>        
           
           </div>
           </div>
@@ -1226,25 +1249,13 @@
                 </button>
               </div>
             </div>
-            <select v-model="drawerForm['role']" class="select select-bordered w-full">
-              <option disabled value="">{{ currentLocale === 'de' ? getLabel('recordInformation.creation.contacts.role', 'role') + ' ' + t('select') : t('select') + ' ' + getLabel('recordInformation.creation.contacts.role', 'role') }}</option>
-              <template v-if="currentLocale === 'de'">
-                <option value="Dokumentar">Dokumentar</option>
-                <option value="Kurator">Kurator</option>
-                <option value="Projektleitung">Projektleitung</option>
-                <option value="3D-Digitalisierungsexperte">3D-Digitalisierungsexperte</option>
-                <option value="Fotograf">Fotograf</option>
-                <option value="Restaurator">Restaurator</option>
-              </template>
-              <template v-else>
-                <option value="Curator">Curator</option>
-                <option value="Documentation">Documentation</option>
-                <option value="Project Management">Project Management</option>
-                <option value="3D Digitization Specialist">3D Digitization Specialist</option>
-                <option value="Photographer">Photographer</option>
-                <option value="Conservator">Conservator</option>
-              </template>
-            </select>
+            <input
+              type="text"
+              list="act-contact-roles-list"
+              v-model="drawerForm['role']"
+              class="input input-bordered w-full"
+              :placeholder="getLabel('recordInformation.creation.contacts.role', 'e.g. Documentation, Curator, 3D Digitization Specialist', 'plac')"
+            />
           </div>
 
           <div class="form-control w-full mb-4">
@@ -1331,8 +1342,8 @@
               </button>
               </div>
               </div>
-                        <input type="text"    pattern='^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$' required v-model="drawerForm['startDate']" class="input input-bordered w-full validator " :placeholder="getLabel('consistsOf.startDate', 'e.g. -500, 48, -7 or 2025', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
+                        <input type="text"    pattern='^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$' required v-model="drawerForm['startDate']" @input="validateDateNotFuture($event)" class="input input-bordered w-full validator " :placeholder="getLabel('consistsOf.startDate', 'e.g. -500, 48, -7 or 2025', 'plac')" />
+              <div class="validator-hint">{{ currentLocale === 'de' ? 'Gültiges Datum erforderlich (JJJJ, JJJJ-MM oder JJJJ-MM-TT, nicht in der Zukunft)' : 'Valid date required (YYYY, YYYY-MM or YYYY-MM-DD, not in future)' }}</div>        
           
           </div>
         <div class="form-control w-full mb-4">
@@ -1349,8 +1360,8 @@
               </button>
               </div>
               </div>
-                        <input type="text"    pattern='^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$' required v-model="drawerForm['endDate']" class="input input-bordered w-full validator " :placeholder="getLabel('consistsOf.endDate', 'e.g. -400, 48, -7 or 2025', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
+                        <input type="text"    pattern='^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$' required v-model="drawerForm['endDate']" @input="validateDateNotFuture($event)" class="input input-bordered w-full validator " :placeholder="getLabel('consistsOf.endDate', 'e.g. -400, 48, -7 or 2025', 'plac')" />
+              <div class="validator-hint">{{ currentLocale === 'de' ? 'Gültiges Datum erforderlich (JJJJ, JJJJ-MM oder JJJJ-MM-TT, nicht in der Zukunft)' : 'Valid date required (YYYY, YYYY-MM or YYYY-MM-DD, not in future)' }}</div>        
           
           </div>
         <div class="form-control w-full mb-4">
@@ -1631,6 +1642,7 @@ import {
   addSavedActor,
   addOrUpdatePerson,
   normalizeYearDate,
+  isFutureDate,
   formatGeopoliticalCountry,
   resolveGeopoliticalArea,
   collectionInstitution,
@@ -3439,15 +3451,34 @@ const handleRemoveConsistsOfStep = (idx) => {
   removeDrawerItem('consistsOf', idx);
 };
 
+const validateDateNotFuture = (event) => {
+  const el = event?.target;
+  if (!el) return;
+  const val = el.value;
+  if (isFutureDate(val)) {
+    el.setCustomValidity(currentLocale.value === 'de' ? 'Das Datum darf nicht in der Zukunft liegen.' : 'Date cannot be in the future.');
+  } else {
+    el.setCustomValidity('');
+  }
+};
+
 const saveDrawer = () => {
   const field = activeDrawerField.value;
   if (!form[field]) form[field] = [];
 
-  // Normalize year dates for consistsOf and temporal
+  // Validate and normalize year dates for consistsOf and temporal
   if (field === 'consistsOf') {
+    if (isFutureDate(drawerForm['startDate']) || isFutureDate(drawerForm['endDate'])) {
+      alert(currentLocale.value === 'de' ? 'Das Start- oder Enddatum darf nicht in der Zukunft liegen.' : 'Start or end date cannot be in the future.');
+      return;
+    }
     if (drawerForm['startDate']) drawerForm['startDate'] = normalizeYearDate(drawerForm['startDate']);
     if (drawerForm['endDate']) drawerForm['endDate'] = normalizeYearDate(drawerForm['endDate']);
   } else if (field === 'temporal') {
+    if (isFutureDate(drawerForm['timeSpan.startDate']) || isFutureDate(drawerForm['timeSpan.endDate'])) {
+      alert(currentLocale.value === 'de' ? 'Das Start- oder Enddatum darf nicht in der Zukunft liegen.' : 'Start or end date cannot be in the future.');
+      return;
+    }
     if (drawerForm['timeSpan.startDate']) drawerForm['timeSpan.startDate'] = normalizeYearDate(drawerForm['timeSpan.startDate']);
     if (drawerForm['timeSpan.endDate']) drawerForm['timeSpan.endDate'] = normalizeYearDate(drawerForm['timeSpan.endDate']);
   }
@@ -3483,13 +3514,29 @@ const save = () => {
   if (!form['recordInformation.metadataRights']) {
     form['recordInformation.metadataRights'] = globalRights.metadataRights || 'https://creativecommons.org/publicdomain/zero/1.0/deed.de';
   }
+
+  // Validate consistsOf future dates
   if (Array.isArray(form['consistsOf'])) {
+    for (const item of form['consistsOf']) {
+      if (item && (isFutureDate(item.startDate) || isFutureDate(item.endDate))) {
+        alert(currentLocale.value === 'de' ? 'Ein Unterschritt enthält ein Datum in der Zukunft.' : 'A sub-step contains a future date.');
+        return;
+      }
+    }
     form['consistsOf'].forEach(item => {
       if (item && item.startDate) item.startDate = normalizeYearDate(item.startDate);
       if (item && item.endDate) item.endDate = normalizeYearDate(item.endDate);
     });
   }
+
+  // Validate temporal future dates
   if (Array.isArray(form['temporal'])) {
+    for (const item of form['temporal']) {
+      if (item && (isFutureDate(item['timeSpan.startDate']) || isFutureDate(item['timeSpan.endDate']))) {
+        alert(currentLocale.value === 'de' ? 'Der Aktivitätszeitraum darf nicht in der Zukunft liegen.' : 'The activity time span cannot be in the future.');
+        return;
+      }
+    }
     form['temporal'].forEach(item => {
       if (item && item['timeSpan.startDate']) item['timeSpan.startDate'] = normalizeYearDate(item['timeSpan.startDate']);
       if (item && item['timeSpan.endDate']) item['timeSpan.endDate'] = normalizeYearDate(item['timeSpan.endDate']);

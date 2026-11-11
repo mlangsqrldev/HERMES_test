@@ -426,8 +426,8 @@
               </button>
               </div>
               </div>
-                        <input type="text"    pattern='^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$'  v-model="form['coverage.temporal.timeSpan.startDate']" class="input input-bordered w-full validator " :placeholder="getLabel('coverage.temporal.timeSpan.startDate', 'e.g. -500, 48, -7 or 2025', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
+                        <input type="text"    pattern='^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$'  v-model="form['coverage.temporal.timeSpan.startDate']" @input="validateDateNotFuture($event)" class="input input-bordered w-full validator " :placeholder="getLabel('coverage.temporal.timeSpan.startDate', 'e.g. -500, 48, -7 or 2025', 'plac')" />
+              <div class="validator-hint">{{ currentLocale === 'de' ? 'Gültiges Datum erforderlich (JJJJ, JJJJ-MM oder JJJJ-MM-TT, nicht in der Zukunft)' : 'Valid date required (YYYY, YYYY-MM or YYYY-MM-DD, not in future)' }}</div>        
           
           </div>
         <div class="form-control w-full mb-4">
@@ -444,8 +444,8 @@
               </button>
               </div>
               </div>
-                        <input type="text"    pattern='^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$'  v-model="form['coverage.temporal.timeSpan.endDate']" class="input input-bordered w-full validator " :placeholder="getLabel('coverage.temporal.timeSpan.endDate', 'e.g. -400, 48, -7 or 2025', 'plac')" />
-              <div class="validator-hint">{{t('validationHint')}}</div>        
+                        <input type="text"    pattern='^(-?[0-9]{1,})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12][0-9]|3[01]))?)?$'  v-model="form['coverage.temporal.timeSpan.endDate']" @input="validateDateNotFuture($event)" class="input input-bordered w-full validator " :placeholder="getLabel('coverage.temporal.timeSpan.endDate', 'e.g. -400, 48, -7 or 2025', 'plac')" />
+              <div class="validator-hint">{{ currentLocale === 'de' ? 'Gültiges Datum erforderlich (JJJJ, JJJJ-MM oder JJJJ-MM-TT, nicht in der Zukunft)' : 'Valid date required (YYYY, YYYY-MM or YYYY-MM-DD, not in future)' }}</div>        
           
           </div>
         <div class="form-control w-full mb-4">
@@ -931,6 +931,7 @@ import {
   addOrUpdatePerson,
   addOrUpdateCollection,
   normalizeYearDate,
+  isFutureDate,
   CC_LICENCES,
   resolveLicenceUri,
   collectionInstitution,
@@ -2152,6 +2153,17 @@ const removeDrawerItem = (field, index) => {
   }
 };
 
+const validateDateNotFuture = (event) => {
+  const el = event?.target;
+  if (!el) return;
+  const val = el.value;
+  if (isFutureDate(val)) {
+    el.setCustomValidity(currentLocale.value === 'de' ? 'Das Datum darf nicht in der Zukunft liegen.' : 'Date cannot be in the future.');
+  } else {
+    el.setCustomValidity('');
+  }
+};
+
 const save = () => {
   if (!form['language'] || form['language'].length === 0) {
     form['language'] = defaultMetadataLanguage.value ? [defaultMetadataLanguage.value] : ['de'];
@@ -2166,6 +2178,12 @@ const save = () => {
   if (!form['coverage.spatial.locationSet.address.country']) {
     const matchedOrg = (savedOrganizations.value || []).find(o => o.name === form['source']) || savedOrganizations.value?.[0];
     form['coverage.spatial.locationSet.address.country'] = (matchedOrg?.country || 'DE').toUpperCase();
+  }
+
+  // Validate future dates in collection temporal coverage
+  if (isFutureDate(form['coverage.temporal.timeSpan.startDate']) || isFutureDate(form['coverage.temporal.timeSpan.endDate'])) {
+    alert(currentLocale.value === 'de' ? 'Der Sammlungszeitraum darf nicht in der Zukunft liegen.' : 'Collection temporal coverage cannot be in the future.');
+    return;
   }
 
   if (form['coverage.temporal.timeSpan.startDate']) {

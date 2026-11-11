@@ -1155,153 +1155,24 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- SECTION 5: SOFTWARE & VERSIONEN (WIEDERHOLBARE STRUKTUR)     -->
+    <!-- HINWEIS: SOFTWARE & EQUIPMENT GEHÖREN ZUR AKTIVITÄT          -->
     <!-- ============================================================ -->
-    <div class="p-5 bg-base-200/40 rounded-2xl border border-base-300 mb-5" data-xml-tag="softwareList">
-      <div class="flex flex-wrap items-start justify-between gap-3 mb-4 pb-3 border-b border-base-300">
-        <div class="space-y-1">
-          <div class="font-bold text-sm uppercase tracking-wider text-base-content/85 flex flex-wrap items-center gap-2">
-            <span>⚙️</span>
-            <span>{{ currentLocale === 'de' ? '5. Eingesetzte Software & Versionen' : '5. Software & Versions Used' }}</span>
-            <code class="text-[11px] font-mono px-2 py-0.5 rounded bg-base-300 text-base-content/80">&lt;softwareList&gt; / &lt;note&gt;</code>
-          </div>
-          <p class="text-xs text-base-content/65 leading-relaxed max-w-3xl">
-            {{ currentLocale === 'de'
-              ? 'Jede Software wird mit exakter Versionsnummer und Prozess-Rolle erfasst. Im HERMES-DAP XML als strukturierte <software>-Elemente, im CARARE 2.0.6 XML als separate wiederholte <note>- bzw. <equipment>-Elemente.'
-              : 'Each software tool is recorded with its exact version number and pipeline role. Exported as structured <software> tags in HERMES-DAP XML and repeated <note>/<equipment> elements in CARARE 2.0.6 XML.' }}
-          </p>
-        </div>
-        <div class="flex items-center gap-2 flex-wrap shrink-0">
-          <button
-            type="button"
-            class="btn btn-sm btn-outline btn-info gap-1.5 font-bold shadow-2xs"
-            @click="isSoftwarePickerOpen = true"
-            :title="currentLocale === 'de' ? 'Software aus dem zentralen Pool auswählen' : 'Pick software from central pool'"
-          >
-            <span>💻 {{ currentLocale === 'de' ? 'Aus Software-Pool wählen' : 'Pick from Software Pool' }}</span>
-          </button>
-          <button type="button" class="btn btn-sm btn-primary gap-1.5" @click="addStructuredSoftware()">
-            <span>+ {{ currentLocale === 'de' ? 'Software hinzufügen' : 'Add Software' }}</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- 1-Klick Vorlagen für Software + Version + Rolle -->
-      <div class="mb-4">
-        <span class="text-xs font-semibold text-base-content/70 block mb-2">
-          {{ currentLocale === 'de' ? 'Schnellauswahl (Software + Version + Rolle):' : 'Quick Presets (Software + Version + Role):' }}
+    <div class="p-4 bg-info/10 border border-info/30 rounded-2xl mb-5 flex items-start gap-3">
+      <span class="text-2xl shrink-0">ℹ️</span>
+      <div class="text-xs space-y-1">
+        <span class="font-bold text-info-content text-sm block">
+          {{ currentLocale === 'de' ? 'Software & Aufnahme-Equipment gehören zur Aktivität (Activity)' : 'Software & Acquisition Equipment belong to Activity' }}
         </span>
-        <div class="flex flex-wrap gap-2">
-          <button
-            v-for="preset in STRUCTURED_SOFTWARE_PRESETS"
-            :key="preset.name + preset.version"
-            type="button"
-            class="preset-chip"
-            @click="addStructuredSoftwarePreset(preset)"
-          >
-            <span class="font-bold text-base-content">+ {{ preset.name }}</span>
-            <span class="font-mono text-[11px] px-1.5 py-0.2 rounded bg-primary/15 text-primary font-semibold">v{{ preset.version }}</span>
-            <span class="text-[11px] opacity-70">({{ currentLocale === 'de' ? preset.roleDe : preset.roleEn }})</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Kompakte Software-Liste -->
-      <div v-if="softwareList.length > 0" class="overflow-x-auto border border-base-300 rounded-xl bg-base-100 mb-4 shadow-2xs">
-        <table class="table table-xs w-full">
-          <thead class="bg-base-200/70 text-base-content/75 uppercase text-[10px] tracking-wider font-bold">
-            <tr>
-              <th class="w-4/12 py-2 px-3">{{ currentLocale === 'de' ? 'Software-Name' : 'Software Name' }}</th>
-              <th class="w-2/12 py-2 px-2">{{ currentLocale === 'de' ? 'Version' : 'Version' }}</th>
-              <th class="w-5/12 py-2 px-2">{{ currentLocale === 'de' ? 'Verarbeitungs-Rolle / Workflow-Schritt' : 'Processing Role / Pipeline Step' }}</th>
-              <th class="w-1/12 py-2 px-2 text-center"></th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-base-200">
-            <tr
-              v-for="(sw, idx) in softwareList"
-              :key="idx"
-              data-xml-tag="software"
-              class="hover:bg-base-200/40 transition-colors"
-            >
-              <td class="py-1.5 px-3">
-                <input
-                  type="text"
-                  v-model="sw.name"
-                  @input="syncSoftwareListToLegacy"
-                  class="input input-xs input-bordered w-full font-semibold text-xs"
-                  :placeholder="currentLocale === 'de' ? 'z.B. Blender / Artec Studio' : 'e.g. Blender / Artec Studio'"
-                />
-              </td>
-              <td class="py-1.5 px-2">
-                <input
-                  type="text"
-                  v-model="sw.version"
-                  @input="syncSoftwareListToLegacy"
-                  class="input input-xs input-bordered w-full font-mono text-xs"
-                  placeholder="z.B. 4.2 LTS"
-                />
-              </td>
-              <td class="py-1.5 px-2">
-                <input
-                  type="text"
-                  v-model="sw.role"
-                  @input="syncSoftwareListToLegacy"
-                  class="input input-xs input-bordered w-full text-xs"
-                  :placeholder="currentLocale === 'de' ? 'z.B. Mesh-Dezimation, PBR-Baking...' : 'e.g. Mesh decimation, PBR baking...'"
-                />
-              </td>
-              <td class="py-1.5 px-2 text-center">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-ghost text-error hover:bg-error/10 px-2"
-                  @click="removeStructuredSoftware(idx)"
-                  :title="currentLocale === 'de' ? 'Eintrag entfernen' : 'Remove entry'"
-                >
-                  ✕
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- HECTOR Vokabular-Suche für weitere Software -->
-      <div class="relative">
-        <input
-          type="text"
-          v-model="processingSoftware"
-          @focus="showSoftwareDropdown = true"
-          @input="onSoftwareInput"
-          class="input input-sm input-bordered w-full text-xs font-medium"
-          :placeholder="currentLocale === 'de' ? 'Optional: HECTOR Vokabular durchsuchen (z.B. RealityCapture, Artec Studio, FARO SCENE, Blender)...' : 'Optional: Search HECTOR vocabulary (e.g. RealityCapture)...'"
-        />
-        <!-- Software Dropdown -->
-        <div
-          v-if="showSoftwareDropdown && (softwareSuggestions.length > 0 || isSearchingSoftware)"
-          class="absolute left-0 top-full mt-1 w-72 max-w-[90vw] z-[100] bg-base-100 rounded-box shadow-xl border border-base-300 max-h-56 overflow-y-auto"
-        >
-          <div v-if="isSearchingSoftware" class="p-2.5 text-xs text-base-content/60 flex items-center gap-2">
-            <span class="loading loading-spinner loading-xs text-primary"></span>
-            {{ currentLocale === 'de' ? 'Suche in HECTOR...' : 'Searching HECTOR...' }}
-          </div>
-          <ul v-else class="menu menu-xs p-1">
-            <li v-for="sug in softwareSuggestions" :key="sug.uri">
-              <a @mousedown.prevent="selectSoftwareSuggestion(sug)" class="flex flex-col items-start py-1.5 hover:bg-primary/10">
-                <div class="flex items-center gap-2 w-full justify-between">
-                  <span class="font-bold text-xs">{{ sug.prefLabel }}</span>
-                  <span class="badge badge-primary badge-xs text-[9px]">HECTOR</span>
-                </div>
-                <span class="text-[9px] opacity-50 truncate max-w-full font-mono">{{ sug.uri }}</span>
-              </a>
-            </li>
-          </ul>
-        </div>
+        <p class="text-base-content/75 leading-relaxed">
+          {{ currentLocale === 'de'
+            ? 'Gemäß CARARE 2.0.6 Schema wird eingesetzte Software (z.B. RealityCapture, Artec Studio, Blender) und Hardware (Kameras, 3D-Scanner) nicht in der Digitalen Ressource erfasst, sondern als Teilschritt (<consistsOf> / <equipment>) im Modul „Aktivität / Kampagne“. Die Digitale Ressource beschreibt ausschließlich das fertige Datenprodukt (Geometrie, Texturen, Genauigkeit, Bounding Box, Extent).'
+            : 'According to CARARE 2.0.6, processing software and hardware equipment do not belong to the Digital Resource, but are documented as sub-events (<consistsOf> / <equipment>) in the "Activity / Campaign" module. The Digital Resource exclusively describes the delivered digital object.' }}
+        </p>
       </div>
     </div>
 
     <!-- ============================================================ -->
-    <!-- SECTION 6: DATEIGRÖSSE & WIEDERHOLTE CARARE <extent>-FELDER  -->
+    <!-- SECTION 5: DATEIGRÖSSE & WIEDERHOLTE CARARE <extent>-FELDER  -->
     <!-- ============================================================ -->
     <div class="p-3.5 bg-base-200/30 rounded-xl border border-base-200 mb-5" data-xml-tag="extent">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
@@ -1353,7 +1224,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- SECTION 7: CARARE <formatDetails> OUTPUT & SYNCHRONISATION    -->
+    <!-- SECTION 6: CARARE <formatDetails> OUTPUT & SYNCHRONISATION    -->
     <!-- ============================================================ -->
     <div data-xml-tag="formatDetails">
       <div class="flex items-center justify-between mb-1.5">
@@ -2154,11 +2025,6 @@ const generateSummaries = () => {
   if (photoGsd.value) metBits.push(`GSD: ${photoGsd.value}`);
   if (metBits.length > 0) {
     parts.push(`${isDe ? 'Metrologie' : 'Metrology'}: ${metBits.join(' | ')}`);
-  }
-
-  // E. Processing Software
-  if (processingSoftware.value) {
-    parts.push(`Software: ${processingSoftware.value}`);
   }
 
   const generated = parts.length > 0 ? parts.join('. ') + '.' : '';
