@@ -1369,7 +1369,11 @@
                                     ? 'text-warning opacity-100'
                                     : 'opacity-0 text-base-content/30 group-hover:opacity-100 hover:text-warning'
                                 "
-                                title="Set as preferred"
+                                :title="
+                                  currentLocale === 'de'
+                                    ? 'Als bevorzugt festlegen'
+                                    : 'Set as preferred'
+                                "
                               >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -2315,7 +2319,7 @@
                           />
 
                           <div class="validator-hint text-xs mt-1">
-                            Enter valid value
+                            {{ t("validationHint") }}
                           </div>
                         </div>
 

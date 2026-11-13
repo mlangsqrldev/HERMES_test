@@ -90,8 +90,8 @@
             {{
               inspectedFileSummary ||
               (currentLocale === "de"
-                ? "Liest Dateigröße, Format und (bei OBJ/STL) Polygon- & Vertex-Anzahl automatisch aus."
-                : "Automatically extracts file size, format, and (for OBJ/STL) polygon & vertex counts.")
+                ? "Liest Dateigröße, Format sowie (bei GLB/OBJ/STL) Polygon- & Vertex-Anzahl automatisch aus – kann je nach Dateigröße etwas dauern."
+                : "Automatically extracts file size, format, and (for GLB/OBJ/STL) polygon & vertex counts — may take a moment depending on file size.")
             }}
           </div>
         </div>

@@ -55,39 +55,61 @@
       <header
         class="glass-header w-full px-4 lg:px-8 py-3 flex items-center justify-between transition-all"
       >
-      <!-- Brand & Logo (Authentic 2-Color Attic Red-Figure Vase Hermes + Chiseled Greek SVG Wordmark "ΗΕΡΜΗΣ") -->
-
-      <div
-        class="flex items-center gap-2.5 px-2.5 py-1 rounded-xl select-none shrink-0"
-        style="
-          background-color: #0a0c0e;
-          border: 1px solid rgba(224, 122, 66, 0.42);
-        "
-        title="ΗΕΡΜΗΣ — HERMES"
-      >
-        <img
-          src="/hermes-vase-icon.png?v=signet1"
-          alt="ΗΕΡΜΗΣ"
-          class="w-10 h-10 object-contain rounded-lg shrink-0"
-        />
-
-        <svg
-          class="h-6 w-auto pr-1"
-          viewBox="760 225 1630 370"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+      <!-- Brand & Logo (Authentic 2-Color Attic Red-Figure Vase Hermes + Chiseled Greek SVG Wordmark "ΗΕΡΜΗΣ") + App Title -->
+      <div class="flex items-center gap-3.5 min-w-0">
+        <div
+          class="flex items-center gap-2.5 px-2.5 py-1 rounded-xl select-none shrink-0"
+          style="
+            background-color: #0a0c0e;
+            border: 1px solid rgba(224, 122, 66, 0.42);
+          "
+          title="ΗΕΡΜΗΣ — HERMES"
         >
-          <path
-            d="M 780.0 240.0 L 836.4 240.0 L 836.4 352.8 L 939.8 352.8 L 939.8 240.0 L 996.2 240.0 L 996.2 522.0 L 939.8 522.0 L 939.8 404.5 L 836.4 404.5 L 836.4 522.0 L 780.0 522.0 Z M 1047.9 240.0 L 1254.7 240.0 L 1240.6 291.7 L 1104.3 291.7 L 1104.3 355.1 L 1221.8 355.1 L 1212.4 404.5 L 1104.3 404.5 L 1104.3 470.3 L 1245.3 470.3 L 1259.4 522.0 L 1047.9 522.0 Z M 1311.1 240.0 L 1456.8 240.0 L 1522.6 291.7 L 1522.6 371.6 L 1456.8 423.3 L 1367.5 423.3 L 1367.5 522.0 L 1311.1 522.0 Z M 1367.5 289.4 L 1367.5 374.0 L 1438.0 374.0 L 1466.2 348.1 L 1466.2 315.2 L 1438.0 289.4 Z M 1574.3 522.0 L 1588.4 240.0 L 1644.8 240.0 L 1701.2 385.7 L 1757.6 240.0 L 1814.0 240.0 L 1828.1 522.0 L 1771.7 522.0 L 1762.3 348.1 L 1715.3 465.6 L 1687.1 465.6 L 1640.1 348.1 L 1630.7 522.0 Z M 1879.8 240.0 L 1936.2 240.0 L 1936.2 352.8 L 2039.6 352.8 L 2039.6 240.0 L 2096.0 240.0 L 2096.0 522.0 L 2039.6 522.0 L 2039.6 404.5 L 1936.2 404.5 L 1936.2 522.0 L 1879.8 522.0 Z M 2147.7 240.0 L 2363.9 240.0 L 2349.8 291.7 L 2227.6 291.7 L 2307.5 376.3 L 2222.9 470.3 L 2354.5 470.3 L 2368.6 522.0 L 2147.7 522.0 L 2147.7 479.7 L 2241.7 381.0 L 2147.7 282.3 Z"
-            fill="#E07A42"
-            fill-rule="evenodd"
+          <img
+            src="/hermes-vase-icon.png?v=signet1"
+            alt="ΗΕΡΜΗΣ"
+            class="w-10 h-10 object-contain rounded-lg shrink-0"
           />
 
-          <path
-            d="M 780.0 554.0 L 2368.0 554.0 L 2368.0 572.0 L 780.0 572.0 Z"
-            fill="#E07A42"
-          />
-        </svg>
+          <svg
+            class="h-6 w-auto pr-1"
+            viewBox="760 225 1630 370"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M 780.0 240.0 L 836.4 240.0 L 836.4 352.8 L 939.8 352.8 L 939.8 240.0 L 996.2 240.0 L 996.2 522.0 L 939.8 522.0 L 939.8 404.5 L 836.4 404.5 L 836.4 522.0 L 780.0 522.0 Z M 1047.9 240.0 L 1254.7 240.0 L 1240.6 291.7 L 1104.3 291.7 L 1104.3 355.1 L 1221.8 355.1 L 1212.4 404.5 L 1104.3 404.5 L 1104.3 470.3 L 1245.3 470.3 L 1259.4 522.0 L 1047.9 522.0 Z M 1311.1 240.0 L 1456.8 240.0 L 1522.6 291.7 L 1522.6 371.6 L 1456.8 423.3 L 1367.5 423.3 L 1367.5 522.0 L 1311.1 522.0 Z M 1367.5 289.4 L 1367.5 374.0 L 1438.0 374.0 L 1466.2 348.1 L 1466.2 315.2 L 1438.0 289.4 Z M 1574.3 522.0 L 1588.4 240.0 L 1644.8 240.0 L 1701.2 385.7 L 1757.6 240.0 L 1814.0 240.0 L 1828.1 522.0 L 1771.7 522.0 L 1762.3 348.1 L 1715.3 465.6 L 1687.1 465.6 L 1640.1 348.1 L 1630.7 522.0 Z M 1879.8 240.0 L 1936.2 240.0 L 1936.2 352.8 L 2039.6 352.8 L 2039.6 240.0 L 2096.0 240.0 L 2096.0 522.0 L 2039.6 522.0 L 2039.6 404.5 L 1936.2 404.5 L 1936.2 522.0 L 1879.8 522.0 Z M 2147.7 240.0 L 2363.9 240.0 L 2349.8 291.7 L 2227.6 291.7 L 2307.5 376.3 L 2222.9 470.3 L 2354.5 470.3 L 2368.6 522.0 L 2147.7 522.0 L 2147.7 479.7 L 2241.7 381.0 L 2147.7 282.3 Z"
+              fill="#E07A42"
+              fill-rule="evenodd"
+            />
+
+            <path
+              d="M 780.0 554.0 L 2368.0 554.0 L 2368.0 572.0 L 780.0 572.0 Z"
+              fill="#E07A42"
+            />
+          </svg>
+        </div>
+
+        <div class="hidden sm:flex flex-col min-w-0">
+          <div class="flex items-center gap-2">
+            <h1
+              class="font-display font-extrabold text-lg lg:text-xl tracking-tight text-base-content leading-tight truncate"
+            >
+              HERMES
+            </h1>
+            <span
+              class="badge badge-xs badge-outline border-base-300 text-base-content/65 font-mono font-semibold"
+              >v0.1.6</span
+            >
+          </div>
+          <p class="text-[11px] lg:text-xs text-base-content/65 truncate">
+            {{
+              currentLocale === "de"
+                ? "CARARE 2.0.6 Metadaten-Editor für 3D-Kulturgut"
+                : "CARARE 2.0.6 Metadata Editor for 3D Cultural Heritage"
+            }}
+          </p>
+        </div>
       </div>
 
       <!-- Right: Controls (Manual, XML Preview, Locale Switcher, Theme Switcher) -->

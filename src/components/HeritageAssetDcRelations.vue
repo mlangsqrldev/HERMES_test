@@ -134,7 +134,7 @@
           </div>
           <div
             v-else
-            class="text-xs text-warning font-semibold bg-warning/10 border border-warning/20 p-2 rounded-lg flex items-center gap-1.5"
+            class="text-xs text-base-content/90 font-medium bg-amber-500/10 border border-amber-500/35 p-2 rounded-lg flex items-center gap-1.5"
           >
             <span class="shrink-0">⚠️</span>
             <span class="leading-tight">{{
@@ -211,7 +211,7 @@
           </div>
           <div
             v-else
-            class="text-xs text-warning font-semibold bg-warning/10 border border-warning/20 p-2 rounded-lg flex items-center gap-1.5"
+            class="text-xs text-base-content/90 font-medium bg-amber-500/10 border border-amber-500/35 p-2 rounded-lg flex items-center gap-1.5"
           >
             <span class="shrink-0">⚠️</span>
             <span class="leading-tight">{{
@@ -280,7 +280,7 @@
           </div>
           <div
             v-else
-            class="text-xs text-warning font-semibold bg-warning/10 border border-warning/20 p-2 rounded-lg flex items-center gap-1.5"
+            class="text-xs text-base-content/90 font-medium bg-amber-500/10 border border-amber-500/35 p-2 rounded-lg flex items-center gap-1.5"
           >
             <span class="shrink-0">⚠️</span>
             <span class="leading-tight">{{

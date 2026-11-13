@@ -641,42 +641,39 @@
                         @click.prevent="
                           if (!form['appellation.name'])
                             form['appellation.name'] = [];
-                          form['appellation.name'].push('');
-                          inlineEditing[
-                            'appellation.name_' +
-                              (form['appellation.name'].length - 1)
-                          ] = true;
+                          form['appellation.name'].push({
+                            _value: '',
+                            'appellation.name#lang':
+                              defaultMetadataLanguage.value || 'de',
+                            'appellation.name#preferred':
+                              form['appellation.name'].length === 0,
+                          });
                         "
                       >
                         {{
                           currentLocale === "de"
-                            ? getLabel("appellation.name", "appellation.name") +
+                            ? getLabel("appellation.name", "Name") +
                               " " +
                               t("add")
                             : t("add") +
                               " " +
-                              getLabel("appellation.name", "appellation.name")
+                              getLabel("appellation.name", "Name")
                         }}
                       </button>
                     </div>
 
                     <ul class="list bg-base-100 rounded-box shadow-md w-full">
                       <li
-                        v-for="(subItem, subIdx) in form['appellation.name']"
-                        :key="subIdx"
-                        class="list-row flex items-center justify-between h-auto py-2"
+                        v-for="(item, idx) in form['appellation.name']"
+                        :key="idx"
+                        class="list-row flex items-center justify-between group h-auto py-2"
                       >
-                        <div
-                          v-if="!inlineEditing['appellation.name_' + subIdx]"
-                        >
-                          {{ subItem }}
-                        </div>
-                        <div v-else class="flex-1 mr-4">
+                        <div class="flex-1 w-full mr-4">
                           <input
                             type="text"
                             required
-                            v-model="form['appellation.name'][subIdx]"
-                            class="input input-sm input-bordered w-full validator"
+                            v-model="item['_value']"
+                            class="input input-bordered w-full validator"
                             :placeholder="
                               getLabel(
                                 'appellation.name',
@@ -686,78 +683,214 @@
                             "
                           />
                           <div class="validator-hint text-xs mt-1">
-                            Enter valid value
+                            {{ t("validationHint") }}
                           </div>
                         </div>
-                        <div class="flex gap-1 shrink-0">
-                          <button
-                            type="button"
-                            @click.prevent="
-                              inlineEditing['appellation.name_' + subIdx] =
-                                !inlineEditing['appellation.name_' + subIdx]
-                            "
-                            class="btn btn-square btn-ghost"
-                            :class="
-                              inlineEditing['appellation.name_' + subIdx]
-                                ? 'text-success'
-                                : 'text-info'
-                            "
-                          >
-                            <svg
-                              v-if="
-                                !inlineEditing['appellation.name_' + subIdx]
+
+                        <div class="flex gap-2 items-center">
+                          <div class="dropdown dropdown-end shrink-0">
+                            <div
+                              tabindex="0"
+                              role="button"
+                              class="btn btn-ghost min-w-[80px]"
+                            >
+                              <span
+                                v-if="item['appellation.name#lang'] === 'de'"
+                                v-html="
+                                  '<svg class=&quot;h-5 w-8 rounded shadow-sm border border-base-300&quot; viewBox=&quot;0 0 5 3&quot;><rect width=&quot;5&quot; height=&quot;3&quot; y=&quot;0&quot; fill=&quot;#000&quot;/><rect width=&quot;5&quot; height=&quot;2&quot; y=&quot;1&quot; fill=&quot;#D00&quot;/><rect width=&quot;5&quot; height=&quot;1&quot; y=&quot;2&quot; fill=&quot;#FFC800&quot;/></svg>'
+                                "
+                              ></span>
+                              <span
+                                v-else-if="
+                                  item['appellation.name#lang'] === 'en'
+                                "
+                                v-html="
+                                  '<svg class=&quot;h-5 w-8 rounded shadow-sm border border-base-300&quot; viewBox=&quot;0 0 50 30&quot; ><rect width=&quot;50&quot; height=&quot;30&quot; fill=&quot;#012169&quot;/><path d=&quot;M0 0 L50 30 M50 0 L0 30&quot; stroke=&quot;#fff&quot; stroke-width=&quot;6&quot;/><path d=&quot;M0 0 L50 30&quot; stroke=&quot;#C8102E&quot; stroke-width=&quot;2&quot;/><path d=&quot;M50 0 L0 30&quot; stroke=&quot;#C8102E&quot; stroke-width=&quot;2&quot;/><path d=&quot;M25 0 V30 M0 15 H50&quot; stroke=&quot;#fff&quot; stroke-width=&quot;10&quot;/><path d=&quot;M25 0 V30 M0 15 H50&quot; stroke=&quot;#C8102E&quot; stroke-width=&quot;6&quot;/></svg>'
+                                "
+                              ></span>
+                              <span
+                                v-else-if="
+                                  item['appellation.name#lang'] === 'fr'
+                                "
+                                v-html="
+                                  '<svg class=&quot;h-5 w-8 rounded shadow-sm border border-base-300&quot; viewBox=&quot;0 0 3 2&quot;><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;0&quot; fill=&quot;#002395&quot;/><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;1&quot; fill=&quot;#FFF&quot;/><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;2&quot; fill=&quot;#ED2939&quot;/></svg>'
+                                "
+                              ></span>
+                              <span
+                                v-else-if="
+                                  item['appellation.name#lang'] === 'it'
+                                "
+                                v-html="
+                                  '<svg class=&quot;h-5 w-8 rounded shadow-sm border border-base-300&quot; viewBox=&quot;0 0 3 2&quot;><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;0&quot; fill=&quot;#009246&quot;/><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;1&quot; fill=&quot;#FFF&quot;/><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;2&quot; fill=&quot;#CE2B37&quot;/></svg>'
+                                "
+                              ></span>
+                              <span
+                                v-else-if="
+                                  item['appellation.name#lang'] === 'es'
+                                "
+                                v-html="
+                                  '<svg class=&quot;h-5 w-8 rounded shadow-sm border border-base-300&quot; viewBox=&quot;0 0 3 2&quot;><rect width=&quot;3&quot; height=&quot;2&quot; y=&quot;0&quot; fill=&quot;#C1272D&quot;/><rect width=&quot;3&quot; height=&quot;1&quot; y=&quot;0.5&quot; fill=&quot;#FCE300&quot;/></svg>'
+                                "
+                              ></span>
+                              <span
+                                v-else
+                                class="text-sm font-bold uppercase"
+                                >{{
+                                  item["appellation.name#lang"] || t("select")
+                                }}</span
+                              >
+                            </div>
+                            <ul
+                              tabindex="0"
+                              class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-32 z-[1]"
+                            >
+                              <li>
+                                <a
+                                  @click.prevent="
+                                    item['appellation.name#lang'] = 'de';
+                                    document.activeElement?.blur();
+                                  "
+                                >
+                                  <span
+                                    v-html="
+                                      '<svg class=&quot;h-4 w-6 rounded shadow-sm border border-base-300&quot; viewBox=&quot;0 0 5 3&quot;><rect width=&quot;5&quot; height=&quot;3&quot; y=&quot;0&quot; fill=&quot;#000&quot;/><rect width=&quot;5&quot; height=&quot;2&quot; y=&quot;1&quot; fill=&quot;#D00&quot;/><rect width=&quot;5&quot; height=&quot;1&quot; y=&quot;2&quot; fill=&quot;#FFC800&quot;/></svg>'
+                                    "
+                                  ></span>
+                                  DE
+                                </a>
+                              </li>
+                              <li>
+                                <a
+                                  @click.prevent="
+                                    item['appellation.name#lang'] = 'en';
+                                    document.activeElement?.blur();
+                                  "
+                                >
+                                  <span
+                                    v-html="
+                                      '<svg class=&quot;h-4 w-6 rounded shadow-sm border border-base-300&quot; viewBox=&quot;0 0 50 30&quot; ><rect width=&quot;50&quot; height=&quot;30&quot; fill=&quot;#012169&quot;/><path d=&quot;M0 0 L50 30 M50 0 L0 30&quot; stroke=&quot;#fff&quot; stroke-width=&quot;6&quot;/><path d=&quot;M0 0 L50 30&quot; stroke=&quot;#C8102E&quot; stroke-width=&quot;2&quot;/><path d=&quot;M50 0 L0 30&quot; stroke=&quot;#C8102E&quot; stroke-width=&quot;2&quot;/><path d=&quot;M25 0 V30 M0 15 H50&quot; stroke=&quot;#fff&quot; stroke-width=&quot;10&quot;/><path d=&quot;M25 0 V30 M0 15 H50&quot; stroke=&quot;#C8102E&quot; stroke-width=&quot;6&quot;/></svg>'
+                                    "
+                                  ></span>
+                                  EN
+                                </a>
+                              </li>
+                              <li>
+                                <a
+                                  @click.prevent="
+                                    item['appellation.name#lang'] = 'fr';
+                                    document.activeElement?.blur();
+                                  "
+                                >
+                                  <span
+                                    v-html="
+                                      '<svg class=&quot;h-4 w-6 rounded shadow-sm border border-base-300&quot; viewBox=&quot;0 0 3 2&quot;><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;0&quot; fill=&quot;#002395&quot;/><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;1&quot; fill=&quot;#FFF&quot;/><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;2&quot; fill=&quot;#ED2939&quot;/></svg>'
+                                    "
+                                  ></span>
+                                  FR
+                                </a>
+                              </li>
+                              <li>
+                                <a
+                                  @click.prevent="
+                                    item['appellation.name#lang'] = 'it';
+                                    document.activeElement?.blur();
+                                  "
+                                >
+                                  <span
+                                    v-html="
+                                      '<svg class=&quot;h-4 w-6 rounded shadow-sm border border-base-300&quot; viewBox=&quot;0 0 3 2&quot;><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;0&quot; fill=&quot;#009246&quot;/><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;1&quot; fill=&quot;#FFF&quot;/><rect width=&quot;1&quot; height=&quot;2&quot; x=&quot;2&quot; fill=&quot;#CE2B37&quot;/></svg>'
+                                    "
+                                  ></span>
+                                  IT
+                                </a>
+                              </li>
+                              <li>
+                                <a
+                                  @click.prevent="
+                                    item['appellation.name#lang'] = 'es';
+                                    document.activeElement?.blur();
+                                  "
+                                >
+                                  <span
+                                    v-html="
+                                      '<svg class=&quot;h-4 w-6 rounded shadow-sm border border-base-300&quot; viewBox=&quot;0 0 3 2&quot;><rect width=&quot;3&quot; height=&quot;2&quot; y=&quot;0&quot; fill=&quot;#C1272D&quot;/><rect width=&quot;3&quot; height=&quot;1&quot; y=&quot;0.5&quot; fill=&quot;#FCE300&quot;/></svg>'
+                                    "
+                                  ></span>
+                                  ES
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+
+                          <div class="flex gap-1 shrink-0">
+                            <button
+                              type="button"
+                              @click.prevent="
+                                item['appellation.name#preferred'] =
+                                  !item['appellation.name#preferred'];
+                                if (item['appellation.name#preferred']) {
+                                  form['appellation.name'].forEach(
+                                    (i, iIdx) => {
+                                      if (iIdx !== idx)
+                                        i['appellation.name#preferred'] = false;
+                                    },
+                                  );
+                                }
                               "
-                              class="size-[1.2em]"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              stroke-width="2"
+                              class="btn btn-square btn-ghost transition-opacity"
+                              :class="
+                                item['appellation.name#preferred']
+                                  ? 'text-warning opacity-100'
+                                  : 'opacity-0 text-base-content/30 group-hover:opacity-100 hover:text-warning'
+                              "
+                              :title="
+                                currentLocale === 'de'
+                                  ? 'Als bevorzugt festlegen'
+                                  : 'Set as preferred'
+                              "
                             >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                              />
-                            </svg>
-                            <svg
-                              v-else
-                              class="size-[1.2em]"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              stroke-width="2"
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="size-[1.2em]"
+                                :fill="
+                                  item['appellation.name#preferred']
+                                    ? 'currentColor'
+                                    : 'none'
+                                "
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                                />
+                              </svg>
+                            </button>
+                            <button
+                              type="button"
+                              @click.prevent="
+                                removeDrawerItem('appellation.name', idx)
+                              "
+                              class="btn btn-square btn-ghost text-error"
                             >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
-                          </button>
-                          <button
-                            type="button"
-                            @click.prevent="
-                              removeDrawerItem('appellation.name', subIdx)
-                            "
-                            class="btn btn-square btn-ghost text-error"
-                          >
-                            <svg
-                              class="size-[1.2em]"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              stroke-width="2"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                              />
-                            </svg>
-                          </button>
+                              <svg
+                                class="size-[1.2em]"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                />
+                              </svg>
+                            </button>
+                          </div>
                         </div>
                       </li>
 
@@ -991,7 +1124,7 @@
                         "
                       />
                       <div class="validator-hint text-xs mt-1">
-                        Enter valid value
+                        {{ t("validationHint") }}
                       </div>
                     </div>
                     <div class="flex gap-1 shrink-0">
