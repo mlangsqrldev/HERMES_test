@@ -464,7 +464,11 @@
         </button>
       </div>
     </div>
-    <form method="dialog" class="modal-backdrop" @click="emitClose">
+    <form
+      method="dialog"
+      class="modal-backdrop bg-black/50 backdrop-blur-sm"
+      @click="emitClose"
+    >
       <button>close</button>
     </form>
   </dialog>

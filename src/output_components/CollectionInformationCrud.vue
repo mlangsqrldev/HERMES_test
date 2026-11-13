@@ -88,14 +88,14 @@
                     }}
                   </h4>
                   <span class="badge badge-primary badge-xs font-semibold"
-                    >CARARE: 1 Sammlung pro Projekt (0..1)</span
+                    >1 Sammlung pro Projekt</span
                   >
                 </div>
                 <p class="text-xs text-base-content/60">
                   {{
                     currentLocale === "de"
-                      ? "Laut CARARE 2.0.6 enthält ein Datensatz genau eine Sammlungsinformation. Diese Sammlung gilt als feste Klammer für alle erfassten Kulturgüter des Projekts."
-                      : "According to CARARE 2.0.6, a record contains exactly one collection. All heritage assets in this project share this collection."
+                      ? "Ein Projekt enthält eine gemeinsame Sammlungsinformation. Diese Sammlung gilt als feste Klammer für alle erfassten Kulturgüter des Projekts."
+                      : "A project contains one shared collection record. All heritage assets in this project share this collection."
                   }}
                 </p>
               </div>
@@ -250,26 +250,6 @@
                       </button>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-primary"
-                    @click.prevent="
-                      if (!form['title']) {
-                        form['title'] = [];
-                      }
-                      form['title'].push({
-                        _value: '',
-                        'title#lang': 'en',
-                        'title#preferred': form['title'].length === 0,
-                      });
-                    "
-                  >
-                    {{
-                      currentLocale === "de"
-                        ? getLabel("title", "title") + " " + t("add")
-                        : t("add") + " " + getLabel("title", "title")
-                    }}
-                  </button>
                 </div>
                 <div class="p-4 pt-0">
                   <ul class="list bg-base-100 rounded-box shadow-md w-full">
@@ -454,7 +434,12 @@
                           <button
                             type="button"
                             @click.prevent="form['title'].splice(idx, 1)"
-                            class="btn btn-square btn-ghost text-error opacity-0 group-hover:opacity-100 transition-opacity"
+                            class="btn btn-square btn-ghost text-error hover:bg-error/10 transition-colors"
+                            :title="
+                              currentLocale === 'de'
+                                ? 'Titel entfernen'
+                                : 'Remove title'
+                            "
                           >
                             <svg
                               class="size-[1.2em]"
@@ -482,6 +467,32 @@
                       {{ t("noItems") }}
                     </li>
                   </ul>
+                  <div class="mt-2 flex justify-start">
+                    <button
+                      type="button"
+                      class="btn btn-xs btn-outline btn-primary gap-1"
+                      @click.prevent="
+                        if (!form['title']) {
+                          form['title'] = [];
+                        }
+                        form['title'].push({
+                          _value: '',
+                          'title#lang': defaultMetadataLanguage || 'de',
+                          'title#preferred': form['title'].length === 0,
+                        });
+                      "
+                      :title="
+                        currentLocale === 'de'
+                          ? 'Weiteren Titel hinzufügen'
+                          : 'Add another title'
+                      "
+                    >
+                      <span class="font-bold text-sm leading-none">+</span>
+                      <span class="text-xs">{{
+                        currentLocale === "de" ? "Weiterer Titel" : "Add Title"
+                      }}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
               <div class="form-control w-full mb-4">
@@ -572,120 +583,14 @@
               </div>
               <!-- Contacts Table in Collection Information -->
               <div
-                class="col-span-full border border-base-200 bg-base-100 p-3.5 rounded-xl mt-2 mb-4 shadow-xs"
+                class="col-span-full border border-base-200 bg-base-100 p-4 rounded-xl mt-2 mb-4 shadow-xs"
               >
-                <div
-                  class="flex flex-wrap items-center justify-between gap-2 mb-2.5 pb-2 border-b border-base-200"
-                >
-                  <div class="flex items-center gap-2">
-                    <span
-                      class="font-bold text-sm text-base-content flex items-center gap-1.5"
-                    >
-                      <span>👥</span>
-                      <span>{{ getLabel("contacts", "contacts") }}</span>
-                    </span>
-                    <span class="badge badge-xs badge-neutral font-mono">{{
-                      (form["contacts"] || []).length
-                    }}</span>
-                  </div>
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    <button
-                      type="button"
-                      class="btn btn-xs btn-outline btn-accent gap-1"
-                      @click.prevent="openOrgPicker('contacts')"
-                    >
-                      🏛️
-                      {{
-                        currentLocale === "de" ? "Organisation" : "Organization"
-                      }}
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-xs btn-secondary gap-1 font-bold shadow-xs"
-                      @click.prevent="openPersonPicker('contacts')"
-                    >
-                      👤
-                      {{
-                        currentLocale === "de"
-                          ? "Aus Personen-Pool wählen"
-                          : "Select from Person Pool"
-                      }}
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-xs btn-primary gap-1"
-                      @click.prevent="openDrawer('contacts')"
-                    >
-                      +
-                      {{
-                        currentLocale === "de"
-                          ? "Kontakt anlegen"
-                          : "Add Contact"
-                      }}
-                    </button>
-                  </div>
-                </div>
-
-                <div class="overflow-x-auto">
-                  <table class="table table-xs w-full table-zebra">
-                    <thead class="bg-base-200/60">
-                      <tr>
-                        <th>{{ getLabel("contacts.name", "name") }}</th>
-                        <th>{{ getLabel("contacts.role", "role") }}</th>
-                        <th>
-                          {{
-                            getLabel("contacts.organization", "organization")
-                          }}
-                        </th>
-                        <th>{{ getLabel("contacts.email", "email") }}</th>
-                        <th class="w-20">{{ t("actions") }}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="(subItem, subIdx) in form['contacts']"
-                        :key="subIdx"
-                      >
-                        <td class="font-semibold">{{ subItem["name"] }}</td>
-                        <td>{{ subItem["role"] }}</td>
-                        <td>{{ subItem["organization"] }}</td>
-                        <td>{{ subItem["email"] }}</td>
-                        <td>
-                          <div class="flex gap-1">
-                            <button
-                              type="button"
-                              class="btn btn-xs btn-ghost text-info"
-                              @click.prevent="openDrawer('contacts', subIdx)"
-                            >
-                              {{ t("edit") }}
-                            </button>
-                            <button
-                              type="button"
-                              class="btn btn-xs btn-ghost text-error"
-                              @click.prevent="
-                                removeDrawerItem('contacts', subIdx)
-                              "
-                            >
-                              ✕
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr
-                        v-if="
-                          !form['contacts'] || form['contacts'].length === 0
-                        "
-                      >
-                        <td
-                          colspan="5"
-                          class="text-center text-base-content/40 py-3 italic"
-                        >
-                          {{ t("noItems") }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                <PersonAssignmentList
+                  v-model="form['contacts']"
+                  mode="contact"
+                  :current-locale="currentLocale"
+                  :title="getLabel('contacts', 'contacts')"
+                />
               </div>
 
               <div class="form-control w-full mb-4">
@@ -737,7 +642,6 @@
                       </button>
                     </div>
                   </div>
-                  <LanguageBadgePicker v-model="form['statement#lang']" />
                 </div>
                 <textarea
                   v-model="form['statement']"
@@ -1364,259 +1268,148 @@
                       </div>
                     </div>
 
-                    <!-- Spatial Coverage Linked exclusively via Organisation -->
+                    <!-- Spatial Coverage: Geographical Origin / Cultural Region -->
                     <div
-                      class="col-span-full border-2 border-base-200 bg-base-100 p-5 rounded-2xl shadow-xs"
+                      class="col-span-full border-2 border-base-200 bg-base-100 p-5 rounded-2xl shadow-xs space-y-4"
                     >
                       <div
-                        class="flex flex-wrap items-center justify-between gap-3 mb-3 pb-3 border-b border-base-200"
+                        class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-base-200"
                       >
                         <div class="flex items-center gap-2.5">
-                          <span class="text-xl">🏛️</span>
+                          <span class="text-xl">🌍</span>
                           <div>
                             <h4 class="font-bold text-lg text-base-content/90">
                               {{
                                 currentLocale === "de"
-                                  ? "Räumliche Abdeckung (WrapCollection > Räumlich / Spatial Coverage)"
-                                  : "Spatial Coverage (WrapCollection > Spatial)"
+                                  ? "Geografischer Herkunftsraum / Kulturraum"
+                                  : "Geographical Origin / Spatial Coverage"
                               }}
                             </h4>
                             <p class="text-xs text-base-content/60">
                               {{
                                 currentLocale === "de"
-                                  ? "Standort, Adressen, Stadt und Land werden ausschließlich zentral über den Organisations-Pool verwaltet und automatisch in die CARARE-Metadaten geschrieben."
-                                  : "Location, addresses, city, and country are managed centrally via organizations and written to XML metadata."
+                                  ? "Hier ist der geografische Schwerpunkt der Sammlung gemeint (z. B. Attika bei griechischen Grabreliefs), nicht die Postadresse des Museums."
+                                  : "Specify the geographical origin or cultural region of the collection (e.g. Attica), not the museum address."
                               }}
                             </p>
                           </div>
                         </div>
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-outline btn-primary gap-1.5"
-                          @click.prevent="isOrgPickerOpen = true"
-                        >
-                          <span>🏛️</span>
-                          <span>{{
-                            currentLocale === "de"
-                              ? "Organisation aus Pool wählen / anlegen"
-                              : "Select / Create Organization in Pool"
-                          }}</span>
-                        </button>
                       </div>
 
-                      <!-- Quick Select Chips: Last 5 Used Organizations -->
-                      <div
-                        v-if="
-                          recentOrganizations && recentOrganizations.length > 0
-                        "
-                        class="mb-4 p-3 bg-base-200/50 rounded-xl border border-base-300"
-                      >
-                        <div class="flex items-center justify-between mb-1.5">
-                          <span
-                            class="text-xs font-bold text-base-content/80 flex items-center gap-1.5"
-                          >
-                            <span>🕒</span>
-                            <span>{{
+                      <!-- GeoNames / Pleiades Place Autocomplete -->
+                      <div class="form-control w-full">
+                        <label class="label py-0.5">
+                          <span class="label-text text-xs font-bold">
+                            {{
                               currentLocale === "de"
-                                ? "Zuletzt verwendete Organisationen (max. 5):"
-                                : "Recently used organizations (max. 5):"
-                            }}</span>
+                                ? "Ort / Region über Normdaten suchen (GeoNames / Pleiades):"
+                                : "Search Place / Region (GeoNames / Pleiades):"
+                            }}
                           </span>
-                          <span class="text-[11px] text-base-content/40">{{
-                            currentLocale === "de"
-                              ? "1 Klick übernimmt Adresse & Land"
-                              : "1 click applies address & country"
-                          }}</span>
-                        </div>
-                        <div class="flex flex-wrap gap-1.5">
-                          <button
-                            v-for="org in recentOrganizations.slice(0, 5)"
-                            :key="'rec-' + org.name"
-                            type="button"
-                            class="btn btn-xs gap-1.5 transition-all"
-                            :class="
-                              form['source'] === org.name
-                                ? 'btn-primary font-bold shadow-xs'
-                                : 'btn-outline border-base-300 hover:border-primary'
-                            "
-                            @click.prevent="handleOrgPicked(org)"
-                          >
-                            <span>🏛️</span>
-                            <span>{{ org.name }}</span>
-                            <span v-if="org.city" class="opacity-60 text-[10px]"
-                              >({{ org.city }})</span
-                            >
-                            <span
-                              v-if="form['source'] === org.name"
-                              class="font-bold"
-                              >✓</span
-                            >
-                          </button>
-                        </div>
+                        </label>
+                        <PlaceAutocomplete
+                          :current-locale="currentLocale"
+                          :placeholder="
+                            currentLocale === 'de'
+                              ? 'z. B. Attika, Athen, Peloponnes, Rheinland...'
+                              : 'e.g. Attica, Athens, Peloponnese...'
+                          "
+                          @select="handleCollectionPlaceSelect"
+                        />
                       </div>
 
-                      <!-- Direct Inline Quick-Edit for WrapCollection Spatial Coverage -->
-                      <div
-                        class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 p-3.5 bg-base-100 rounded-xl border border-primary/20"
-                      >
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                          <label class="label py-0.5"
-                            ><span class="label-text text-xs font-bold">{{
-                              currentLocale === "de"
-                                ? "Benannter Ort (namedLocation)"
-                                : "Named Location"
-                            }}</span></label
-                          >
+                          <label class="label py-0.5">
+                            <span class="label-text text-xs font-bold">
+                              {{
+                                currentLocale === "de"
+                                  ? "Benannter Ort / Region"
+                                  : "Named Location / Region"
+                              }}
+                            </span>
+                          </label>
                           <input
                             type="text"
                             v-model="
                               form['coverage.spatial.locationSet.namedLocation']
                             "
-                            class="input input-sm input-bordered w-full text-xs font-medium"
+                            class="input input-sm input-bordered w-full text-xs"
                             :placeholder="
                               currentLocale === 'de'
-                                ? 'z. B. Bonn, Akademisches Kunstmuseum'
-                                : 'e.g. Bonn, Academic Art Museum'
+                                ? 'z. B. Attika'
+                                : 'e.g. Attica'
                             "
                           />
                         </div>
                         <div>
-                          <label class="label py-0.5"
-                            ><span class="label-text text-xs font-bold">{{
-                              currentLocale === "de"
-                                ? "Stadt / Gemeinde"
-                                : "City / Town"
-                            }}</span></label
-                          >
+                          <label class="label py-0.5">
+                            <span class="label-text text-xs font-bold">
+                              {{
+                                currentLocale === "de"
+                                  ? "Land / Geopolitischer Raum"
+                                  : "Country / Geopolitical Area"
+                              }}
+                            </span>
+                          </label>
                           <input
                             type="text"
                             v-model="
                               form[
-                                'coverage.spatial.locationSet.address.townOrCity'
+                                'coverage.spatial.locationSet.geopoliticalArea'
                               ]
                             "
                             class="input input-sm input-bordered w-full text-xs"
-                            placeholder="Bonn"
-                          />
-                        </div>
-                        <div>
-                          <label class="label py-0.5"
-                            ><span class="label-text text-xs font-bold">{{
-                              currentLocale === "de"
-                                ? "Land (ISO 3166-1 alpha-2)"
-                                : "Country Code"
-                            }}</span></label
-                          >
-                          <input
-                            type="text"
-                            maxlength="2"
-                            v-model="
-                              form[
-                                'coverage.spatial.locationSet.address.country'
-                              ]
+                            :placeholder="
+                              currentLocale === 'de'
+                                ? 'z. B. Griechenland'
+                                : 'e.g. Greece'
                             "
-                            class="input input-sm input-bordered w-full text-xs font-mono uppercase"
-                            placeholder="DE"
                           />
                         </div>
                       </div>
 
-                      <!-- Active Linked Location Summary Card -->
+                      <!-- Interactive Map Picker -->
                       <div
-                        class="grid grid-cols-1 md:grid-cols-2 gap-3 p-4 bg-base-200/40 rounded-xl border border-base-200"
+                        class="rounded-2xl overflow-hidden border border-base-300 shadow-xs"
                       >
-                        <div class="space-y-1.5">
-                          <span
-                            class="text-[11px] font-bold uppercase tracking-wider text-base-content/50"
-                          >
-                            {{
-                              currentLocale === "de"
-                                ? "Verknüpfte Institution / Träger"
-                                : "Linked Institution"
-                            }}
-                          </span>
-                          <div
-                            class="font-semibold text-sm break-words leading-snug"
-                          >
-                            {{
-                              form["source"] ||
-                              (currentLocale === "de"
-                                ? "— Noch keine Institution zugewiesen —"
-                                : "— No institution assigned —")
-                            }}
-                          </div>
-                          <div v-if="detectedGndId" class="pt-0.5">
-                            <span
-                              class="inline-flex items-center gap-1 badge badge-info badge-sm whitespace-nowrap font-mono font-bold text-[11px] py-1 px-2.5 shadow-xs"
-                            >
-                              <span>🏛️</span>
-                              <span>GND: {{ detectedGndId }}</span>
-                            </span>
-                          </div>
-                        </div>
-
-                        <div class="space-y-1">
-                          <span
-                            class="text-[11px] font-bold uppercase tracking-wider text-base-content/50"
-                          >
-                            {{
-                              currentLocale === "de"
-                                ? "Hinterlegte Adresse & Land (in Metadaten)"
-                                : "Stored Address & Country (in metadata)"
-                            }}
-                          </span>
-                          <div
-                            class="text-xs text-base-content/80 flex flex-wrap items-center gap-1.5"
-                          >
-                            <span
-                              v-if="
-                                form[
-                                  'coverage.spatial.locationSet.address.townOrCity'
-                                ]
-                              "
-                            >
-                              {{
-                                form[
-                                  "coverage.spatial.locationSet.address.postcodeOrZipcode"
-                                ]
-                              }}
-                              {{
-                                form[
-                                  "coverage.spatial.locationSet.address.townOrCity"
-                                ]
-                              }}
-                            </span>
-                            <span
-                              v-if="
-                                form[
-                                  'coverage.spatial.locationSet.address.roadName'
-                                ]
-                              "
-                              class="opacity-70"
-                            >
-                              •
-                              {{
-                                form[
-                                  "coverage.spatial.locationSet.address.roadName"
-                                ]
-                              }}
-                              {{
-                                form[
-                                  "coverage.spatial.locationSet.address.numberInRoad"
-                                ]
-                              }}
-                            </span>
-                            <span
-                              class="badge badge-xs badge-accent font-mono font-bold uppercase"
-                            >
-                              {{
-                                form[
-                                  "coverage.spatial.locationSet.address.country"
-                                ] || "DE"
-                              }}
-                            </span>
-                          </div>
-                        </div>
+                        <SpatialMapPicker
+                          :current-locale="currentLocale"
+                          :lat="
+                            Number(
+                              form['coverage.spatial.geometry.quickpoint.y'],
+                            ) || null
+                          "
+                          :lng="
+                            Number(
+                              form['coverage.spatial.geometry.quickpoint.x'],
+                            ) || null
+                          "
+                          :location-name="
+                            Array.isArray(
+                              form[
+                                'coverage.spatial.locationSet.namedLocation'
+                              ],
+                            )
+                              ? form[
+                                  'coverage.spatial.locationSet.namedLocation'
+                                ][0]
+                              : form[
+                                  'coverage.spatial.locationSet.namedLocation'
+                                ] || ''
+                          "
+                          @update:lat="
+                            (v) =>
+                              (form['coverage.spatial.geometry.quickpoint.y'] =
+                                v != null ? String(v) : '')
+                          "
+                          @update:lng="
+                            (v) =>
+                              (form['coverage.spatial.geometry.quickpoint.x'] =
+                                v != null ? String(v) : '')
+                          "
+                          height="240px"
+                        />
                       </div>
                     </div>
                   </div>
@@ -2441,7 +2234,9 @@ import OrganizationPickerModal from "../components/OrganizationPickerModal.vue";
 import CollectionPickerModal from "../components/CollectionPickerModal.vue";
 import InstitutionAutocomplete from "../components/InstitutionAutocomplete.vue";
 import PlaceAutocomplete from "../components/PlaceAutocomplete.vue";
+import SpatialMapPicker from "../components/SpatialMapPicker.vue";
 import LanguageBadgePicker from "../components/LanguageBadgePicker.vue";
+import PersonAssignmentList from "../components/PersonAssignmentList.vue";
 import {
   defaultMetadataLanguage,
   globalRights,
@@ -3472,7 +3267,10 @@ const form = reactive({
 const detectedGndId = ref("");
 
 const handleCollectionInstitutionSelect = (item) => {
-  if (!item) return;
+  if (!item) {
+    detectedGndId.value = "";
+    return;
+  }
   // Lower field gets the Institution Name
   form["source"] = item.label;
 
@@ -3494,6 +3292,21 @@ const handleCollectionInstitutionSelect = (item) => {
     gnd: item.gnd || "",
     uri: item.uri || "",
   });
+};
+
+const handleCollectionPlaceSelect = (place) => {
+  if (!place) return;
+  if (place.name) {
+    form["coverage.spatial.locationSet.namedLocation"] = place.name;
+  }
+  if (place.countryName || place.country) {
+    form["coverage.spatial.locationSet.geopoliticalArea"] =
+      place.countryName || place.country;
+  }
+  if (place.lat != null && place.lng != null) {
+    form["coverage.spatial.geometry.quickpoint.y"] = String(place.lat);
+    form["coverage.spatial.geometry.quickpoint.x"] = String(place.lng);
+  }
 };
 
 // Helper to check if an ID is actually a valid GND identifier (not an ISIL like DE-MUS-... or internal ID)

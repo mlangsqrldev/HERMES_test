@@ -90,90 +90,9 @@
         </svg>
       </div>
 
-      <!-- Center: Interactive Quick-Nav Pills -->
-
-      <nav
-        class="hidden md:flex items-center gap-1.5 bg-base-100/70 p-1 rounded-full border border-base-content/10 backdrop-blur-md shadow-xs"
-      >
-        <button
-          v-for="(step, idx) in steps"
-          :key="step.id"
-          type="button"
-          @click="scrollToSection(idx)"
-          class="px-3 py-1 text-xs font-medium rounded-full transition-all flex items-center gap-1.5"
-          :class="
-            idx === activeStepIndex
-              ? 'bg-primary text-primary-content shadow-xs font-semibold'
-              : 'hover:bg-base-200 text-base-content/75'
-          "
-        >
-          <span
-            class="w-2 h-2 rounded-full transition-all shrink-0"
-            :class="{
-              'bg-success shadow-xs shadow-success/50':
-                getSectionQualityStatus(step.id).status === 'valid',
-
-              'bg-warning shadow-xs shadow-warning/50':
-                getSectionQualityStatus(step.id).status === 'warning',
-
-              'bg-error shadow-xs shadow-error/50':
-                getSectionQualityStatus(step.id).status === 'error',
-            }"
-          ></span>
-
-          <span>{{ currentLocale === "de" ? step.de : step.en }}</span>
-
-          <span
-            v-if="getRecordCount(step.id) > 0"
-            class="px-1.5 py-0.2 rounded-full text-[10px] font-mono leading-none"
-            :class="
-              idx === activeStepIndex
-                ? 'bg-primary-content/25 text-primary-content'
-                : 'bg-base-300 text-base-content/80'
-            "
-          >
-            {{ getRecordCount(step.id) }}
-          </span>
-        </button>
-      </nav>
-
-      <!-- Right: Controls (Shortcut, Locale Switcher, Theme Switcher) -->
+      <!-- Right: Controls (Manual, XML Preview, Locale Switcher, Theme Switcher) -->
 
       <div class="flex items-center gap-2.5">
-        <!-- Save Shortcut Badge -->
-
-        <div
-          class="hidden xl:flex items-center gap-1 text-xs text-base-content/60 bg-base-200/60 px-2.5 py-1 rounded-lg border border-base-300/60"
-          :title="
-            currentLocale === 'de'
-              ? 'Aktiven Eintrag speichern (Strg+S)'
-              : 'Save active record (Ctrl+S)'
-          "
-        >
-          <kbd class="kbd kbd-xs">Ctrl</kbd>+<kbd class="kbd kbd-xs">S</kbd>
-
-          <span class="text-[11px]">{{
-            currentLocale === "de" ? "Speichern" : "Save"
-          }}</span>
-        </div>
-
-        <!-- GeoNames & API Settings Button -->
-
-        <button
-          type="button"
-          class="btn btn-sm btn-ghost gap-1.5 px-2.5 font-medium border border-base-300/80 hover:border-primary text-xs"
-          @click="openApiSettings"
-          :title="
-            currentLocale === 'de'
-              ? 'API-Zugangsdaten (GeoNames Benutzername & Passwort/Token) verwalten'
-              : 'Manage API credentials (GeoNames username & password/token)'
-          "
-        >
-          <span>🔑</span>
-
-          <span class="hidden md:inline font-semibold">GeoNames</span>
-        </button>
-
         <!-- Handbook / Manual Link Button -->
 
         <button
@@ -348,18 +267,15 @@
             <li
               v-for="(step, index) in steps"
               :key="index"
-              :tabindex="index"
-              class="collapse rounded-xl transition-all"
+              class="rounded-xl transition-all"
               :class="[
-                step.id !== 'files' ? 'collapse-arrow' : '',
-
                 index === activeStepIndex
-                  ? 'collapse-open bg-base-200/60 shadow-xs'
-                  : 'collapse-close hover:bg-base-200/30',
+                  ? 'bg-base-200/60 shadow-xs'
+                  : 'hover:bg-base-200/30',
               ]"
             >
               <div
-                class="flex items-center gap-2 cursor-pointer font-bold text-sm collapse-title py-2 px-3"
+                class="flex items-center gap-2 cursor-pointer font-bold text-sm py-2 px-3"
                 @click="scrollToSection(index)"
                 :class="
                   index === activeStepIndex
@@ -398,35 +314,95 @@
                 </span>
               </div>
 
+              <!-- Sub-entries: visible for active section OR when records exist -->
               <ul
-                v-if="requiredTree[step.id]"
-                class="ml-4 pb-2 border-l-2 border-base-300/60 pl-3 collapse-content"
+                v-if="
+                  index === activeStepIndex &&
+                  (requiredTree[step.id] ||
+                    step.id === 'heritage' ||
+                    step.id === 'digital' ||
+                    step.id === 'activity')
+                "
+                class="ml-4 pb-2 border-l-2 border-base-300/60 pl-2.5 space-y-0.5"
               >
+                <!-- Required sub-blocks -->
                 <li
-                  v-for="(levelData, firstLevel) in requiredTree[step.id]"
+                  v-for="(levelData, firstLevel) in requiredTree[step.id] || {}"
                   :key="firstLevel"
-                  class="my-0.5"
                 >
                   <div
-                    class="flex items-center gap-2 cursor-default text-xs font-medium py-1 px-1.5 rounded hover:bg-base-200/50"
-                    @click="scrollToSection(index)"
+                    class="flex items-center gap-2 cursor-pointer text-xs font-medium py-1 px-1.5 rounded hover:bg-base-200/70 transition-colors"
+                    @click="scrollToSubSection(index, firstLevel, levelData)"
                   >
                     <input
                       type="checkbox"
-                      class="checkbox checkbox-xs cursor-default"
+                      class="checkbox checkbox-xs cursor-pointer pointer-events-none"
                       :checked="
                         filledStatus[step.id]?.firstLevels?.[firstLevel]
                       "
-                      onclick="return false;"
+                      tabindex="-1"
                     />
 
-                    <span class="truncate opacity-80">{{
+                    <span class="truncate opacity-85">{{
                       currentLocale === "de"
                         ? levelData.nameDE
                         : levelData.nameEN
                     }}</span>
                   </div>
                 </li>
+
+                <!-- Individual Heritage Asset entries -->
+                <template v-if="step.id === 'heritage'">
+                  <li
+                    v-for="(item, itemIdx) in getChildComp(heritageRef)
+                      ?.items || []"
+                    :key="'ha-' + itemIdx"
+                  >
+                    <div
+                      class="flex items-center gap-1.5 cursor-pointer text-[11px] py-1 px-1.5 rounded hover:bg-primary/10 hover:text-primary transition-colors"
+                      @click="jumpToItem('heritage', index, itemIdx)"
+                    >
+                      <span class="opacity-60">↳</span>
+                      <span class="truncate font-mono">{{
+                        getSidebarItemLabel(item, itemIdx, "HA")
+                      }}</span>
+                    </div>
+                  </li>
+                </template>
+
+                <!-- Individual Digital Resource entries -->
+                <template v-if="step.id === 'digital'">
+                  <li
+                    v-for="(item, itemIdx) in getChildComp(digitalRef)?.items ||
+                    []"
+                    :key="'dr-' + itemIdx"
+                  >
+                    <div
+                      class="flex items-center gap-1.5 cursor-pointer text-[11px] py-1 px-1.5 rounded hover:bg-primary/10 hover:text-primary transition-colors"
+                      @click="jumpToItem('digital', index, itemIdx)"
+                    >
+                      <span class="opacity-60">↳</span>
+                      <span class="truncate font-mono">{{
+                        getSidebarItemLabel(item, itemIdx, "DR")
+                      }}</span>
+                    </div>
+                  </li>
+                </template>
+
+                <!-- Activity sub-sections -->
+                <template v-if="step.id === 'activity'">
+                  <li v-for="actSub in activitySubNav" :key="actSub.id">
+                    <div
+                      class="flex items-center gap-1.5 cursor-pointer text-[11px] py-1 px-1.5 rounded hover:bg-primary/10 hover:text-primary transition-colors"
+                      @click="scrollToActivityAnchor(index, actSub.id)"
+                    >
+                      <span class="opacity-60">↳</span>
+                      <span class="truncate">{{
+                        currentLocale === "de" ? actSub.de : actSub.en
+                      }}</span>
+                    </div>
+                  </li>
+                </template>
               </ul>
             </li>
           </ul>
@@ -651,6 +627,9 @@
       >
         <GlobalDefaultsBar
           :current-locale="currentLocale"
+          :collection-form="getChildComp(collectionRef)?.form"
+          :heritage-items="getChildComp(heritageRef)?.items || []"
+          :digital-items="getChildComp(digitalRef)?.items || []"
           @apply-rights="applyGlobalRightsToAll"
           @apply-language="applyGlobalLanguageToAll"
           @apply-collection="applyGlobalCollectionToForm"
@@ -3071,9 +3050,80 @@ const scrollToSection = (index) => {
   if (sectionRefs.value[index]) {
     sectionRefs.value[index].scrollIntoView({
       behavior: "smooth",
-
       block: "start",
     });
+  }
+};
+
+const activitySubNav = [
+  { id: "act-basics", de: "Basisdaten & Zeitraum", en: "Basics & Dates" },
+  { id: "act-actors", de: "Beteiligte & Rollen", en: "Actors & Roles" },
+  { id: "act-3d", de: "3D-Digitalisierung", en: "3D Digitisation" },
+  {
+    id: "act-processing",
+    de: "Prozessierungsschritte",
+    en: "Processing Steps",
+  },
+  {
+    id: "act-dap",
+    de: "Authentizitätsprofil (DAP)",
+    en: "Authenticity Profile (DAP)",
+  },
+];
+
+const getSidebarItemLabel = (item, idx, prefix) => {
+  if (!item) return `${prefix}-${idx + 1}`;
+  const id =
+    item["recordInformation.id"] ||
+    item["appellation.id"] ||
+    `${prefix}-${idx + 1}`;
+  let name = "";
+  if (Array.isArray(item["appellation.name"]) && item["appellation.name"][0]) {
+    name = item["appellation.name"][0]._value || "";
+  } else if (Array.isArray(item["title"]) && item["title"][0]) {
+    name = item["title"][0]._value || "";
+  }
+  return name ? `${id}: ${name}` : id;
+};
+
+const scrollToSubSection = (sectionIndex, firstLevel, levelData) => {
+  const sectionEl = sectionRefs.value?.[sectionIndex];
+  if (!sectionEl) return;
+  const searchNames = [levelData?.nameDE, levelData?.nameEN, firstLevel].filter(
+    Boolean,
+  );
+  const headings = sectionEl.querySelectorAll(
+    "h2, h3, h4, h5, span.font-bold, label",
+  );
+  for (const h of headings) {
+    const text = (h.textContent || "").trim().toLowerCase();
+    if (searchNames.some((n) => text.includes(n.toLowerCase()))) {
+      h.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+  }
+  scrollToSection(sectionIndex);
+};
+
+const jumpToItem = (stepId, sectionIndex, itemIdx) => {
+  scrollToSection(sectionIndex);
+  const comp =
+    stepId === "heritage"
+      ? getChildComp(heritageRef)
+      : stepId === "digital"
+        ? getChildComp(digitalRef)
+        : null;
+  if (comp && typeof comp.edit === "function") {
+    comp.edit(itemIdx);
+  }
+};
+
+const scrollToActivityAnchor = (sectionIndex, anchorId) => {
+  const target = document.getElementById(anchorId);
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  } else {
+    scrollToSection(sectionIndex);
   }
 };
 
@@ -6222,8 +6272,46 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
     return rec;
   };
 
+  // Normalize actors array so actorType ('person' | 'organisation') and repeated roles array serialize cleanly
+  const normalizeActorsForXml = (actorsList) => {
+    if (!Array.isArray(actorsList)) return actorsList;
+    return actorsList
+      .filter((a) => a && (a.name || a.actor))
+      .map((a) => {
+        const rawType = (a.actorType || a.type || "person").toLowerCase();
+        const actorType =
+          rawType === "organization" || rawType === "organisation"
+            ? "organisation"
+            : rawType === "workshop"
+              ? "organisation"
+              : "person";
+        let rolesArr = [];
+        if (Array.isArray(a.roles)) {
+          rolesArr = a.roles.map((r) => String(r).trim()).filter(Boolean);
+        } else if (a.roles || a.role) {
+          rolesArr = String(a.roles || a.role)
+            .split(",")
+            .map((r) => r.trim())
+            .filter(Boolean);
+        }
+        const out = {
+          id: a.id || a.actorUID || "",
+          name: a.name || a.actor || "",
+          actorType,
+        };
+        if (rolesArr.length > 0) {
+          out.roles = rolesArr;
+        }
+        return out;
+      });
+  };
+
   const enrichHeritageAssetRecord = (haRecord) => {
     const rec = { ...haRecord };
+
+    if (Array.isArray(rec["actors"])) {
+      rec["actors"] = normalizeActorsForXml(rec["actors"]);
+    }
 
     // Inherit physical heritage asset rights, or fallback to general rights
     rec["rights.copyrightCreditLine"] =
@@ -6271,6 +6359,10 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
 
   const enrichDigitalResourceRecord = (drRecord) => {
     const rec = { ...drRecord };
+
+    if (Array.isArray(rec["actors"])) {
+      rec["actors"] = normalizeActorsForXml(rec["actors"]);
+    }
 
     rec["rights.copyrightCreditLine"] =
       rec["rights.copyrightCreditLine"] ||
@@ -6394,6 +6486,10 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
   const enrichActivityRecord = (actRecord) => {
     const rec = { ...actRecord };
 
+    if (Array.isArray(rec["actors"])) {
+      rec["actors"] = normalizeActorsForXml(rec["actors"]);
+    }
+
     let assessList = [];
 
     if (
@@ -6407,39 +6503,69 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
       assessList = [String(rec["assessments"])];
     }
 
-    // Auto-derive CARARE <assessments> from DAP-1 (physical evidence) and DAP-6 (evaluation balance) if not already present
-
+    // Ensure regular processing <consistsOf> steps precede DAP <consistsOf> blocks
     const consistsOfList = Array.isArray(rec["consistsOf"])
       ? rec["consistsOf"]
       : [];
+    const isDapCo = (c) =>
+      Boolean(
+        c &&
+        (c.isDap ||
+          String(c.hadSpecificPurpose || "").includes(
+            "Digital Authenticity Profile",
+          ) ||
+          String(c["methods#termUID"] || "").includes("/dap/DAP-")),
+      );
+    const regularCo = consistsOfList.filter((c) => !isDapCo(c));
+    const dapCo = consistsOfList.filter((c) => isDapCo(c));
+    if (consistsOfList.length > 0) {
+      rec["consistsOf"] = [...regularCo, ...dapCo];
+    }
 
+    // Auto-derive CARARE <assessments> from DAP-1 (physical evidence) and DAP-5 (evaluation balance) if not already present
     const dap1 = consistsOfList.find(
       (c) =>
-        String(c.methods || "").includes("DAP-1") ||
-        String(c.hadSpecificPurpose || "").includes("DAP-1"),
+        c &&
+        (c.dapId === "DAP-1" ||
+          String(c["methods#termUID"] || "").endsWith("/DAP-1") ||
+          String(c.hadSpecificPurpose || "").includes("Dimension 1 von 5") ||
+          String(c.hadSpecificPurpose || "").includes("DAP-1")),
     );
 
     if (dap1) {
-      const dap1Text = dap1.materials || dap1.techniques || "";
+      const dap1Text =
+        (Array.isArray(dap1.methods)
+          ? dap1.methods.join("; ")
+          : dap1.methods) ||
+        dap1.materials ||
+        dap1.techniques ||
+        "";
 
       if (dap1Text && !assessList.some((a) => String(a).includes("DAP-1"))) {
         assessList.push(`DAP-1 Ausgangsbefund: ${dap1Text}`);
       }
     }
 
-    const dap6 = consistsOfList.find(
+    const dap5 = consistsOfList.find(
       (c) =>
-        String(c.methods || "").includes("DAP-6") ||
-        String(c.hadSpecificPurpose || "").includes("DAP-6"),
+        c &&
+        (c.dapId === "DAP-5" ||
+          String(c["methods#termUID"] || "").endsWith("/DAP-5") ||
+          String(c.hadSpecificPurpose || "").includes("Dimension 5 von 5") ||
+          String(c.hadSpecificPurpose || "").includes("DAP-5") ||
+          String(c.hadSpecificPurpose || "").includes("DAP-6")),
     );
 
-    if (dap6) {
-      const dap6Text = dap6.hadSpecificPurpose
-        ? dap6.hadSpecificPurpose.replace(/^DAP-6[^:]*:\s*/, "")
-        : dap6.techniques || "";
+    if (dap5) {
+      const dap5Text =
+        (Array.isArray(dap5.methods)
+          ? dap5.methods.join("; ")
+          : dap5.methods) ||
+        dap5.techniques ||
+        "";
 
-      if (dap6Text && !assessList.some((a) => String(a).includes("DAP-6"))) {
-        assessList.push(`DAP-6 Abbildungsbilanz: ${dap6Text}`);
+      if (dap5Text && !assessList.some((a) => String(a).includes("DAP-5"))) {
+        assessList.push(`DAP-5 Abbildungsbilanz: ${dap5Text}`);
       }
     }
 

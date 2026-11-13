@@ -490,18 +490,11 @@ export const addOrUpdatePerson = (person) => {
   const lowerName = nameTrimmed.toLowerCase();
 
   const idVal = person.id || person["actors.id"] || "";
-  const rolesVal = person.roles || person["actors.roles"] || person.role || "";
-  const roleVal = person.role || person.roles || person["actors.roles"] || "";
   const orgVal = person.organization || "";
   const emailVal = person.email || "";
   const phoneVal = person.phone || "";
   const addressVal = person.address || "";
-  const typeVal =
-    person.type ||
-    (rolesVal.toLowerCase().includes("institution") ||
-    rolesVal.toLowerCase().includes("museum")
-      ? "organization"
-      : "person");
+  const typeVal = person.type || person.actorType || "person";
 
   const existingIndex = savedPersons.value.findIndex(
     (p) => (p.name || "").trim().toLowerCase() === lowerName,
@@ -512,8 +505,6 @@ export const addOrUpdatePerson = (person) => {
     savedPersons.value[existingIndex] = {
       ...existing,
       id: idVal || existing.id || "",
-      roles: rolesVal || existing.roles || existing.role || "",
-      role: roleVal || existing.role || existing.roles || "",
       organization: orgVal || existing.organization || "",
       email: emailVal || existing.email || "",
       phone: phoneVal || existing.phone || "",
@@ -524,8 +515,6 @@ export const addOrUpdatePerson = (person) => {
     savedPersons.value.unshift({
       id: idVal,
       name: nameTrimmed,
-      roles: rolesVal,
-      role: roleVal,
       organization: orgVal,
       email: emailVal,
       phone: phoneVal,

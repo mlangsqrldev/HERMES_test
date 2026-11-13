@@ -21,15 +21,12 @@
                 ? "Technische Metadaten & 3D-Erfassung"
                 : "Technical Metadata & 3D Acquisition"
             }}</span>
-            <span class="badge badge-primary badge-sm font-semibold"
-              >CARARE 2.0.6 / HECTOR</span
-            >
           </h4>
           <p class="text-xs text-base-content/60 mt-0.5">
             {{
               currentLocale === "de"
-                ? "Strikte Unterscheidung der Erfassungsverfahren (Photogrammetrie, SLS, TLS) inklusive Rohbild-Dokumentation und automatischem CARARE-Export."
-                : "Strict distinction of acquisition workflows (Photogrammetry, SLS, TLS) including RAW image documentation and automatic CARARE export."
+                ? "Strikte Unterscheidung der Erfassungsverfahren (Photogrammetrie, Streifenlichtscan, Laserscan) inklusive Rohbild-Dokumentation."
+                : "Strict distinction of acquisition workflows (Photogrammetry, Structured-Light, Laser Scanning) including RAW image documentation."
             }}
           </p>
         </div>
@@ -1869,8 +1866,8 @@
         <p class="text-base-content/75 leading-relaxed">
           {{
             currentLocale === "de"
-              ? "Gemäß CARARE 2.0.6 Schema wird eingesetzte Software (z.B. RealityCapture, Artec Studio, Blender) und Hardware (Kameras, 3D-Scanner) nicht in der Digitalen Ressource erfasst, sondern als Teilschritt (&lt;consistsOf&gt; / &lt;equipment&gt;) im Modul „Aktivität / Kampagne“. Die Digitale Ressource beschreibt ausschließlich das fertige Datenprodukt (Geometrie, Texturen, Genauigkeit, Bounding Box, Extent)."
-              : 'According to CARARE 2.0.6, processing software and hardware equipment do not belong to the Digital Resource, but are documented as sub-events (&lt;consistsOf&gt; / &lt;equipment&gt;) in the "Activity / Campaign" module. The Digital Resource exclusively describes the delivered digital object.'
+              ? "Eingesetzte Software (z. B. RealityCapture, Artec Studio, Blender) und Hardware (Kameras, 3D-Scanner) werden nicht beim einzelnen 3D-Modell erfasst, sondern im Modul „Aktivität / Kampagne“. Hier beschreiben Sie ausschließlich das fertige Datenprodukt (Geometrie, Texturen, Genauigkeit, Bounding Box, Dateigröße)."
+              : 'Processing software and hardware equipment do not belong to the Digital Resource, but are documented in the "Activity / Campaign" module. Here you exclusively describe the delivered digital 3D object.'
           }}
         </p>
       </div>

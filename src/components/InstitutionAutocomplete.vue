@@ -51,47 +51,12 @@
             v-else-if="query"
             type="button"
             @click="clear"
-            class="text-base-content/40 hover:text-base-content text-sm leading-none"
+            class="text-error/80 hover:text-error font-bold text-sm leading-none cursor-pointer"
+            :title="currentLocale === 'de' ? 'Eintrag löschen' : 'Clear entry'"
           >
             ✕
           </button>
         </span>
-      </div>
-    </div>
-
-    <!-- Chosen value badge -->
-    <div v-if="chosenItem" class="mt-1.5 flex items-center gap-1.5 flex-wrap">
-      <div
-        class="flex items-center gap-1 bg-primary/10 border border-primary/30 rounded-lg px-2 py-0.5 text-xs max-w-full"
-      >
-        <span
-          class="font-semibold truncate max-w-[240px]"
-          :title="chosenItem.label"
-          >{{ chosenItem.label }}</span
-        >
-        <span v-if="chosenItem.place" class="text-[11px] opacity-60"
-          >({{ chosenItem.place }})</span
-        >
-        <span
-          v-if="chosenItem.gnd"
-          class="badge badge-xs badge-primary font-mono ml-1"
-          title="GND-Nummer"
-          >GND: {{ chosenItem.gnd }}</span
-        >
-        <a
-          :href="chosenItem.uri"
-          target="_blank"
-          class="ml-1 opacity-60 hover:opacity-100 text-[10px]"
-          title="GND-Eintrag öffnen"
-          >↗</a
-        >
-        <button
-          type="button"
-          @click="clearChosen"
-          class="ml-1 opacity-50 hover:opacity-100 text-xs"
-        >
-          ✕
-        </button>
       </div>
     </div>
 
@@ -520,6 +485,7 @@ const clear = () => {
   open.value = false;
   chosenItem.value = null;
   emit("update:modelValue", "");
+  emit("select", null);
 };
 const clearChosen = () => {
   chosenItem.value = null;

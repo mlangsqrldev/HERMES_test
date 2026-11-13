@@ -19,9 +19,9 @@
                 ? "Beziehungen & Verknüpfungen (DC Relations)"
                 : "Relations & Cross-Links (DC Relations)"
             }}
-            <span class="badge badge-primary badge-sm font-semibold"
-              >CARARE 2.0.6 / Dublin Core</span
-            >
+            <span class="badge badge-primary badge-sm font-semibold">{{
+              currentLocale === "de" ? "Verknüpfungen" : "Relations"
+            }}</span>
           </h4>
           <p class="text-xs text-base-content/60 mt-0.5">
             {{

@@ -422,14 +422,21 @@ export function parseCarareXml(xmlString) {
       actors: getDirectChildren(ha, "actors").map((a) => {
         const actorName = getText(a, "name") || getText(a, "actor");
         const actorId = getText(a, "id") || getText(a, "actorUID");
-        const actorRole = getText(a, "roles") || getText(a, "role");
+        const actorType = getText(a, "actorType") || "person";
+        const rolesList = getDirectChildren(a, "roles")
+          .map((r) => r.textContent.trim())
+          .filter(Boolean);
+        const fallbackRole = getText(a, "role");
+        const rolesArr =
+          rolesList.length > 0 ? rolesList : fallbackRole ? [fallbackRole] : [];
         return {
           actor: actorName,
           actorUID: actorId,
-          role: actorRole,
+          role: rolesArr[0] || "",
           name: actorName,
           id: actorId,
-          roles: actorRole,
+          type: actorType === "organisation" ? "organization" : actorType,
+          roles: rolesArr,
         };
       }),
 
@@ -743,14 +750,21 @@ export function parseCarareXml(xmlString) {
       actors: getDirectChildren(dr, "actors").map((a) => {
         const actorName = getText(a, "name") || getText(a, "actor");
         const actorId = getText(a, "id") || getText(a, "actorUID");
-        const actorRole = getText(a, "roles") || getText(a, "role");
+        const actorType = getText(a, "actorType") || "person";
+        const rolesList = getDirectChildren(a, "roles")
+          .map((r) => r.textContent.trim())
+          .filter(Boolean);
+        const fallbackRole = getText(a, "role");
+        const rolesArr =
+          rolesList.length > 0 ? rolesList : fallbackRole ? [fallbackRole] : [];
         return {
           actor: actorName,
           actorUID: actorId,
-          role: actorRole,
+          role: rolesArr[0] || "",
           name: actorName,
           id: actorId,
-          roles: actorRole,
+          type: actorType === "organisation" ? "organization" : actorType,
+          roles: rolesArr,
         };
       }),
 
@@ -1035,16 +1049,22 @@ export function parseCarareXml(xmlString) {
       actors: getDirectChildren(act, "actors").map((a) => {
         const actorName = getText(a, "name") || getText(a, "actor");
         const actorId = getText(a, "id") || getText(a, "actorUID");
-        const actorType = getText(a, "actorType");
-        const actorRole = getText(a, "roles") || getText(a, "role");
+        const actorType = getText(a, "actorType") || "person";
+        const rolesList = getDirectChildren(a, "roles")
+          .map((r) => r.textContent.trim())
+          .filter(Boolean);
+        const fallbackRole = getText(a, "role");
+        const rolesArr =
+          rolesList.length > 0 ? rolesList : fallbackRole ? [fallbackRole] : [];
         return {
           id: actorId,
           name: actorName,
           actorType: actorType,
-          roles: actorRole,
+          type: actorType === "organisation" ? "organization" : actorType,
+          roles: rolesArr,
           actor: actorName,
           actorUID: actorId,
-          role: actorRole,
+          role: rolesArr[0] || "",
         };
       }),
 

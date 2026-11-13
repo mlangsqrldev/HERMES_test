@@ -24,15 +24,12 @@
                     ? "Übergeordnete Aktivität (Digitalisierungsprojekt)"
                     : "Master Activity (Digitisation Project)"
                 }}</span>
-                <span class="badge badge-primary badge-xs font-semibold"
-                  >CARARE 2.0.6</span
-                >
               </h4>
               <p class="text-xs text-base-content/70 leading-relaxed max-w-4xl">
                 {{
                   currentLocale === "de"
-                    ? "Diese Aktivität repräsentiert das übergeordnete Digitalisierungsprojekt (CARARE &lt;activity&gt;). Sie verknüpft die erfassten Kulturgüter und deren digitale Ressourcen. Im CARARE-XML-Export wird sie mit ihrer ID referenziert und verbindet die Datensätze über &lt;wasDigitizedBy&gt;."
-                    : "This activity represents the overarching digitisation project (CARARE &lt;activity&gt;). It links the recorded heritage assets and digital resources via &lt;wasDigitizedBy&gt; in the CARARE XML export."
+                    ? "Diese Aktivität repräsentiert das übergeordnete Digitalisierungsprojekt und verknüpft die erfassten Kulturgüter sowie die daraus entstandenen 3D-Modelle."
+                    : "This activity represents the overarching digitisation project and links the recorded heritage assets with their resulting 3D models."
                 }}
               </p>
             </div>
@@ -251,7 +248,10 @@
                 </div>
                 <!--       <div class="text-sm text-base-content/60 mb-4 px-1">{{ getLabel('recordInformation', 'The ID, language, creation information and other metadata describing the record. The ID element of this information block holds the ID assigned by the content provider. Content providers are strongly recommended to complete this element.', 'doc') }}</div> -->
                 <div class="grid grid-cols-1 gap-x-6">
-                  <div class="form-control w-full mb-4">
+                  <div
+                    id="act-basics"
+                    class="form-control w-full mb-4 scroll-mt-24"
+                  >
                     <div class="flex flex-row items-center">
                       <label class="label"
                         ><span class="label-text font-bold capitalize">{{
@@ -562,177 +562,19 @@
 
                       <!-- Contacts Table in Creation -->
                       <div
-                        class="col-span-full border border-base-200 bg-base-100 p-3.5 rounded-xl mt-2 mb-2 shadow-xs"
+                        class="col-span-full border border-base-200 bg-base-100 p-4 rounded-xl mt-2 mb-2 shadow-xs"
                       >
-                        <div
-                          class="flex flex-wrap items-center justify-between gap-2 mb-2.5 pb-2 border-b border-base-200"
-                        >
-                          <div class="flex items-center gap-2">
-                            <span
-                              class="font-bold text-sm text-base-content flex items-center gap-1.5"
-                            >
-                              <span>👥</span>
-                              <span>{{
-                                getLabel(
-                                  "recordInformation.creation.contacts",
-                                  "contacts",
-                                )
-                              }}</span>
-                            </span>
-                            <span
-                              class="badge badge-xs badge-neutral font-mono"
-                              >{{
-                                (
-                                  form["recordInformation.creation.contacts"] ||
-                                  []
-                                ).length
-                              }}</span
-                            >
-                          </div>
-                          <div class="flex items-center gap-1.5 flex-wrap">
-                            <button
-                              type="button"
-                              class="btn btn-xs btn-outline btn-accent gap-1"
-                              @click.prevent="openOrgPicker('contacts')"
-                            >
-                              🏛️
-                              {{
-                                currentLocale === "de"
-                                  ? "Organisation"
-                                  : "Organization"
-                              }}
-                            </button>
-                            <button
-                              type="button"
-                              class="btn btn-xs btn-secondary gap-1 font-bold shadow-xs"
-                              @click.prevent="openPersonPicker('contacts')"
-                            >
-                              👤
-                              {{
-                                currentLocale === "de"
-                                  ? "Aus Personen-Pool wählen"
-                                  : "Select from Person Pool"
-                              }}
-                            </button>
-                            <button
-                              type="button"
-                              class="btn btn-xs btn-primary gap-1"
-                              @click.prevent="
-                                openDrawer(
-                                  'recordInformation.creation.contacts',
-                                )
-                              "
-                            >
-                              +
-                              {{
-                                currentLocale === "de"
-                                  ? "Kontakt anlegen"
-                                  : "Add Contact"
-                              }}
-                            </button>
-                          </div>
-                        </div>
-
-                        <div class="overflow-x-auto">
-                          <table class="table table-xs w-full table-zebra">
-                            <thead class="bg-base-200/60">
-                              <tr>
-                                <th>
-                                  {{
-                                    getLabel(
-                                      "recordInformation.creation.contacts.name",
-                                      "name",
-                                    )
-                                  }}
-                                </th>
-                                <th>
-                                  {{
-                                    getLabel(
-                                      "recordInformation.creation.contacts.role",
-                                      "role",
-                                    )
-                                  }}
-                                </th>
-                                <th>
-                                  {{
-                                    getLabel(
-                                      "recordInformation.creation.contacts.organization",
-                                      "organization",
-                                    )
-                                  }}
-                                </th>
-                                <th>
-                                  {{
-                                    getLabel(
-                                      "recordInformation.creation.contacts.email",
-                                      "email",
-                                    )
-                                  }}
-                                </th>
-                                <th class="w-20">{{ t("actions") }}</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr
-                                v-for="(subItem, subIdx) in form[
-                                  'recordInformation.creation.contacts'
-                                ]"
-                                :key="subIdx"
-                              >
-                                <td class="font-semibold">
-                                  {{ subItem["name"] }}
-                                </td>
-                                <td>{{ subItem["role"] }}</td>
-                                <td>{{ subItem["organization"] }}</td>
-                                <td>{{ subItem["email"] }}</td>
-                                <td>
-                                  <div class="flex gap-1">
-                                    <button
-                                      type="button"
-                                      class="btn btn-xs btn-ghost text-info"
-                                      @click.prevent="
-                                        openDrawer(
-                                          'recordInformation.creation.contacts',
-                                          subIdx,
-                                        )
-                                      "
-                                    >
-                                      {{ t("edit") }}
-                                    </button>
-                                    <button
-                                      type="button"
-                                      class="btn btn-xs btn-ghost text-error"
-                                      @click.prevent="
-                                        removeDrawerItem(
-                                          'recordInformation.creation.contacts',
-                                          subIdx,
-                                        )
-                                      "
-                                    >
-                                      ✕
-                                    </button>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr
-                                v-if="
-                                  !form[
-                                    'recordInformation.creation.contacts'
-                                  ] ||
-                                  form['recordInformation.creation.contacts']
-                                    .length === 0
-                                "
-                              >
-                                <td
-                                  colspan="5"
-                                  class="text-center text-base-content/40 py-3 italic"
-                                >
-                                  {{ t("noItems") }}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
+                        <PersonAssignmentList
+                          v-model="form['recordInformation.creation.contacts']"
+                          mode="contact"
+                          :current-locale="currentLocale"
+                          :title="
+                            getLabel(
+                              'recordInformation.creation.contacts',
+                              'contacts',
+                            )
+                          "
+                        />
                       </div>
                     </div>
                   </div>
@@ -810,18 +652,14 @@
                               ? "Übergeordnete Aktivität (Digitalisierungsprojekt)"
                               : "Master Activity (Digitisation Project)"
                           }}</span>
-                          <span
-                            class="badge badge-primary badge-xs font-semibold"
-                            >CARARE 2.0.6</span
-                          >
                         </h4>
                         <p
                           class="text-xs text-base-content/70 leading-relaxed max-w-4xl"
                         >
                           {{
                             currentLocale === "de"
-                              ? "Diese Aktivität repräsentiert das übergeordnete Digitalisierungsprojekt (CARARE &lt;activity&gt;). Sie verknüpft die erfassten Kulturgüter und deren digitale Ressourcen. Im CARARE-XML-Export wird sie mit ihrer ID referenziert und verbindet die Datensätze über &lt;wasDigitizedBy&gt;."
-                              : "This activity represents the overarching digitisation project (CARARE &lt;activity&gt;). It links the recorded heritage assets and digital resources via &lt;wasDigitizedBy&gt; in the CARARE XML export."
+                              ? "Diese Aktivität repräsentiert das übergeordnete Digitalisierungsprojekt und verknüpft die erfassten Kulturgüter sowie die daraus entstandenen 3D-Modelle."
+                              : "This activity represents the overarching digitisation project and links the recorded heritage assets with their resulting 3D models."
                           }}
                         </p>
                       </div>
@@ -1272,15 +1110,6 @@
                     )
                   "
                 ></textarea>
-
-                <!-- 3D Paradata Assistant for Activity (Hole filling, limitations, shaders, London Charter) -->
-                <div class="col-span-full mt-3">
-                  <ActivityParadata
-                    :form="form"
-                    v-model:description="form['description']"
-                    :current-locale="currentLocale"
-                  />
-                </div>
               </div>
               <div class="form-control w-full mb-4">
                 <div class="flex flex-row items-center justify-between">
@@ -1346,33 +1175,6 @@
                     )
                   "
                 ></textarea>
-              </div>
-
-              <!-- Additional / Manual CARARE consistsOf Steps (Collapsible) -->
-              <div class="col-span-full mb-6">
-                <details
-                  class="collapse collapse-arrow bg-base-100 border border-base-300 rounded-2xl shadow-xs"
-                >
-                  <summary
-                    class="collapse-title text-xs font-bold uppercase tracking-wider text-base-content/70 flex items-center gap-2 cursor-pointer"
-                  >
-                    <span>📋</span>
-                    <span>{{
-                      currentLocale === "de"
-                        ? "Weitere / Manuelle CARARE-Teilschritte (consistsOf) verwalten"
-                        : "Manage Additional / Manual CARARE Sub-Activities (consistsOf)"
-                    }}</span>
-                  </summary>
-                  <div class="collapse-content pt-2">
-                    <ActivityConsistsOf3D
-                      :consists-of-list="form['consistsOf']"
-                      :current-locale="currentLocale"
-                      @add-step="handleAddConsistsOfStep"
-                      @edit-step="handleEditConsistsOfStep"
-                      @remove-step="handleRemoveConsistsOfStep"
-                    />
-                  </div>
-                </details>
               </div>
               <div class="form-control w-full mb-4">
                 <div class="flex flex-row items-center justify-between mb-1">
@@ -1515,17 +1317,14 @@
                           ? "Übergeordnete Aktivität (Digitalisierungsprojekt)"
                           : "Master Activity (Digitisation Project)"
                       }}</span>
-                      <span class="badge badge-primary badge-xs font-semibold"
-                        >CARARE 2.0.6</span
-                      >
                     </h4>
                     <p
                       class="text-xs text-base-content/70 leading-relaxed max-w-4xl"
                     >
                       {{
                         currentLocale === "de"
-                          ? "Diese Aktivität repräsentiert das übergeordnete Digitalisierungsprojekt (CARARE &lt;activity&gt;). Sie verknüpft die erfassten Kulturgüter und deren digitale Ressourcen. Im CARARE-XML-Export wird sie mit ihrer ID referenziert und verbindet die Datensätze über &lt;wasDigitizedBy&gt;."
-                          : "This activity represents the overarching digitisation project (CARARE &lt;activity&gt;). It links the recorded heritage assets and digital resources via &lt;wasDigitizedBy&gt; in the CARARE XML export."
+                          ? "Diese Aktivität repräsentiert das übergeordnete Digitalisierungsprojekt und verknüpft die erfassten Kulturgüter sowie die daraus entstandenen 3D-Modelle."
+                          : "This activity represents the overarching digitisation project and links the recorded heritage assets with their resulting 3D models."
                       }}
                     </p>
                   </div>
@@ -1533,242 +1332,33 @@
               </div>
 
               <div
-                class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm"
+                id="act-actors"
+                class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm scroll-mt-24"
               >
-                <div
-                  class="flex flex-wrap justify-between items-center mb-4 pb-2 border-b border-base-200 gap-2"
-                >
-                  <div class="flex flex-row items-center">
-                    <h4
-                      class="font-bold text-lg capitalize text-base-content/60"
-                    >
-                      {{ getLabel("actors", "actors") }}
-                    </h4>
-                    <div
-                      @click.stop.prevent
-                      class="tooltip tooltip-accent tooltip-right"
-                      :data-tip="
-                        getLabel(
-                          'actors',
-                          'The people or organisations involved in this event, may be repeated.',
-                          'doc',
-                        )
-                      "
-                      v-if="
-                        getLabel(
-                          'actors',
-                          'The people or organisations involved in this event, may be repeated.',
-                          'doc',
-                        )
-                      "
-                    >
-                      <button
-                        type="button"
-                        class="btn btn-circle w-6 h-6 p-1 cursor-help"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          viewBox="0 0 512 512"
-                          fill="currentColor"
-                          stroke-width="2.5"
-                          stroke="currentColor"
-                          class="size-[1.2em] primary-content"
-                        >
-                          <path
-                            d="M256 0c70.69 0 134.69 28.66 181.02 74.98C483.34 121.3 512 185.31 512 256c0 70.69-28.66 134.7-74.98 181.02C390.69 483.34 326.69 512 256 512c-70.69 0-134.69-28.66-181.02-74.98C28.66 390.69 0 326.69 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm-9.96 161.03c0-4.28.76-8.26 2.27-11.91 1.5-3.63 3.77-6.94 6.79-9.91 3-2.95 6.29-5.2 9.84-6.7 3.57-1.5 7.41-2.28 11.52-2.28 4.12 0 7.96.78 11.49 2.27 3.54 1.51 6.78 3.76 9.75 6.73 2.95 2.97 5.16 6.26 6.64 9.91 1.49 3.63 2.22 7.61 2.22 11.89 0 4.17-.73 8.08-2.21 11.69-1.48 3.6-3.68 6.94-6.65 9.97-2.94 3.03-6.18 5.32-9.72 6.84-3.54 1.51-7.38 2.29-11.52 2.29-4.22 0-8.14-.76-11.75-2.26-3.58-1.51-6.86-3.79-9.83-6.79-2.94-3.02-5.16-6.34-6.63-9.97-1.48-3.62-2.21-7.54-2.21-11.77zm13.4 178.16c-1.11 3.97-3.35 11.76 3.3 11.76 1.44 0 3.27-.81 5.46-2.4 2.37-1.71 5.09-4.31 8.13-7.75 3.09-3.5 6.32-7.65 9.67-12.42 3.33-4.76 6.84-10.22 10.49-16.31.37-.65 1.23-.87 1.89-.48l12.36 9.18c.6.43.73 1.25.35 1.86-5.69 9.88-11.44 18.51-17.26 25.88-5.85 7.41-11.79 13.57-17.8 18.43l-.1.06c-6.02 4.88-12.19 8.55-18.51 11.01-17.58 6.81-45.36 5.7-53.32-14.83-5.02-12.96-.9-27.69 3.06-40.37l19.96-60.44c1.28-4.58 2.89-9.62 3.47-14.33.97-7.87-2.49-12.96-11.06-12.96h-17.45c-.76 0-1.38-.62-1.38-1.38l.08-.48 4.58-16.68c.16-.62.73-1.04 1.35-1.02l89.12-2.79c.76-.03 1.41.57 1.44 1.33l-.07.43-37.76 124.7zm158.3-244.93c-41.39-41.39-98.58-67-161.74-67-63.16 0-120.35 25.61-161.74 67-41.39 41.39-67 98.58-67 161.74 0 63.16 25.61 120.35 67 161.74 41.39 41.39 98.58 67 161.74 67 63.16 0 120.35-25.61 161.74-67 41.39-41.39 67-98.58 67-161.74 0-63.16-25.61-120.35-67-161.74z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                  <div class="flex flex-wrap items-center justify-end gap-2">
-                    <button
-                      v-if="form['actors'] && form['actors'].length > 0"
-                      type="button"
-                      class="btn btn-sm btn-ghost text-error hover:bg-error/10 gap-1 border border-error/30"
-                      @click.prevent="clearFormActors"
-                      :title="
-                        currentLocale === 'de'
-                          ? 'Entfernt alle Akteure aus diesem Datensatz'
-                          : 'Clears all actors from this record'
-                      "
-                    >
-                      🗑️
-                      {{ currentLocale === "de" ? "Alle leeren" : "Clear All" }}
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline btn-accent gap-1"
-                      @click.prevent="openOrgPicker('actors')"
-                      :title="
-                        currentLocale === 'de'
-                          ? 'Organisation aus dem Pool wählen'
-                          : 'Select organization from pool'
-                      "
-                    >
-                      🏛️
-                      {{
-                        currentLocale === "de"
-                          ? "Aus Organisations-Pool"
-                          : "From Organizations"
-                      }}
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-secondary gap-1"
-                      @click.prevent="openPersonPicker('actors')"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="size-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                        />
-                      </svg>
-                      {{
-                        currentLocale === "de"
-                          ? "📋 Aus Personen-Liste wählen (Multiauswahl)"
-                          : "📋 Select from Persons (Multi)"
-                      }}
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Reusable Actors Quick-Bar -->
-                <div
-                  class="mb-3 p-2.5 bg-base-200/50 rounded-lg border border-base-300 flex flex-wrap items-center gap-1.5"
-                  v-if="savedActors && savedActors.length > 0"
-                >
-                  <span
-                    class="text-[11px] font-bold uppercase tracking-wider opacity-60 flex items-center gap-1 mr-1"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="size-3.5 text-secondary"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
-                    {{
-                      currentLocale === "de"
-                        ? "Wiederverwenden (1-Klick):"
-                        : "Reuse (1-Click):"
-                    }}
-                  </span>
-                  <button
-                    v-for="(sa, saIdx) in savedActors"
-                    :key="saIdx"
-                    type="button"
-                    class="btn btn-xs normal-case border-base-300 hover:border-secondary hover:bg-secondary/10 gap-1 font-normal"
-                    @click.prevent="quickAddActor(sa)"
-                    :title="sa.id ? `${sa.name} (${sa.id})` : sa.name"
-                  >
-                    <span class="text-secondary font-bold">+</span>
-                    <span class="font-medium">{{ sa.name }}</span>
-                    <span
-                      v-if="sa.role"
-                      class="badge badge-ghost badge-xs text-[10px]"
-                      >{{ sa.role }}</span
-                    >
-                  </button>
-                </div>
-
-                <div class="overflow-x-auto">
-                  <table class="table table-xs w-full table-zebra">
-                    <thead class="bg-base-200">
-                      <tr>
-                        <th>{{ getLabel("actors.id", "id") }}</th>
-                        <th>{{ getLabel("actors.name", "name") }}</th>
-                        <th class="w-24">{{ t("actions") }}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="(subItem, subIdx) in form['actors']"
-                        :key="subIdx"
-                      >
-                        <td>{{ subItem["id"] }}</td>
-                        <td>{{ subItem["name"] }}</td>
-                        <td>
-                          <div class="flex gap-1">
-                            <button
-                              type="button"
-                              class="btn btn-xs btn-ghost text-info"
-                              @click.prevent="openDrawer('actors', subIdx)"
-                            >
-                              {{ t("edit") }}
-                            </button>
-                            <button
-                              type="button"
-                              class="btn btn-xs btn-ghost text-error"
-                              @click.prevent="
-                                removeDrawerItem('actors', subIdx)
-                              "
-                            >
-                              {{ t("del") }}
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr v-if="!form['actors'] || form['actors'].length === 0">
-                        <td
-                          colspan="10"
-                          class="text-center text-base-content/40 py-4 italic"
-                        >
-                          {{ t("noItems") }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                <PersonAssignmentList
+                  v-model="form['actors']"
+                  mode="activity"
+                  :allow-multi-roles="true"
+                  :current-locale="currentLocale"
+                  :title="getLabel('actors', 'actors')"
+                />
               </div>
-              <!-- Kampagnen-Klammer Information Banner -->
-              <div
-                class="col-span-full mb-4 p-4 rounded-2xl bg-gradient-to-r from-primary/10 via-base-100 to-secondary/10 border border-primary/20 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
-              >
-                <div class="flex items-start gap-3">
-                  <span class="text-2xl">🎯</span>
-                  <div class="space-y-0.5">
-                    <h4
-                      class="font-bold text-sm text-base-content flex items-center gap-2"
-                    >
-                      <span>{{
-                        currentLocale === "de"
-                          ? "Übergeordnete Aktivität (Digitalisierungsprojekt)"
-                          : "Master Activity (Digitisation Project)"
-                      }}</span>
-                      <span class="badge badge-primary badge-xs font-semibold"
-                        >CARARE 2.0.6</span
-                      >
-                    </h4>
-                    <p
-                      class="text-xs text-base-content/70 leading-relaxed max-w-4xl"
-                    >
-                      {{
-                        currentLocale === "de"
-                          ? "Diese Aktivität repräsentiert das übergeordnete Digitalisierungsprojekt (CARARE &lt;activity&gt;). Sie verknüpft die erfassten Kulturgüter und deren digitale Ressourcen. Im CARARE-XML-Export wird sie mit ihrer ID referenziert und verbindet die Datensätze über &lt;wasDigitizedBy&gt;."
-                          : "This activity represents the overarching digitisation project (CARARE &lt;activity&gt;). It links the recorded heritage assets and digital resources via &lt;wasDigitizedBy&gt; in the CARARE XML export."
-                      }}
-                    </p>
-                  </div>
-                </div>
-              </div>
+
+              <!-- 3D Digitisation Methods, Equipment & Processing Steps -->
+              <ActivityConsistsOf3D
+                :consists-of-list="form['consistsOf']"
+                :current-locale="currentLocale"
+                @add-step="handleAddConsistsOfStep"
+                @edit-step="handleEditConsistsOfStep"
+                @remove-step="handleRemoveConsistsOfStep"
+              />
+
+              <!-- Digital Authenticity Profile (DAP, 5 Free-Text Dimensions) -->
+              <ActivityParadata
+                :form="form"
+                v-model:description="form['description']"
+                :current-locale="currentLocale"
+              />
 
               <div
                 class="col-span-full border-2 border-base-200 bg-base-100 p-4 rounded-box mb-6 shadow-sm"
@@ -4549,6 +4139,7 @@ import ActivityDcRelations from "../components/ActivityDcRelations.vue";
 import ActivityParadata from "../components/ActivityParadata.vue";
 import ActivityConsistsOf3D from "../components/ActivityConsistsOf3D.vue";
 import LanguageBadgePicker from "../components/LanguageBadgePicker.vue";
+import PersonAssignmentList from "../components/PersonAssignmentList.vue";
 import {
   savedOrganizations,
   recentOrganizations,
@@ -6905,20 +6496,26 @@ const getActivityValidationStatus = (item) => {
         : "Missing Activity Type",
     );
 
-  // Mandatory validation for DAP 6 Dimensions (CARARE consistsOf with HECTOR URI DAP-1 through DAP-6)
+  // Mandatory validation for DAP 5 Dimensions
   const consistsOfList = Array.isArray(item["consistsOf"])
     ? item["consistsOf"]
     : [];
   const missingDapDims = [];
-  for (let d = 1; d <= 6; d++) {
+  for (let d = 1; d <= 5; d++) {
     const found = consistsOfList.some((co) => {
+      if (!co) return false;
       const m = String(co.methods || "");
       const p = String(co.hadSpecificPurpose || "");
+      const uid = String(co["methods#termUID"] || "");
       const t = String(co.techniques || "");
-      return (
-        (m.includes("DAP-" + d) || p.includes("DAP-" + d)) &&
-        t.trim().length > 0
-      );
+      const matchesDim =
+        co.dapId === "DAP-" + d ||
+        uid.endsWith("/DAP-" + d) ||
+        p.includes("Dimension " + d + " von 5") ||
+        p.includes("DAP-" + d) ||
+        m.includes("DAP-" + d);
+      const hasContent = m.trim().length > 0 || t.trim().length > 0;
+      return matchesDim && hasContent;
     });
     if (!found) {
       missingDapDims.push("DAP-" + d);

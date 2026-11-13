@@ -1,7 +1,7 @@
 <template>
   <div
-    class="col-span-full border-2 border-primary/20 bg-base-100 rounded-2xl p-5 mb-6 shadow-sm"
-    data-xml-tag="consistsOf"
+    id="act-3d"
+    class="col-span-full border-2 border-primary/20 bg-base-100 rounded-2xl p-5 mb-6 shadow-sm scroll-mt-24"
   >
     <!-- Header -->
     <div
@@ -17,18 +17,15 @@
           <h4 class="font-bold text-base leading-tight flex items-center gap-2">
             <span>{{
               currentLocale === "de"
-                ? "3D-Digitalisierungsmethoden, Technik & Equipment (CARARE consistsOf)"
-                : "3D Digitisation Methods, Techniques & Equipment (CARARE consistsOf)"
+                ? "3D-Digitalisierungsmethoden, Technik & Equipment"
+                : "3D Digitisation Methods, Techniques & Equipment"
             }}</span>
-            <span class="badge badge-primary badge-sm font-semibold"
-              >CARARE 2.0.6</span
-            >
           </h4>
           <p class="text-xs text-base-content/60 mt-0.5 max-w-3xl">
             {{
               currentLocale === "de"
-                ? "Laut CARARE-Schema werden Digitalisierungsmethoden (Photogrammetrie, SLS, TLS), Techniken und verwendete Hard-/Software nicht in der Ressource, sondern als Teilschritte (consistsOf) der Aktivität erfasst."
-                : "According to the CARARE schema, digitisation methods (Photogrammetry, SLS, TLS), techniques and hardware/software belong to Activity sub-events (consistsOf), not the digital resource."
+                ? "Erfassen Sie hier die eingesetzten 3D-Aufnahmeverfahren (z. B. Photogrammetrie, Streifenlichtscan, Laserscan), Kameras/Scanner sowie Verarbeitungssoftware."
+                : "Record the 3D acquisition methods (e.g. Photogrammetry, Structured-Light, Laser Scanning), hardware/cameras, and processing software used."
             }}
           </p>
         </div>
@@ -53,29 +50,6 @@
               : "Apply Full Standard Workflow"
           }}
         </button>
-      </div>
-    </div>
-
-    <!-- Architecture Notice (CARARE & DAP) -->
-    <div
-      class="mb-4 p-3 bg-info/10 border border-info/30 rounded-xl text-xs text-base-content/80 flex items-start gap-2.5"
-    >
-      <span class="text-base text-info leading-none">ℹ️</span>
-      <div class="space-y-1">
-        <strong class="font-bold text-info block">
-          {{
-            currentLocale === "de"
-              ? "Beziehung zwischen Digital Authenticity Profile (DAP) und CARARE consistsOf:"
-              : "Relationship between DAP and CARARE consistsOf:"
-          }}
-        </strong>
-        <p class="leading-relaxed">
-          {{
-            currentLocale === "de"
-              ? "Das CARARE-Schema kennt kein eigenes DAP-Element. Alle Digitalisierungs-, Mess- und Bearbeitungsschritte werden im XML als &lt;consistsOf&gt;-Teilschritte der Aktivität gespeichert. Das DAP (DAP-1 bis DAP-6) oben bildet die 6 standardisierten Authentizitäts-Dimensionen ab. Hier unten können Sie zusätzlich freie, rein technische Teilschritte der Kampagne (z. B. separate Scansessions, Ausrichtungs-Durchläufe oder Drohnenflüge) anlegen."
-              : "The CARARE schema represents all acquisition and processing events as &lt;consistsOf&gt; sub-activities of the campaign. The 6 DAP dimensions above are the standardized authenticity dimensions. Here you can add optional technical sub-activities (e.g. specialized scan sessions or drone passes)."
-          }}
-        </p>
       </div>
     </div>
 
@@ -279,18 +253,19 @@
       </div>
     </div>
 
-    <!-- 3. ACTIONS TO POPULATE CONSISTS-OF -->
+    <!-- 3. PROCESSING & POST-PROCESSING SUB-ACTIVITIES -->
     <div
-      class="flex flex-wrap items-center justify-between gap-3 p-3 bg-primary/5 rounded-xl border border-primary/20"
+      id="act-processing"
+      class="flex flex-wrap items-center justify-between gap-3 p-3 bg-primary/5 rounded-xl border border-primary/20 scroll-mt-24"
     >
       <div class="text-xs text-base-content/70">
         <span>{{
           currentLocale === "de"
-            ? "Aktuell hinterlegte Teilschritte in dieser Aktivität:"
-            : "Current sub-activities in this activity:"
+            ? "Erfasste Verarbeitungs- & Teilschritte in dieser Aktivität:"
+            : "Processing & sub-activity steps in this activity:"
         }}</span>
         <strong class="ml-1 text-primary">{{
-          (consistsOfList || []).length
+          regularStepsWithIndex.length
         }}</strong>
       </div>
 
@@ -323,43 +298,27 @@
       </div>
     </div>
 
-    <!-- Active consistsOf Sub-Activities Mini-List -->
-    <div
-      v-if="consistsOfList && consistsOfList.length > 0"
-      class="mt-3 space-y-2"
-    >
+    <!-- Active Processing Sub-Activities Mini-List (excluding DAP) -->
+    <div v-if="regularStepsWithIndex.length > 0" class="mt-3 space-y-2">
       <div
-        v-for="(item, idx) in consistsOfList"
+        v-for="(
+          { item, originalIndex: idx }, displayIdx
+        ) in regularStepsWithIndex"
         :key="idx"
         class="p-2.5 bg-base-200/50 rounded-lg border border-base-300 flex items-start justify-between gap-3 text-xs"
       >
         <div class="space-y-1 min-w-0 flex-1">
           <div class="flex items-center gap-2 flex-wrap">
-            <span
-              v-if="isDapItem(item)"
-              class="badge badge-xs badge-info font-mono font-bold"
-            >
-              🛡️ {{ getDapBadge(item) }}
-            </span>
-            <span v-else class="badge badge-xs badge-neutral font-mono">
-              #{{ idx + 1 }}
+            <span class="badge badge-xs badge-neutral font-mono">
+              #{{ displayIdx + 1 }}
             </span>
             <span
-              v-if="!isDapItem(item)"
               class="badge badge-xs badge-outline text-[10px] text-base-content/70"
             >
               {{
                 currentLocale === "de"
                   ? "Freier Teilschritt"
                   : "Custom Sub-Activity"
-              }}
-            </span>
-            <span
-              v-else
-              class="badge badge-xs badge-ghost text-[10px] text-base-content/60"
-            >
-              {{
-                currentLocale === "de" ? "DAP-Authentizität" : "DAP Dimension"
               }}
             </span>
             <span class="font-bold text-base-content leading-snug">
@@ -468,10 +427,24 @@ const emit = defineEmits(["add-step", "edit-step", "remove-step"]);
 
 const isDapItem = (item) => {
   if (!item) return false;
+  if (item.isDap) return true;
   const m = String(item.methods || "");
   const p = String(item.hadSpecificPurpose || "");
-  return /DAP-[1-6]/i.test(m) || /DAP-[1-6]/i.test(p);
+  const uid = String(item["methods#termUID"] || "");
+  return (
+    /DAP-[1-6]/i.test(m) ||
+    /DAP-[1-6]/i.test(p) ||
+    p.includes("Digital Authenticity Profile") ||
+    uid.includes("/dap/DAP-")
+  );
 };
+
+const regularStepsWithIndex = computed(() => {
+  const list = Array.isArray(props.consistsOfList) ? props.consistsOfList : [];
+  return list
+    .map((item, originalIndex) => ({ item, originalIndex }))
+    .filter(({ item }) => !isDapItem(item));
+});
 
 const getDapBadge = (item) => {
   if (!item) return "";

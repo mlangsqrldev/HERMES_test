@@ -115,7 +115,7 @@
         >
           <span class="text-xs mr-1">🏛️</span>
           <select
-            class="select select-xs select-ghost font-mono text-[11px] font-semibold py-0 h-5 min-h-5 leading-none focus:outline-none cursor-pointer pr-5"
+            class="select select-xs bg-base-100 text-base-content border-none font-mono text-[11px] font-semibold py-0 h-5 min-h-5 leading-none focus:outline-none cursor-pointer pr-5"
             @change="onSelectGroupResource($event)"
           >
             <option
@@ -173,7 +173,7 @@
         >
           <span class="text-xs mr-1">💻</span>
           <select
-            class="select select-xs select-ghost font-mono text-[11px] font-semibold py-0 h-5 min-h-5 leading-none focus:outline-none cursor-pointer pr-5"
+            class="select select-xs bg-base-100 text-base-content border-none font-mono text-[11px] font-semibold py-0 h-5 min-h-5 leading-none focus:outline-none cursor-pointer pr-5"
             @change="onSelectGroupResource($event)"
           >
             <option
@@ -231,7 +231,7 @@
         >
           <span class="text-xs mr-1">⚡</span>
           <select
-            class="select select-xs select-ghost font-mono text-[11px] font-semibold py-0 h-5 min-h-5 leading-none focus:outline-none cursor-pointer pr-5"
+            class="select select-xs bg-base-100 text-base-content border-none font-mono text-[11px] font-semibold py-0 h-5 min-h-5 leading-none focus:outline-none cursor-pointer pr-5"
             @change="onSelectGroupResource($event)"
           >
             <option

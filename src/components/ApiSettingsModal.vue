@@ -291,7 +291,7 @@
       </div>
     </div>
     <div
-      class="modal-backdrop bg-black/40 backdrop-blur-sm"
+      class="modal-backdrop bg-black/50 backdrop-blur-sm"
       @click="$emit('close')"
     ></div>
   </dialog>

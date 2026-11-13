@@ -71,8 +71,8 @@
             v-model="searchQuery"
             :placeholder="
               currentLocale === 'de'
-                ? 'Nach Name, Rolle, Organisation oder GND suchen...'
-                : 'Search by name, role, organisation or ID...'
+                ? 'Nach Name, Organisation oder GND/ORCID suchen...'
+                : 'Search by name, organisation or ID...'
             "
             class="input input-sm input-bordered w-full pl-9"
           />
@@ -201,24 +201,6 @@
                   currentLocale === 'de'
                     ? 'z. B. Max Mustermann oder Deutsches Archäologisches Institut'
                     : 'e.g. Jane Doe or Archaeological Institute'
-                "
-              />
-            </div>
-
-            <div>
-              <label class="label py-1"
-                ><span class="label-text font-bold">{{
-                  currentLocale === "de" ? "Rolle(n)" : "Roles"
-                }}</span></label
-              >
-              <input
-                type="text"
-                v-model="formData.roles"
-                class="input input-sm input-bordered w-full"
-                :placeholder="
-                  currentLocale === 'de'
-                    ? 'z.B. Creator, Custodian, Documentation'
-                    : 'e.g. Creator, Custodian, Documentation'
                 "
               />
             </div>
@@ -429,12 +411,22 @@
                   {{ person.name }}
                 </span>
 
-                <!-- Roles badge -->
+                <!-- Type badge -->
                 <span
-                  v-if="person.roles || person.role"
+                  v-if="person.type && person.type !== 'person'"
                   class="badge badge-sm badge-outline font-medium text-[11px]"
                 >
-                  {{ person.roles || person.role }}
+                  {{
+                    person.type === "organization"
+                      ? currentLocale === "de"
+                        ? "Organisation"
+                        : "Organization"
+                      : person.type === "workshop"
+                        ? currentLocale === "de"
+                          ? "Werkstatt / Kollektiv"
+                          : "Workshop"
+                        : person.type
+                  }}
                 </span>
 
                 <!-- Already added indicator -->
@@ -633,7 +625,7 @@
 
     <!-- Backdrop click to close -->
     <div
-      class="modal-backdrop bg-black/40 backdrop-blur-xs"
+      class="modal-backdrop bg-black/50 backdrop-blur-sm"
       @click="emitClose"
     ></div>
   </dialog>
@@ -677,7 +669,6 @@ const editingIndex = ref(null);
 
 const formData = reactive({
   name: "",
-  roles: "",
   id: "",
   organization: "",
   email: "",
@@ -686,7 +677,6 @@ const formData = reactive({
 
 const resetFormData = () => {
   formData.name = "";
-  formData.roles = "";
   formData.id = "";
   formData.organization = "";
   formData.email = "";
@@ -704,7 +694,6 @@ const startEditPerson = (person) => {
   editingIndex.value = actualIdx !== -1 ? actualIdx : 0;
   showAddForm.value = true;
   formData.name = person.name || "";
-  formData.roles = person.roles || person.role || "";
   formData.id = person.id || "";
   formData.organization = person.organization || "";
   formData.email = person.email || "";
@@ -723,8 +712,6 @@ const savePersonForm = () => {
 
   const personObj = {
     name: formData.name.trim(),
-    roles: formData.roles.trim(),
-    role: formData.roles.trim(),
     id: formData.id.trim(),
     organization: formData.organization.trim(),
     email: formData.email.trim(),
@@ -769,11 +756,10 @@ const filteredPersons = computed(() => {
 
   return list.filter((p) => {
     const nameMatch = (p.name || "").toLowerCase().includes(q);
-    const rolesMatch = (p.roles || p.role || "").toLowerCase().includes(q);
     const orgMatch = (p.organization || "").toLowerCase().includes(q);
     const idMatch = (p.id || "").toLowerCase().includes(q);
     const emailMatch = (p.email || "").toLowerCase().includes(q);
-    return nameMatch || rolesMatch || orgMatch || idMatch || emailMatch;
+    return nameMatch || orgMatch || idMatch || emailMatch;
   });
 });
 
@@ -819,14 +805,16 @@ const confirmSelection = () => {
     formattedOutput = selectedPersons.map((p) => ({
       id: p.id || "",
       name: p.name,
-      roles: p.roles || p.role || "",
+      type: p.type || "person",
+      roles: [],
     }));
   } else if (props.mode === "contacts") {
     formattedOutput = selectedPersons.map((p) => ({
       name: p.name,
-      role: p.role || p.roles || "",
+      role: "",
       organization: p.organization || "",
       email: p.email || "",
+      type: p.type || "person",
     }));
   } else {
     formattedOutput = selectedPersons;
