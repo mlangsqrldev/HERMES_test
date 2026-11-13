@@ -140,7 +140,16 @@
 
         <div
           class="flex items-center border border-base-300/80 rounded-lg overflow-hidden bg-base-200/50 p-0.5 shadow-xs"
+          :title="
+            currentLocale === 'de'
+              ? 'Oberflächensprache (UI) umschalten'
+              : 'Switch UI Language'
+          "
         >
+          <span
+            class="text-[10px] font-bold uppercase tracking-wider opacity-60 px-1.5 select-none"
+            >UI</span
+          >
           <button
             type="button"
             class="btn btn-xs border-0 rounded-md px-2 min-w-0"
@@ -433,12 +442,31 @@
         <div
           class="glass-panel rounded-2xl p-4 shadow-lg border border-base-200/80 flex flex-col gap-2.5"
         >
-          <div
-            class="text-xs font-bold uppercase tracking-wider text-base-content/50 px-1"
-          >
-            {{
-              currentLocale === "de" ? "Aktionen & Export" : "Actions & Export"
-            }}
+          <div class="flex items-center justify-between gap-2 px-1">
+            <span
+              class="text-xs font-bold uppercase tracking-wider text-base-content/50"
+            >
+              {{
+                currentLocale === "de" ? "Aktionen & Export" : "Actions & Export"
+              }}
+            </span>
+            <span
+              class="badge badge-xs font-medium"
+              :class="lastExportedAt ? 'badge-success/20 text-success' : 'badge-ghost opacity-70'"
+              :title="
+                lastExportedAt
+                  ? (currentLocale === 'de' ? `Zuletzt exportiert um ${lastExportedAt}` : `Last exported at ${lastExportedAt}`)
+                  : (currentLocale === 'de' ? 'Lokal zwischengespeichert (noch nicht als Datei exportiert)' : 'Saved locally (not yet exported to file)')
+              "
+            >
+              {{
+                lastExportedAt
+                  ? `✓ ${lastExportedAt}`
+                  : currentLocale === "de"
+                    ? "Lokal gesichert"
+                    : "Local only"
+              }}
+            </span>
           </div>
 
           <input
@@ -776,6 +804,7 @@
                   if (el) heritageRef = el;
                 }
               "
+              @create-digital-resource="handleCreateDigitalResourceForAsset"
             />
 
             <DigitalResourceCrud
@@ -1279,6 +1308,26 @@ import {
 const isExporting = ref(false);
 
 const exportStatus = ref(null); // 'success', 'error', or null
+const lastExportedAt = ref("");
+
+const markExported = () => {
+  lastExportedAt.value = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const handleCreateDigitalResourceForAsset = (haItem) => {
+  scrollToSection("digitalResource");
+  setTimeout(() => {
+    if (
+      digitalRef.value &&
+      typeof digitalRef.value.createForHeritageAsset === "function"
+    ) {
+      digitalRef.value.createForHeritageAsset(haItem);
+    }
+  }, 150);
+};
 
 const errorMessage = ref("");
 
@@ -4057,6 +4106,7 @@ const exportToBagInfoTxt = async () => {
     // --- On Successful Save ---
 
     exportStatus.value = "success";
+    markExported();
 
     setTimeout(() => {
       exportStatus.value = null;
@@ -4132,6 +4182,7 @@ const exportMetadataReport = async () => {
     }
 
     exportStatus.value = "success";
+    markExported();
 
     setTimeout(() => {
       exportStatus.value = null;
@@ -6980,6 +7031,7 @@ const exportSingleCarareXmlsZip = async () => {
     }
 
     exportStatus.value = "success";
+    markExported();
     setTimeout(() => {
       exportStatus.value = null;
     }, 4000);
@@ -7050,6 +7102,7 @@ const exportToCarareXML = async () => {
     }
 
     exportStatus.value = "success";
+    markExported();
 
     setTimeout(() => {
       exportStatus.value = null;

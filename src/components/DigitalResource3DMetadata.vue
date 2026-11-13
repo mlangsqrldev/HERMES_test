@@ -56,6 +56,51 @@
       </div>
     </div>
 
+    <!-- 0. 3D FILE INSPECTOR DROPZONE -->
+    <div
+      class="mb-5 p-4 rounded-xl border-2 border-dashed transition-all cursor-pointer flex flex-col sm:flex-row items-center justify-between gap-3"
+      :class="
+        isDragging3D
+          ? 'border-primary bg-primary/10'
+          : 'border-base-300 bg-base-200/30 hover:border-primary/50'
+      "
+      @dragover.prevent="isDragging3D = true"
+      @dragleave.prevent="isDragging3D = false"
+      @drop.prevent="handle3DFileDrop"
+      @click="$refs.file3DInput?.click()"
+    >
+      <input
+        ref="file3DInput"
+        type="file"
+        class="hidden"
+        accept=".glb,.gltf,.obj,.ply,.stl"
+        @change="handle3DFileSelect"
+      />
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">📂</span>
+        <div class="text-xs">
+          <div class="font-bold text-base-content">
+            {{
+              currentLocale === "de"
+                ? "3D-Datei hier ablegen oder auswählen (.glb, .obj, .ply, .stl)"
+                : "Drop or select a 3D file here (.glb, .obj, .ply, .stl)"
+            }}
+          </div>
+          <div class="text-base-content/60">
+            {{
+              inspectedFileSummary ||
+              (currentLocale === "de"
+                ? "Liest Dateigröße, Format und (bei OBJ/STL) Polygon- & Vertex-Anzahl automatisch aus."
+                : "Automatically extracts file size, format, and (for OBJ/STL) polygon & vertex counts.")
+            }}
+          </div>
+        </div>
+      </div>
+      <span class="btn btn-xs btn-outline btn-primary shrink-0">
+        {{ currentLocale === "de" ? "Datei wählen" : "Browse File" }}
+      </span>
+    </div>
+
     <!-- 1. RESSOURCEN- & ASSET-TYP -->
     <div class="mb-5 p-3.5 bg-base-200/40 rounded-xl border border-base-300">
       <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
@@ -2523,6 +2568,77 @@ const addCustomFormat = () => {
     emit("update:formats", current);
   }
   customFormatInput.value = "";
+};
+
+// ----------------------------------------------------
+// 0. 3D File Inspector (Local Browser Parsing)
+// ----------------------------------------------------
+const isDragging3D = ref(false);
+const inspectedFileSummary = ref("");
+
+const inspect3DFile = async (file) => {
+  if (!file) return;
+  const ext = (file.name.split(".").pop() || "").toLowerCase();
+  const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+  const sizeLabel =
+    file.size >= 1024 * 1024
+      ? `${sizeMB} MB`
+      : `${(file.size / 1024).toFixed(1)} KB`;
+
+  const formatMap = {
+    glb: "model/gltf-binary (GLB)",
+    gltf: "model/gltf+json (glTF)",
+    obj: "model/obj (Wavefront OBJ)",
+    ply: "application/x-ply (PLY)",
+    stl: "model/stl (STL)",
+  };
+  const detectedFmt = formatMap[ext] || ext.toUpperCase();
+  if (typeof formats !== "undefined" && Array.isArray(formats.value)) {
+    if (!formats.value.includes(detectedFmt)) {
+      formats.value.push(detectedFmt);
+    }
+  }
+
+  let vertices = 0;
+  let faces = 0;
+
+  try {
+    if (ext === "obj" && file.size < 40 * 1024 * 1024) {
+      const text = await file.text();
+      const lines = text.split(/\r?\n/);
+      for (const line of lines) {
+        if (line.startsWith("v ")) vertices++;
+        else if (line.startsWith("f ")) faces++;
+      }
+    } else if (ext === "stl" && file.size >= 84) {
+      const buf = await file.slice(80, 84).arrayBuffer();
+      faces = new DataView(buf).getUint32(0, true);
+    }
+  } catch (e) {
+    // Ignore parse errors for oversized/custom binary files
+  }
+
+  if (faces > 0) {
+    polygonCount.value = `${faces.toLocaleString()} Faces`;
+  }
+  if (vertices > 0) {
+    vertexCount.value = `${vertices.toLocaleString()} Vertices`;
+  }
+
+  inspectedFileSummary.value = `${file.name} · ${sizeLabel}${
+    faces > 0 ? ` · ${faces.toLocaleString()} Faces` : ""
+  }`;
+};
+
+const handle3DFileDrop = (e) => {
+  isDragging3D.value = false;
+  const file = e.dataTransfer?.files?.[0];
+  if (file) inspect3DFile(file);
+};
+
+const handle3DFileSelect = (e) => {
+  const file = e.target?.files?.[0];
+  if (file) inspect3DFile(file);
 };
 
 // ----------------------------------------------------

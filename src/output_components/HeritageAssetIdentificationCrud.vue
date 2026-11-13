@@ -477,6 +477,19 @@
                     <div class="flex gap-1 justify-end items-center">
                       <button
                         type="button"
+                        class="btn btn-xs btn-outline btn-primary gap-1"
+                        @click.prevent="emit('create-digital-resource', item)"
+                        :title="
+                          currentLocale === 'de'
+                            ? 'Neues 3D-Modell für dieses Kulturgut anlegen'
+                            : 'Create new 3D model for this heritage asset'
+                        "
+                      >
+                        🎯 +3D
+                      </button>
+
+                      <button
+                        type="button"
                         class="btn btn-xs btn-ghost text-info"
                         @click.prevent="edit(originalIndex)"
                         :title="t('edit')"
@@ -3712,7 +3725,7 @@
             <!-- Form Action Buttons -->
 
             <div
-              class="mt-8 pt-4 border-t border-base-300 flex flex-wrap justify-between items-center gap-3"
+              class="sticky bottom-0 z-20 bg-base-100/95 backdrop-blur-md border-t border-base-300 py-3 px-4 -mx-2 mt-8 rounded-b-2xl shadow-lg flex flex-wrap justify-between items-center gap-3"
             >
               <div>
                 <button
@@ -7564,6 +7577,7 @@
 </template>
 
 <script setup>
+const emit = defineEmits(["create-digital-resource"]);
 import {
   ref,
   reactive,
@@ -11500,10 +11514,23 @@ const isFormDirty = () =>
   formSnapshot.value !== "" && JSON.stringify(form) !== formSnapshot.value;
 
 const handleInvalid = (event) => {
-  if (event?.target && typeof event.target.scrollIntoView === "function") {
-    event.target.scrollIntoView({ behavior: "smooth", block: "center" });
-
-    event.target.focus();
+  const el = event?.target;
+  if (!el) return;
+  let parent = el.closest("details");
+  while (parent) {
+    parent.open = true;
+    parent = parent.parentElement?.closest("details");
+  }
+  const collapse = el.closest(".collapse");
+  if (collapse) {
+    const toggle = collapse.querySelector('input[type="checkbox"]');
+    if (toggle && !toggle.checked) toggle.checked = true;
+  }
+  if (typeof el.scrollIntoView === "function") {
+    setTimeout(() => {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.focus();
+    }, 50);
   }
 };
 
@@ -12068,6 +12095,10 @@ const removeDrawerItem = (field, index) => {
 const saveSuccessBadge = ref(false);
 
 const save = () => {
+  if (!form["recordInformation.id"]) {
+    form["recordInformation.id"] =
+      form["appellation.id"] || `HA-${Date.now().toString(36).toUpperCase()}`;
+  }
   if (!form["recordInformation.country"]) {
     form["recordInformation.country"] = collectionInstitution.country || "DE";
   }

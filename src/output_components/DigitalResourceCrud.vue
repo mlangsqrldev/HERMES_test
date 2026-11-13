@@ -157,7 +157,7 @@
             {{ isEditing ? t("edit") : t("add") }}
             {{ getLabel("digitalResource", "digitalResource") }}
           </h3>
-          <form @submit.prevent="save">
+          <form @submit.prevent="save" @invalid.capture="handleInvalid">
             <div class="grid grid-cols-1 gap-x-6">
               <div
                 class="col-span-full border border-base-300 bg-base-100/50 p-5 rounded-box mb-6 mt-2"
@@ -1675,7 +1675,7 @@
             </div>
 
             <div
-              class="mt-8 pt-4 border-t border-base-300 flex items-center justify-end gap-2"
+              class="sticky bottom-0 z-20 bg-base-100/95 backdrop-blur-md border-t border-base-300 py-3 px-4 -mx-2 mt-8 rounded-b-2xl shadow-lg flex items-center justify-end gap-2"
             >
               <span
                 v-if="saveSuccessBadge"
@@ -5910,7 +5910,32 @@ const cloneAsWebDerivative = () => {
   edit(items.value.length - 1);
 };
 
+const handleInvalid = (event) => {
+  const el = event?.target;
+  if (!el) return;
+  let parent = el.closest("details");
+  while (parent) {
+    parent.open = true;
+    parent = parent.parentElement?.closest("details");
+  }
+  const collapse = el.closest(".collapse");
+  if (collapse) {
+    const toggle = collapse.querySelector('input[type="checkbox"]');
+    if (toggle && !toggle.checked) toggle.checked = true;
+  }
+  if (typeof el.scrollIntoView === "function") {
+    setTimeout(() => {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.focus();
+    }, 50);
+  }
+};
+
 const save = () => {
+  if (!form["recordInformation.id"]) {
+    form["recordInformation.id"] =
+      form["appellation.id"] || `DR-${Date.now().toString(36).toUpperCase()}`;
+  }
   if (!form["recordInformation.country"]) {
     form["recordInformation.country"] = "DE";
   }
@@ -6021,6 +6046,35 @@ const createDerivative = (idx = null) => {
   cloneAsWebDerivative();
 };
 
+const createForHeritageAsset = (haItem) => {
+  resetForm();
+  if (!haItem) return;
+  const haId = haItem["recordInformation.id"] || haItem["appellation.id"] || "";
+  const rawNames = haItem["appellation.name"];
+  const haName =
+    Array.isArray(rawNames) && rawNames.length > 0
+      ? rawNames[0]._value || rawNames[0].name || haId
+      : haId;
+  const defLang = defaultMetadataLanguage.value || "de";
+  form["appellation.name"] = [
+    {
+      _value: haName ? `3D-Modell: ${haName}` : "",
+      "appellation.name#lang": defLang,
+      "appellation.name#preferred": true,
+    },
+  ];
+  if (haId) {
+    form["isRepresentationOf"] = [haId];
+  }
+  if (projectActivities.value && projectActivities.value.length > 0) {
+    const act = projectActivities.value[0];
+    const actId = act["recordInformation.id"] || act["appellation.id"] || "";
+    if (actId) {
+      form["wasDigitizedBy"] = [actId];
+    }
+  }
+};
+
 defineExpose({
   items,
   form,
@@ -6034,5 +6088,6 @@ defineExpose({
   createDerivative,
   addNewResource,
   cloneAsWebDerivative,
+  createForHeritageAsset,
 });
 </script>

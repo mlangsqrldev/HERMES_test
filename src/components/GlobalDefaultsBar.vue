@@ -27,8 +27,8 @@
           </svg>
           {{
             currentLocale === "de"
-              ? "Standard-Metadatensprache:"
-              : "Default Metadata Language:"
+              ? "Metadaten-Sprache (xml:lang):"
+              : "Metadata Language (xml:lang):"
           }}
         </span>
 
