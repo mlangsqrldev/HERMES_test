@@ -19,7 +19,7 @@
         >
           🏛️
           {{
-            currentLocale === "de" ? "Organisation wählen" : "Pick Organisation"
+            currentLocale === "de" ? "Organisation wählen" : "Pick Organizations"
           }}
         </button>
         <button

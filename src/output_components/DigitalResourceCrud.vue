@@ -329,8 +329,8 @@
                         🏛️
                         {{
                           currentLocale === "de"
-                            ? "Aus Organisations-Pool"
-                            : "From Organizations"
+                            ? "Organisation wählen"
+                            : "Pick Organizations"
                         }}
                       </button>
                     </div>
@@ -1233,8 +1233,8 @@
                       🏛️
                       {{
                         currentLocale === "de"
-                          ? "Aus Orga-Pool"
-                          : "From Org Pool"
+                          ? "Organisation wählen"
+                          : "Pick Organizations"
                       }}
                     </button>
                     <button

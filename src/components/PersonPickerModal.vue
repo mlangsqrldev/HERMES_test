@@ -18,11 +18,11 @@
               {{
                 mode === "manage"
                   ? currentLocale === "de"
-                    ? "Personen- & Akteurs-Pool verwalten"
-                    : "Manage Persons & Actors Pool"
+                    ? "Personen verwalten"
+                    : "Manage Persons"
                   : currentLocale === "de"
-                    ? "Personen & Akteure auswählen (Multiauswahl)"
-                    : "Select Persons & Actors (Multi-select)"
+                    ? "Personen auswählen (Multiauswahl)"
+                    : "Select Persons (Multi-select)"
               }}
             </h3>
             <p class="text-xs text-base-content/60 mt-0.5">
@@ -85,48 +85,6 @@
           </button>
         </div>
 
-        <!-- Filter Chips -->
-        <div class="flex items-center gap-1.5">
-          <button
-            type="button"
-            class="btn btn-xs"
-            :class="
-              filterType === 'all'
-                ? 'btn-neutral'
-                : 'btn-ghost border border-base-300'
-            "
-            @click="filterType = 'all'"
-          >
-            {{ currentLocale === "de" ? "Alle" : "All" }} ({{
-              savedPersons.length
-            }})
-          </button>
-          <button
-            type="button"
-            class="btn btn-xs"
-            :class="
-              filterType === 'person'
-                ? 'btn-neutral'
-                : 'btn-ghost border border-base-300'
-            "
-            @click="filterType = 'person'"
-          >
-            👤 {{ currentLocale === "de" ? "Personen" : "Persons" }}
-          </button>
-          <button
-            type="button"
-            class="btn btn-xs"
-            :class="
-              filterType === 'organization'
-                ? 'btn-neutral'
-                : 'btn-ghost border border-base-300'
-            "
-            @click="filterType = 'organization'"
-          >
-            🏛️ {{ currentLocale === "de" ? "Organisationen" : "Organizations" }}
-          </button>
-        </div>
-
         <!-- Toggle Add New Person Form -->
         <button
           type="button"
@@ -183,14 +141,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
             <div>
               <label class="label py-1"
-                ><span class="label-text font-bold"
-                  >{{
-                    currentLocale === "de"
-                      ? "Name / Institution"
-                      : "Name / Institution"
-                  }}
-                  *</span
-                ></label
+                ><span class="label-text font-bold">Name *</span></label
               >
               <input
                 type="text"
@@ -199,8 +150,8 @@
                 class="input input-sm input-bordered w-full"
                 :placeholder="
                   currentLocale === 'de'
-                    ? 'z. B. Max Mustermann oder Deutsches Archäologisches Institut'
-                    : 'e.g. Jane Doe or Archaeological Institute'
+                    ? 'z. B. Dr. Max Mustermann'
+                    : 'e.g. Dr. Jane Doe'
                 "
               />
             </div>
@@ -251,40 +202,6 @@
                 class="input input-sm input-bordered w-full"
                 placeholder="name@institution.de"
               />
-            </div>
-
-            <div>
-              <label class="label py-1"
-                ><span class="label-text font-bold">{{
-                  currentLocale === "de" ? "Typ" : "Type"
-                }}</span></label
-              >
-              <select
-                v-model="formData.type"
-                class="select select-sm select-bordered w-full"
-              >
-                <option value="person">
-                  {{
-                    currentLocale === "de"
-                      ? "Einzelperson (Person)"
-                      : "Individual Person"
-                  }}
-                </option>
-                <option value="organization">
-                  {{
-                    currentLocale === "de"
-                      ? "Organisation / Museum / Institut"
-                      : "Organization / Museum / Institute"
-                  }}
-                </option>
-                <option value="workshop">
-                  {{
-                    currentLocale === "de"
-                      ? "Werkstatt / Kollektiv / Anonym"
-                      : "Workshop / Collective / Anonymous"
-                  }}
-                </option>
-              </select>
             </div>
           </div>
 
@@ -357,17 +274,15 @@
       </div>
 
       <!-- Person List Body -->
-      <div
-        class="flex-1 overflow-y-auto p-4 space-y-2 divide-y divide-base-200"
-      >
+      <div class="flex-1 overflow-y-auto p-4 space-y-2">
         <div
           v-for="(person, index) in filteredPersons"
           :key="person.name + index"
-          class="pt-2 first:pt-0 flex items-center justify-between gap-3 p-3 rounded-xl transition-all duration-150 cursor-pointer border"
+          class="p-3.5 rounded-xl border bg-base-100 transition-all duration-150 flex items-center justify-between gap-3 shadow-xs cursor-pointer"
           :class="[
             selectedIds.has(person.name)
               ? 'bg-primary/10 border-primary shadow-sm'
-              : 'hover:bg-base-200/60 border-transparent hover:border-base-300',
+              : 'border-base-200 hover:border-primary/60 hover:bg-base-200/50',
           ]"
           @click="togglePerson(person)"
         >
@@ -683,6 +598,10 @@ const resetFormData = () => {
   formData.type = "person";
   showAddForm.value = false;
   editingIndex.value = null;
+};
+
+const cancelEditForm = () => {
+  resetFormData();
 };
 
 const formContainerRef = ref(null);

@@ -143,36 +143,6 @@
         </button>
       </div>
 
-      <!-- Recently Used Bar -->
-      <div
-        v-if="recentOrganizations && recentOrganizations.length > 0"
-        class="px-4 py-2 bg-base-200/50 border-b border-base-200 flex items-center gap-2 flex-wrap"
-      >
-        <span
-          class="text-[11px] font-bold text-base-content/60 flex items-center gap-1"
-        >
-          🕒 {{ locale === "de" ? "Zuletzt verwendet:" : "Recently used:" }}
-        </span>
-        <button
-          v-for="rOrg in recentOrganizations.slice(0, 5)"
-          :key="rOrg.name"
-          type="button"
-          class="btn btn-xs btn-outline btn-primary gap-1 shadow-2xs hover:scale-105 transition-transform"
-          @click="selectOrganization(rOrg)"
-          :title="rOrg.gnd ? `${rOrg.name} (GND: ${rOrg.gnd})` : rOrg.name"
-        >
-          <span>🏛️</span>
-          <span class="truncate max-w-[200px] font-semibold">{{
-            rOrg.name
-          }}</span>
-          <span
-            v-if="rOrg.country"
-            class="badge badge-xs badge-ghost font-mono uppercase text-[9px]"
-            >{{ rOrg.country }}</span
-          >
-        </button>
-      </div>
-
       <!-- Expandable Add/Edit Form -->
       <transition
         enter-active-class="transition duration-200 ease-out"
@@ -490,8 +460,9 @@
         <div
           v-for="(org, idx) in filteredOrganizations"
           :key="org.id || idx"
-          class="p-3.5 rounded-xl border border-base-200 bg-base-100 hover:border-primary/60 hover:bg-base-200/50 transition-all flex flex-wrap items-center justify-between gap-3 shadow-xs cursor-pointer group"
-          @click="selectOrganization(org)"
+          class="p-3.5 rounded-xl border border-base-200 bg-base-100 hover:border-primary/60 hover:bg-base-200/50 transition-all flex flex-wrap items-center justify-between gap-3 shadow-xs group"
+          :class="{ 'cursor-pointer': mode !== 'manage' }"
+          @click="mode !== 'manage' && selectOrganization(org)"
         >
           <!-- Left: Org Info -->
           <div class="flex items-start gap-3 flex-1 min-w-[280px]">
@@ -585,14 +556,28 @@
 
             <button
               type="button"
-              class="btn btn-xs btn-ghost text-error"
+              class="btn btn-xs btn-ghost text-error hover:bg-error/10"
               @click.stop="removeOrganization(org)"
-              title="Entfernen"
+              :title="locale === 'de' ? 'Entfernen' : 'Remove'"
             >
-              🗑️
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="size-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
             </button>
 
             <button
+              v-if="mode !== 'manage'"
               type="button"
               class="btn btn-sm btn-primary gap-1 shadow-xs ml-1 font-bold hover:scale-105 transition-transform"
               @click.stop="selectOrganization(org)"
@@ -613,7 +598,7 @@
       <div
         class="p-3 bg-base-200/50 border-t border-base-200 flex items-center justify-between text-xs text-base-content/60"
       >
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 flex-wrap">
           <span
             >{{ savedOrganizations.length }}
             {{
@@ -622,6 +607,19 @@
                 : "organizations in pool"
             }}</span
           >
+          <button
+            v-if="savedOrganizations.length > 0"
+            type="button"
+            class="btn btn-xs btn-ghost text-error hover:bg-error/10 gap-1 border border-error/30"
+            @click="handleClearAllOrganizations"
+            :title="
+              locale === 'de'
+                ? 'Löscht alle gespeicherten Organisationen aus dem Pool'
+                : 'Deletes all saved organizations from pool'
+            "
+          >
+            {{ locale === "de" ? "Alle löschen" : "Clear All" }}
+          </button>
           <span class="opacity-40">•</span>
           <a
             href="https://lobid.org/gnd"
@@ -655,6 +653,7 @@ import {
   addOrUpdateOrganization,
   removeSavedOrganization,
   updateSavedOrganization,
+  clearAllOrganizations,
 } from "../utils/sharedState.js";
 import { openExternalUrl } from "../utils/platform.js";
 import InstitutionAutocomplete from "./InstitutionAutocomplete.vue";
@@ -834,6 +833,16 @@ const selectOrganization = (org) => {
   }
   emit("select", org);
   emitClose();
+};
+
+const handleClearAllOrganizations = () => {
+  const msg =
+    props.locale === "de"
+      ? "Möchten Sie wirklich alle gespeicherten Organisationen aus dem Pool löschen?"
+      : "Are you sure you want to delete all saved organizations from the pool?";
+  if (confirm(msg)) {
+    clearAllOrganizations();
+  }
 };
 
 const emitClose = () => {

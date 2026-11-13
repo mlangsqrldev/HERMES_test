@@ -6307,18 +6307,21 @@ const buildXmlString = (mode = "carare", customAllData = null) => {
 
     rec["rights.licence"] = rec["rights.licence"] || globalRights.licence || "";
 
+    const hasSpatialArr =
+      Array.isArray(rec["coverage.spatial"]) && rec["coverage.spatial"].length > 0;
     const matchedOrg =
       (savedOrganizations.value || []).find((o) => o.name === rec["source"]) ||
       savedOrganizations.value?.[0];
-    if (!rec["coverage.spatial.locationSet.address.country"]) {
+    if (!hasSpatialArr && !rec["coverage.spatial.locationSet.address.country"]) {
       rec["coverage.spatial.locationSet.address.country"] = (
         matchedOrg?.country || "DE"
       ).toUpperCase();
     }
     if (
-      !rec["coverage.spatial.locationSet.namedLocation"] ||
-      (Array.isArray(rec["coverage.spatial.locationSet.namedLocation"]) &&
-        rec["coverage.spatial.locationSet.namedLocation"].length === 0)
+      !hasSpatialArr &&
+      (!rec["coverage.spatial.locationSet.namedLocation"] ||
+        (Array.isArray(rec["coverage.spatial.locationSet.namedLocation"]) &&
+          rec["coverage.spatial.locationSet.namedLocation"].length === 0))
     ) {
       const loc = matchedOrg
         ? matchedOrg.city
