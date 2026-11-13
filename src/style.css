@@ -78,8 +78,75 @@ pre,
 
 /* Ensure inputs & selects always display text clearly with comfortable padding */
 .input,
-.select {
+.select,
+.textarea {
   min-width: 0;
+  max-width: 100%;
+}
+
+/* Prevent CSS Grid / Flex children from overflowing their container boxes */
+.grid > *,
+.form-control {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Allow buttons with long German/English labels to wrap cleanly inside narrow cards */
+.btn:not(.btn-circle):not(.btn-square) {
+  max-width: 100%;
+  height: auto;
+  min-height: var(--size, 2.25rem);
+  white-space: normal;
+  line-height: 1.25;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  text-align: center;
+}
+
+.btn-xs:not(.btn-circle):not(.btn-square) {
+  min-height: 1.5rem;
+  padding-top: 0.15rem;
+  padding-bottom: 0.15rem;
+}
+
+.btn-sm:not(.btn-circle):not(.btn-square) {
+  min-height: 2rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+/* High-contrast warning/amber & accent colors in light theme ("corporate") */
+[data-theme="corporate"] .text-warning {
+  color: #b45309 !important; /* amber-700: strong contrast on white/light surfaces */
+}
+
+[data-theme="corporate"] .border-warning\/30,
+[data-theme="corporate"] .border-warning\/40,
+[data-theme="corporate"] .border-warning\/50 {
+  border-color: rgb(217 119 6 / 0.4) !important;
+}
+
+[data-theme="corporate"] .bg-warning\/5,
+[data-theme="corporate"] .bg-warning\/10,
+[data-theme="corporate"] .bg-warning\/15,
+[data-theme="corporate"] .bg-warning\/20 {
+  background-color: rgb(245 158 11 / 0.13) !important;
+}
+
+[data-theme="corporate"] .badge-warning {
+  background-color: #fef3c7 !important; /* amber-100 */
+  color: #92400e !important; /* amber-800 */
+  border-color: #f59e0b !important; /* amber-500 */
+}
+
+[data-theme="corporate"] .btn-warning {
+  background-color: #f59e0b !important; /* amber-500 */
+  color: #1c1917 !important; /* stone-900 */
+  border-color: #d97706 !important;
+}
+
+[data-theme="corporate"] .text-accent {
+  color: #c2410c !important; /* orange-700: readable on white */
 }
 
 /* Museum Preset Chip Utility (replaces cramped fixed-height badges for clickable presets) */

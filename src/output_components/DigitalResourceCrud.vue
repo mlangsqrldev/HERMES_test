@@ -1675,7 +1675,7 @@
             </div>
 
             <div
-              class="sticky bottom-0 z-20 bg-base-100/95 backdrop-blur-md border-t border-base-300 py-3 px-4 -mx-2 mt-8 rounded-b-2xl shadow-lg flex items-center justify-end gap-2"
+              class="sticky bottom-0 z-20 bg-base-100/95 backdrop-blur-md border-t border-base-300 py-3 px-4 mt-8 rounded-b-2xl shadow-lg flex items-center justify-end gap-2"
             >
               <span
                 v-if="saveSuccessBadge"
@@ -5292,6 +5292,52 @@ const fieldLabels = {
     placEn: "e.g. https://doi.org/10.60507/FK2/MHT0HM",
     placDe: "z.B. https://doi.org/10.60507/FK2/MHT0HM",
   },
+  digitalResource: {
+    en: "Digital Resource",
+    de: "Digitale Ressource",
+  },
+  "appellation.name#lang": { en: "Language", de: "Sprache" },
+  "appellation.name#preferred": { en: "Preferred", de: "Bevorzugt" },
+  recordInformation: {
+    en: "Record Information",
+    de: "Datensatz-Informationen",
+  },
+  appellation: {
+    en: "Appellation / Titles & IDs",
+    de: "Bezeichnung / Titel & IDs",
+  },
+  description: { en: "Description", de: "Beschreibung" },
+  note: { en: "Note", de: "Anmerkung" },
+  actors: { en: "Actors / Creators", de: "Akteure / Ersteller" },
+  type: { en: "Resource Type", de: "Ressourcentyp" },
+  publicationStatement: {
+    en: "Publication Statement",
+    de: "Veröffentlichungsangaben",
+  },
+  created: { en: "Creation Date", de: "Erstellungsdatum" },
+  link: { en: "Direct File Link", de: "Direkter Datei-Link" },
+  object: { en: "Media / Viewer Object", de: "Medien- / Viewer-Objekt" },
+  isShownAt: { en: "Landing Page (isShownAt)", de: "Zielseite (isShownAt)" },
+  format: { en: "File Format (MIME)", de: "Dateiformat (MIME)" },
+  language: { en: "Language", de: "Sprache" },
+  isRepresentationOf: {
+    en: "Is Representation Of (Heritage Asset)",
+    de: "Ist Repräsentation von (Kulturgut)",
+  },
+  hasPart: { en: "Has Part", de: "Hat Teil" },
+  isPartOf: { en: "Is Part Of", de: "Ist Teil von" },
+  nextInSequence: { en: "Next in Sequence", de: "Nächstes in Sequenz" },
+  isPreviousInSequence: {
+    en: "Previous in Sequence",
+    de: "Vorheriges in Sequenz",
+  },
+  isDerivativeOf: { en: "Is Derivative Of", de: "Ist Derivat von" },
+  hasDerivative: { en: "Has Derivative", de: "Hat Derivat" },
+  createdDerivative: {
+    en: "Created Derivative",
+    de: "Erzeugtes Derivat",
+  },
+  dcRelation: { en: "Dublin Core Relations", de: "Dublin Core Relationen" },
 };
 const inlineEditing = reactive({});
 

@@ -2465,7 +2465,7 @@ const FORMATS_3D = [
 const FORMATS_POINTCLOUD = [
   {
     code: "e57",
-    label: "E57 Punktwolke",
+    label: "E57 (ASTM)",
     ext: ".e57",
     mime: "application/x-e57",
     icon: "☁️",
@@ -2510,21 +2510,21 @@ const FORMATS_RAW_2D = [
   },
   {
     code: "tiff",
-    label: "TIFF Textur / 16-Bit",
+    label: "TIFF (16-Bit)",
     ext: ".tif",
     mime: "image/tiff",
     icon: "🖼️",
   },
   {
     code: "jpeg",
-    label: "JPEG Textur (HQ)",
+    label: "JPEG (HQ)",
     ext: ".jpg",
     mime: "image/jpeg",
     icon: "🖼️",
   },
   {
     code: "png",
-    label: "PNG Textur (Lossless)",
+    label: "PNG (Lossless)",
     ext: ".png",
     mime: "image/png",
     icon: "🖼️",

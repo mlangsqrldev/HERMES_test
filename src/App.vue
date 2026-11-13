@@ -670,7 +670,7 @@
           :data-index="index"
           :data-step-id="step.id"
           @focusin="handleFormInteraction($event, step.id)"
-          class="modern-card bg-base-100 shadow-md border border-base-200/80 rounded-2xl overflow-hidden transition-all duration-300 scroll-mt-20"
+          class="modern-card bg-base-100 shadow-md border border-base-200/80 rounded-2xl overflow-x-clip transition-all duration-300 scroll-mt-20"
         >
           <!-- Card Header (non-sticky to prevent overlapping fields during scroll) -->
 
@@ -714,7 +714,7 @@
                   'badge-success bg-success/15 text-success border-success/30':
                     getSectionQualityStatus(step.id).status === 'valid',
 
-                  'badge-warning bg-warning/15 text-warning border-warning/30':
+                  'badge-warning bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/35':
                     getSectionQualityStatus(step.id).status === 'warning',
 
                   'badge-error bg-error/15 text-error border-error/30':
@@ -1623,7 +1623,9 @@ const uiTranslations = {
 
     templateName: "Template Designation",
 
-    or: "ODER / OR",
+    or: "OR",
+
+    actions: "Actions",
 
     customEdit: "Custom Entry Mode",
 
@@ -1675,6 +1677,8 @@ const uiTranslations = {
     templateName: "Bezeichnung der Vorlage",
 
     or: "ODER",
+
+    actions: "Aktionen",
 
     customEdit: "Individuell erfassen",
 

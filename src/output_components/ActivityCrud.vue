@@ -1766,7 +1766,7 @@
             </div>
 
             <div
-              class="sticky bottom-0 z-20 bg-base-100/95 backdrop-blur-md border-t border-base-300 py-3 px-4 -mx-2 mt-8 rounded-b-2xl shadow-lg flex items-center justify-end gap-2"
+              class="sticky bottom-0 z-20 bg-base-100/95 backdrop-blur-md border-t border-base-300 py-3 px-4 mt-8 rounded-b-2xl shadow-lg flex items-center justify-end gap-2"
             >
               <span
                 v-if="saveSuccessBadge"
@@ -5507,6 +5507,34 @@ const fieldLabels = {
     placEn: "e.g. link to a related publication",
     placDe: "z.B. Link zu einer zugehörigen Publikation",
   },
+  activity: { en: "Activity", de: "Aktivität" },
+  recordInformation: {
+    en: "Record Information",
+    de: "Datensatz-Informationen",
+  },
+  appellation: {
+    en: "Appellation / Titles & IDs",
+    de: "Bezeichnung / Titel & IDs",
+  },
+  description: { en: "Description", de: "Beschreibung" },
+  hasGeneralPurpose: {
+    en: "General Purpose",
+    de: "Allgemeiner Zweck",
+  },
+  eventType: { en: "Event Type", de: "Ereignistyp" },
+  actors: {
+    en: "Actors / Involved Persons",
+    de: "Akteure / Beteiligte Personen",
+  },
+  temporal: { en: "Temporal Coverage", de: "Zeitraum / Datierung" },
+  spatial: { en: "Spatial Location", de: "Räumliche Verortung" },
+  occurredAt: { en: "Occurred At (Date)", de: "Stattgefunden am (Datum)" },
+  happenedAt: { en: "Happened At (Place)", de: "Stattgefunden in (Ort)" },
+  wasPresentAt: { en: "Was Present At", de: "War beteiligt an" },
+  hasPart: { en: "Has Part", de: "Hat Teil" },
+  isPartOf: { en: "Is Part Of", de: "Ist Teil von" },
+  hasCreated: { en: "Has Created", de: "Hat erzeugt" },
+  dcRelation: { en: "Dublin Core Relations", de: "Dublin Core Relationen" },
 };
 const inlineEditing = reactive({});
 
@@ -5543,7 +5571,7 @@ const uiTranslations = {
   de: {
     add: "hinzufügen",
     addItem: "+ Element hinzufügen",
-    edit: "bearbeiten",
+    edit: "Bearbeiten",
     del: "Löschen",
     deletePrompt: "Möchten Sie diesen Datensatz wirklich löschen?",
     deleteEntryPrompt: "Diesen Eintrag löschen?",

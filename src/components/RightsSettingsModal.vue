@@ -240,7 +240,11 @@
                 type="text"
                 v-model="globalRights.haCopyrightCreditLine"
                 class="input input-sm input-bordered w-full text-xs"
-                placeholder="z.B. Antikensammlung Berlin"
+                :placeholder="
+                  locale === 'de'
+                    ? 'z.B. Antikensammlung Berlin'
+                    : 'e.g. Antikensammlung Berlin'
+                "
               />
             </div>
             <div class="grid grid-cols-2 gap-2">

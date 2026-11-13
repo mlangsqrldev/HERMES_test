@@ -1426,7 +1426,7 @@
               />
             </div>
             <div
-              class="sticky bottom-0 z-20 bg-base-100/95 backdrop-blur-md border-t border-base-300 py-3 px-4 -mx-2 mt-8 rounded-b-2xl shadow-lg flex items-center justify-end gap-2"
+              class="sticky bottom-0 z-20 bg-base-100/95 backdrop-blur-md border-t border-base-300 py-3 px-4 mt-8 rounded-b-2xl shadow-lg flex items-center justify-end gap-2"
             >
               <span
                 v-if="saveSuccessBadge"
@@ -3073,6 +3073,20 @@ const fieldLabels = {
     placDe:
       "z.B. https://www.smb.museum/museen-einrichtungen/antikensammlung/home/",
   },
+  collectionInformation: {
+    en: "Collection Information",
+    de: "Sammlungsinformationen",
+  },
+  id: { en: "Collection Identifier", de: "Sammlungs-Identifikator" },
+  title: { en: "Collection Title", de: "Sammlungstitel" },
+  source: { en: "Source", de: "Quelle" },
+  contacts: { en: "Contacts", de: "Kontaktpersonen" },
+  statement: { en: "Statement", de: "Beschreibung / Statement" },
+  creation: { en: "Creation", de: "Erstellung" },
+  keywords: { en: "Keywords", de: "Schlagwörter" },
+  coverage: { en: "Coverage", de: "Räumliche & zeitliche Abdeckung" },
+  language: { en: "Language", de: "Sprache" },
+  dcRelation: { en: "Dublin Core Relations", de: "Dublin Core Relationen" },
 };
 const inlineEditing = reactive({});
 

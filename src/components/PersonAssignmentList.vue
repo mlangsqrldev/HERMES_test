@@ -111,7 +111,7 @@
         <div>
           <label class="label py-1">
             <span class="label-text font-semibold">
-              {{ currentLocale === "de" ? "Typ (Actor Type)" : "Type" }}
+              {{ currentLocale === "de" ? "Typ" : "Type" }}
             </span>
           </label>
           <select
@@ -119,13 +119,13 @@
             class="select select-sm select-bordered w-full bg-base-100"
           >
             <option value="person">
-              {{ currentLocale === "de" ? "Einzelperson (person)" : "Person" }}
+              {{ currentLocale === "de" ? "Einzelperson" : "Person" }}
             </option>
             <option value="organization">
               {{
                 currentLocale === "de"
-                  ? "Organisation / Institution (organisation)"
-                  : "Organisation"
+                  ? "Organisation / Institution"
+                  : "Organization / Institution"
               }}
             </option>
             <option v-if="mode === 'historical'" value="workshop">
@@ -142,7 +142,7 @@
         <div v-if="mode === 'contact'">
           <label class="label py-1">
             <span class="label-text font-semibold">
-              {{ currentLocale === "de" ? "Organisation" : "Organisation" }}
+              {{ currentLocale === "de" ? "Organisation" : "Organization" }}
             </span>
           </label>
           <input
@@ -170,7 +170,11 @@
             type="text"
             v-model="draft.id"
             class="input input-sm input-bordered w-full bg-base-100"
-            placeholder="https://d-nb.info/gnd/... oder https://orcid.org/..."
+            :placeholder="
+              currentLocale === 'de'
+                ? 'https://d-nb.info/gnd/... oder https://orcid.org/...'
+                : 'https://d-nb.info/gnd/... or https://orcid.org/...'
+            "
           />
         </div>
 
@@ -496,12 +500,12 @@ const resolvedTitle = computed(() => {
   }
   if (props.mode === "contact") {
     return props.currentLocale === "de"
-      ? "Kontaktpersonen (Contacts)"
+      ? "Kontaktpersonen"
       : "Contacts";
   }
   return props.currentLocale === "de"
-    ? "Beteiligte Personen & Organisationen (Akteure)"
-    : "Involved Persons & Organisations (Actors)";
+    ? "Beteiligte Personen & Organisationen"
+    : "Involved Persons & Organizations";
 });
 
 const datalistId = `person-roles-${Math.random().toString(36).slice(2, 9)}`;

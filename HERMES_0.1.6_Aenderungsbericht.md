@@ -78,3 +78,4 @@
 - **Klare Unterscheidung von UI-Sprache, Metadatensprache & Export-Status**
   - Der Header-Umschalter ist explizit mit **`UI`** beschriftet; in der Global-Leiste steht klar **`Metadaten-Sprache (xml:lang)`**.
   - Unter *Aktionen & Export* zeigt ein Status-Badge an, ob der Stand nur lokal im Speicher liegt (`Lokal gesichert`) oder wann zuletzt exportiert wurde (`✓ HH:MM`).
+

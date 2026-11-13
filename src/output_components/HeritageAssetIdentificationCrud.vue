@@ -3725,7 +3725,7 @@
             <!-- Form Action Buttons -->
 
             <div
-              class="sticky bottom-0 z-20 bg-base-100/95 backdrop-blur-md border-t border-base-300 py-3 px-4 -mx-2 mt-8 rounded-b-2xl shadow-lg flex flex-wrap justify-between items-center gap-3"
+              class="sticky bottom-0 z-20 bg-base-100/95 backdrop-blur-md border-t border-base-300 py-3 px-4 mt-8 rounded-b-2xl shadow-lg flex flex-wrap justify-between items-center gap-3"
             >
               <div>
                 <button
@@ -7409,7 +7409,7 @@
             </div>
 
             <div
-              class="sticky bottom-0 bg-base-100/95 backdrop-blur-md border-t border-base-200 pt-3 pb-2 -mx-6 px-6 mt-6 z-20"
+              class="sticky bottom-0 bg-base-100/95 backdrop-blur-md border-t border-base-200 pt-3 pb-2 px-4 mt-6 z-20"
             >
               <button type="submit" class="btn btn-primary w-full shadow-md">
                 {{ t("saveToList") }}
@@ -11080,6 +11080,47 @@ const fieldLabels = {
 
     placDe: "z.B. https://id.smb.museum/object/699203",
   },
+  heritageAssetIdentification: {
+    en: "Heritage Asset Identification",
+    de: "Kulturgut-Erfassung",
+  },
+  recordInformation: {
+    en: "Record Information",
+    de: "Datensatz-Informationen",
+  },
+  appellation: {
+    en: "Appellation / Titles & IDs",
+    de: "Bezeichnung / Titel & IDs",
+  },
+  description: { en: "Description", de: "Beschreibung" },
+  generalType: { en: "General Type", de: "Allgemeiner Objekttyp" },
+  actors: {
+    en: "Actors / Historical Creators",
+    de: "Akteure / Historische Urheber",
+  },
+  conditions: { en: "Conditions", de: "Erhaltungszustand" },
+  provenance: { en: "Provenance", de: "Provenienz / Herkunft" },
+  characters: {
+    en: "Characters / Material & Dimensions",
+    de: "Eigenschaften / Material & Maße",
+  },
+  spatial: { en: "Spatial Location", de: "Räumliche Verortung" },
+  repositoryLocation: {
+    en: "Repository Location",
+    de: "Standort / Sammlungsort",
+  },
+  references: { en: "References", de: "Literatur & Referenzen" },
+  hasRepresentation: {
+    en: "Has Representation (Digital Resource)",
+    de: "Digitale Repräsentation",
+  },
+  isSuccessorOf: { en: "Is Successor Of", de: "Ist Nachfolger von" },
+  wasPresentAt: { en: "Was Present At", de: "War beteiligt an" },
+  hasPart: { en: "Has Part", de: "Hat Teil" },
+  isPartOf: { en: "Is Part Of", de: "Ist Teil von" },
+  isReplicaOf: { en: "Is Replica Of", de: "Ist Replik von" },
+  wasDigitizedBy: { en: "Was Digitized By", de: "Wurde digitalisiert durch" },
+  dcRelation: { en: "Dublin Core Relations", de: "Dublin Core Relationen" },
 };
 
 const inlineEditing = reactive({});
