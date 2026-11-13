@@ -50,11 +50,11 @@
       </div>
     </div>
 
-    <!-- Modern Glassmorphic Top Header -->
-
-    <header
-      class="glass-header sticky top-0 z-50 w-full px-4 lg:px-8 py-3 flex items-center justify-between transition-all"
-    >
+    <!-- Modern Glassmorphic Top Header + Docked Global Controls -->
+    <div class="sticky top-0 z-50 w-full">
+      <header
+        class="glass-header w-full px-4 lg:px-8 py-3 flex items-center justify-between transition-all"
+      >
       <!-- Brand & Logo (Authentic 2-Color Attic Red-Figure Vase Hermes + Chiseled Greek SVG Wordmark "ΗΕΡΜΗΣ") -->
 
       <div
@@ -218,6 +218,17 @@
       </div>
     </header>
 
+      <GlobalDefaultsBar
+        :current-locale="currentLocale"
+        :collection-form="getChildComp(collectionRef)?.form"
+        :heritage-items="getChildComp(heritageRef)?.items || []"
+        :digital-items="getChildComp(digitalRef)?.items || []"
+        @apply-rights="applyGlobalRightsToAll"
+        @apply-language="applyGlobalLanguageToAll"
+        @apply-collection="applyGlobalCollectionToForm"
+      />
+    </div>
+
     <!-- Main Content Layout -->
 
     <div
@@ -226,12 +237,12 @@
       <!-- Left Sidebar Container -->
 
       <aside
-        class="sticky top-20 left-0 w-56 xl:w-64 shrink-0 flex flex-col gap-4"
+        class="sticky top-36 left-0 w-60 xl:w-64 shrink-0 flex flex-col gap-4 min-w-0"
       >
         <!-- Navigation Card -->
 
         <div
-          class="glass-panel rounded-2xl p-4 shadow-lg border border-base-200/80 flex flex-col gap-4"
+          class="glass-panel rounded-2xl p-4 shadow-lg border border-base-200/80 flex flex-col gap-4 overflow-hidden min-w-0"
         >
           <div
             class="flex items-center justify-between pb-2 border-b border-base-200/70"
@@ -272,11 +283,11 @@
 
           <!-- Tree Navigation Menu -->
 
-          <ul class="w-full menu p-0 gap-1">
+          <ul class="w-full menu p-0 gap-1 min-w-0">
             <li
               v-for="(step, index) in steps"
               :key="index"
-              class="rounded-xl transition-all"
+              class="rounded-xl transition-all w-full min-w-0 max-w-full overflow-hidden"
               :class="[
                 index === activeStepIndex
                   ? 'bg-base-200/60 shadow-xs'
@@ -284,7 +295,7 @@
               ]"
             >
               <div
-                class="flex items-center gap-2 cursor-pointer font-bold text-sm py-2 px-3"
+                class="flex items-center gap-2 cursor-pointer font-bold text-sm py-2 px-2.5 w-full min-w-0"
                 @click="scrollToSection(index)"
                 :class="
                   index === activeStepIndex
@@ -332,15 +343,16 @@
                     step.id === 'digital' ||
                     step.id === 'activity')
                 "
-                class="ml-4 pb-2 border-l-2 border-base-300/60 pl-2.5 space-y-0.5"
+                class="ml-3 pb-2 border-l-2 border-base-300/60 pl-2 space-y-0.5 w-[calc(100%-0.75rem)] min-w-0"
               >
                 <!-- Required sub-blocks -->
                 <li
                   v-for="(levelData, firstLevel) in requiredTree[step.id] || {}"
                   :key="firstLevel"
+                  class="w-full min-w-0 max-w-full"
                 >
                   <div
-                    class="flex items-center gap-2 cursor-pointer text-xs font-medium py-1 px-1.5 rounded hover:bg-base-200/70 transition-colors"
+                    class="flex items-center gap-2 cursor-pointer text-xs font-medium py-1 px-1.5 rounded hover:bg-base-200/70 transition-colors w-full min-w-0"
                     @click="scrollToSubSection(index, firstLevel, levelData)"
                   >
                     <input
@@ -419,7 +431,7 @@
           <!-- Legend -->
 
           <div
-            class="flex items-center justify-between text-[11px] pt-1 px-1 border-t border-base-200/70 text-base-content/70"
+            class="flex flex-wrap items-center justify-between gap-1.5 text-[11px] pt-1 px-1 border-t border-base-200/70 text-base-content/70"
           >
             <div class="flex items-center gap-1.5">
               <span class="text-accent font-black text-sm leading-none">*</span>
@@ -653,16 +665,6 @@
         ref="scrollContainer"
         @scroll="handleScroll"
       >
-        <GlobalDefaultsBar
-          :current-locale="currentLocale"
-          :collection-form="getChildComp(collectionRef)?.form"
-          :heritage-items="getChildComp(heritageRef)?.items || []"
-          :digital-items="getChildComp(digitalRef)?.items || []"
-          @apply-rights="applyGlobalRightsToAll"
-          @apply-language="applyGlobalLanguageToAll"
-          @apply-collection="applyGlobalCollectionToForm"
-        />
-
         <section
           v-for="(step, index) in steps"
           :key="index"
@@ -2543,6 +2545,8 @@ const requiredTree = computed(() => {
 
       const firstLevel = parts[0];
 
+      if (firstLevel === "rights") return;
+
       if (!tree[group][firstLevel]) {
         // Look up the parent node in the unfiltered fields array
 
@@ -4204,7 +4208,7 @@ const exportMetadataReport = async () => {
 
 const xmlPreviewSectionRef = ref(null);
 
-const showSideXmlPreview = ref(true);
+const showSideXmlPreview = ref(false);
 
 const highlightedXmlTarget = ref(null);
 

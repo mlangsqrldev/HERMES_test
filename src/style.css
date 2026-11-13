@@ -84,9 +84,12 @@ pre,
   max-width: 100%;
 }
 
-/* Prevent CSS Grid / Flex children from overflowing their container boxes */
+/* Prevent CSS Grid / Flex / DaisyUI Menu children from overflowing their container boxes */
 .grid > *,
-.form-control {
+.form-control,
+.menu,
+.menu li,
+.menu li > * {
   min-width: 0;
   max-width: 100%;
 }

@@ -2586,24 +2586,74 @@ const inspect3DFile = async (file) => {
       : `${(file.size / 1024).toFixed(1)} KB`;
 
   const formatMap = {
-    glb: "model/gltf-binary (GLB)",
-    gltf: "model/gltf+json (glTF)",
-    obj: "model/obj (Wavefront OBJ)",
-    ply: "application/x-ply (PLY)",
-    stl: "model/stl (STL)",
+    glb: "model/gltf-binary",
+    gltf: "model/gltf+json",
+    obj: "model/obj",
+    ply: "application/x-ply",
+    stl: "model/stl",
   };
   const detectedFmt = formatMap[ext] || ext.toUpperCase();
-  if (typeof formats !== "undefined" && Array.isArray(formats.value)) {
-    if (!formats.value.includes(detectedFmt)) {
-      formats.value.push(detectedFmt);
-    }
+  const currentFormats = Array.isArray(props.formats) ? [...props.formats] : [];
+  if (!currentFormats.includes(detectedFmt)) {
+    currentFormats.push(detectedFmt);
+    emit("update:formats", currentFormats);
   }
 
   let vertices = 0;
   let faces = 0;
 
+  const parseGltfJsonCounts = (gltf) => {
+    const accessors = Array.isArray(gltf?.accessors) ? gltf.accessors : [];
+    const meshes = Array.isArray(gltf?.meshes) ? gltf.meshes : [];
+    let v = 0;
+    let f = 0;
+    for (const mesh of meshes) {
+      for (const prim of mesh?.primitives || []) {
+        const posIdx = prim?.attributes?.POSITION;
+        const posCount =
+          posIdx !== undefined && accessors[posIdx]
+            ? Number(accessors[posIdx].count) || 0
+            : 0;
+        v += posCount;
+
+        const idxCount =
+          prim?.indices !== undefined && accessors[prim.indices]
+            ? Number(accessors[prim.indices].count) || 0
+            : posCount;
+        const mode = prim?.mode ?? 4; // 4 = TRIANGLES
+        if (mode === 4) {
+          f += Math.floor(idxCount / 3);
+        } else if (mode === 5 || mode === 6) {
+          f += Math.max(0, idxCount - 2);
+        }
+      }
+    }
+    return { v, f };
+  };
+
   try {
-    if (ext === "obj" && file.size < 40 * 1024 * 1024) {
+    if (ext === "glb" && file.size >= 20) {
+      const headerBuf = await file.slice(0, 20).arrayBuffer();
+      const headerView = new DataView(headerBuf);
+      const magic = headerView.getUint32(0, true);
+      if (magic === 0x46546c67) {
+        const jsonChunkLen = headerView.getUint32(12, true);
+        const jsonChunkType = headerView.getUint32(16, true);
+        if (jsonChunkType === 0x4e4f534a && 20 + jsonChunkLen <= file.size) {
+          const jsonBuf = await file.slice(20, 20 + jsonChunkLen).arrayBuffer();
+          const jsonText = new TextDecoder("utf-8").decode(jsonBuf);
+          const gltf = JSON.parse(jsonText);
+          const counts = parseGltfJsonCounts(gltf);
+          vertices = counts.v;
+          faces = counts.f;
+        }
+      }
+    } else if (ext === "gltf" && file.size < 40 * 1024 * 1024) {
+      const gltf = JSON.parse(await file.text());
+      const counts = parseGltfJsonCounts(gltf);
+      vertices = counts.v;
+      faces = counts.f;
+    } else if (ext === "obj" && file.size < 40 * 1024 * 1024) {
       const text = await file.text();
       const lines = text.split(/\r?\n/);
       for (const line of lines) {
@@ -2627,7 +2677,7 @@ const inspect3DFile = async (file) => {
 
   inspectedFileSummary.value = `${file.name} · ${sizeLabel}${
     faces > 0 ? ` · ${faces.toLocaleString()} Faces` : ""
-  }`;
+  }${vertices > 0 ? ` · ${vertices.toLocaleString()} Vertices` : ""}`;
 };
 
 const handle3DFileDrop = (e) => {

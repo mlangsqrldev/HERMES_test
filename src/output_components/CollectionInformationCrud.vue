@@ -3306,6 +3306,13 @@ const handleCollectionInstitutionSelect = (item) => {
     gnd: item.gnd || "",
     uri: item.uri || "",
   });
+  recordRecentOrganization({
+    name: item.label,
+    gnd: item.gnd || "",
+    uri: item.uri || "",
+    city: item.city || "",
+    country: item.country || "",
+  });
 };
 
 const handleCollectionPlaceSelect = (place) => {
@@ -3933,7 +3940,6 @@ const handleOrgPicked = (org) => {
       drawerForm["email"] = org.email || "";
     }
   } else {
-    applyOrgToSpatial(org);
     form["source"] = org.name || "";
     if (org.gnd) {
       detectedGndId.value = org.gnd;

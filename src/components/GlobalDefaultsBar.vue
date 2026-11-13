@@ -1,10 +1,10 @@
 <template>
   <div
-    class="w-full bg-base-100 rounded-box border border-base-200 shadow-sm mb-6 overflow-hidden"
+    class="w-full bg-base-100/95 backdrop-blur-md border-b border-base-200 shadow-xs"
   >
     <!-- Header Summary Bar -->
     <div
-      class="p-3.5 bg-base-200/50 flex flex-wrap items-center justify-between gap-3 border-b border-base-200"
+      class="max-w-[1920px] mx-auto px-3 lg:px-5 py-2 bg-base-200/40 flex flex-wrap items-center justify-between gap-2.5"
     >
       <!-- 1. Global Metadata Language Selector -->
       <div class="flex flex-wrap items-center gap-2">
@@ -123,26 +123,6 @@
           >
         </button>
 
-        <!-- Collections Pool -->
-        <button
-          type="button"
-          class="btn btn-xs gap-1.5 btn-outline border-base-300 hover:border-accent hover:bg-accent/10 shadow-xs"
-          @click="isCollectionModalOpen = true"
-          :title="
-            currentLocale === 'de'
-              ? 'Sammlungs-Pool (Collections) verwalten und Profile auswählen'
-              : 'Manage collections pool and select collection profiles'
-          "
-        >
-          <span class="text-sm">📂</span>
-          <span class="font-bold text-xs">{{
-            currentLocale === "de" ? "Sammlungen" : "Collections"
-          }}</span>
-          <span class="badge badge-xs badge-accent font-semibold">{{
-            savedCollections.length
-          }}</span>
-        </button>
-
         <!-- Software Pool -->
         <button
           type="button"
@@ -240,15 +220,6 @@
       @close="isOrgModalOpen = false"
     />
 
-    <!-- Collection Pool Modal -->
-    <CollectionPickerModal
-      :isOpen="isCollectionModalOpen"
-      mode="manage"
-      :currentLocale="currentLocale"
-      @close="isCollectionModalOpen = false"
-      @select="handleCollectionSelect"
-    />
-
     <!-- Software Pool Modal -->
     <SoftwarePickerModal
       :isOpen="isSoftwareModalOpen"
@@ -292,14 +263,12 @@ import {
   globalRights,
   savedPersons,
   savedOrganizations,
-  savedCollections,
   savedSoftware,
   savedEquipment,
   getLicenceShortCode,
 } from "../utils/sharedState.js";
 import PersonPickerModal from "./PersonPickerModal.vue";
 import OrganizationPickerModal from "./OrganizationPickerModal.vue";
-import CollectionPickerModal from "./CollectionPickerModal.vue";
 import SoftwarePickerModal from "./SoftwarePickerModal.vue";
 import EquipmentPickerModal from "./EquipmentPickerModal.vue";
 import ApiSettingsModal from "./ApiSettingsModal.vue";
@@ -334,20 +303,10 @@ const emit = defineEmits([
 const isRightsModalOpen = ref(false);
 const isPersonModalOpen = ref(false);
 const isOrgModalOpen = ref(false);
-const isCollectionModalOpen = ref(false);
 const isSoftwareModalOpen = ref(false);
 const isEquipmentModalOpen = ref(false);
 const isApiSettingsOpen = ref(false);
 const appliedToast = ref("");
-
-const handleCollectionSelect = (col) => {
-  emit("apply-collection", col);
-  showToast(
-    props.currentLocale === "de"
-      ? `Sammlung "${col.title || col.id}" ausgewählt!`
-      : `Collection "${col.title || col.id}" selected!`,
-  );
-};
 
 const availableLanguages = [
   { code: "de", name: "Deutsch", flag: "🇩🇪" },

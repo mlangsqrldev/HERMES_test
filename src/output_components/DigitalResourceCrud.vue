@@ -1598,69 +1598,6 @@
                 />
                 <div class="validator-hint">{{ t("validationHint") }}</div>
               </div>
-              <!-- Global Rights Status Card (managed globally in top bar) -->
-              <div
-                class="col-span-full p-4 rounded-xl border border-warning/30 bg-warning/5 mb-6 flex flex-wrap items-center justify-between gap-3"
-              >
-                <div class="flex items-center gap-3">
-                  <div
-                    class="w-9 h-9 rounded-xl bg-warning/10 text-warning flex items-center justify-center text-lg"
-                  >
-                    🛡️
-                  </div>
-                  <div>
-                    <div class="font-bold text-sm flex items-center gap-2">
-                      <span>{{
-                        currentLocale === "de"
-                          ? "Rechte & Lizenzen (Global verwaltet)"
-                          : "Rights & Licences (Globally Managed)"
-                      }}</span>
-                      <span
-                        class="badge badge-warning badge-xs uppercase font-bold"
-                        >{{
-                          currentLocale === "de" ? "Zentral" : "Global"
-                        }}</span
-                      >
-                    </div>
-                    <div
-                      class="text-xs text-base-content/70 mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1"
-                    >
-                      <span
-                        ><strong>{{
-                          currentLocale === "de" ? "Lizenz:" : "Licence:"
-                        }}</strong>
-                        {{
-                          form["rights.licence"] ||
-                          (currentLocale === "de"
-                            ? "Standard (global)"
-                            : "Default (global)")
-                        }}</span
-                      >
-                      <span v-if="form['rights.copyrightCreditLine']"
-                        ><strong>{{
-                          currentLocale === "de"
-                            ? "Rechteinhaber:"
-                            : "Copyright:"
-                        }}</strong>
-                        {{ form["rights.copyrightCreditLine"] }}</span
-                      >
-                      <span v-if="form['rights.accessRights']"
-                        ><strong>{{
-                          currentLocale === "de" ? "Zugang:" : "Access:"
-                        }}</strong>
-                        {{ form["rights.accessRights"] }}</span
-                      >
-                    </div>
-                  </div>
-                </div>
-                <div class="text-[11px] text-base-content/50 italic">
-                  {{
-                    currentLocale === "de"
-                      ? "Rechte werden einheitlich über die obere Leiste für das gesamte Projekt festgelegt."
-                      : "Rights are managed centrally across the project in the top toolbar."
-                  }}
-                </div>
-              </div>
               <!-- Unified Dublin Core & CARARE Relations Manager for Digital Resource -->
               <DigitalResourceDcRelations
                 :form="form"
